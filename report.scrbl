@@ -21,10 +21,13 @@
                        #:state "Cluj"
                        #:country "Romania")]
 
-@; TODO: for some reason using both @abstract and @acks produces an error
-@; @abstract{TODO} @; needed?
-@; @terms{} @keywords{}
+@; needed?
+@abstract{TODO}
 
-@; @acks{TODO} @; needed?
+@; TODO @terms{} @keywords{}
 
-@; TODO: bibliography support?
+@; needed?
+@acks{TODO}
+
+@; TODO: bibliography support? scriblib's autobib is apparently standard and
+@; works well. https://docs.racket-lang.org/scriblib/autobib.html

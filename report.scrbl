@@ -13,8 +13,13 @@
                         #:state "Virginia"
                         #:country "USA")]
 
-@; @author["Bogdan Popa"
-@;         #:email @email|{bogdan@defn.io}|]
+@author["Bogdan Popa"
+        #:email @email|{bogdan@defn.io}|
+        #:affiliation (affiliation
+                       #:institution @institution{Independent}
+                       #:city "Cluj-Napoca"
+                       #:state "Cluj"
+                       #:country "Romania")]
 
 @; TODO: for some reason using both @abstract and @acks produces an error
 @; @abstract{TODO} @; needed?

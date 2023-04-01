@@ -1,5 +1,7 @@
 #lang scribble/acmart @sigplan @review @;@anonymous
 
+@(require "bib.rkt")
+
 @title{Functional Reactive Architecture for Easy GUIs}
 @subtitle{Experience Report}
 
@@ -29,5 +31,4 @@
 @; needed?
 @acks{TODO}
 
-@; TODO: bibliography support? scriblib's autobib is apparently standard and
-@; works well. https://docs.racket-lang.org/scriblib/autobib.html
+@(generate-bibliography #:sec-title "References")

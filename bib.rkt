@@ -1,0 +1,63 @@
+#lang racket/base
+
+(provide ~cite citet cite-author cite-year generate-bibliography
+         (except-out (all-from-out scriblib/autobib) define-cite)
+         (all-defined-out))
+
+(require scriblib/autobib)
+
+(define-cite ~cite citet generate-bibliography
+             #:cite-author cite-author
+             #:cite-year cite-year)
+
+(define b:gui-easy
+  (make-bib #:title "racket-gui-easy"
+            #:url "https://github.com/Bogdanp/racket-gui-easy"
+            #:author "Bogdan Popa"
+            #:date "2023"))
+
+(define b:frosthaven-manager
+  (make-bib #:title "frosthaven-manager"
+            #:url "https://github.com/benknoble/frosthaven-manager"
+            #:author "D. Ben Knoble"
+            #:date "2023"))
+
+(define b:frosthaven
+  (make-bib #:title "Frosthaven"
+            #:author (org-author-name "Cephalofair Games")
+            #:url "https://cephalofair.com/pages/frosthaven"
+            #:date "2023"))
+
+;; many references to functional or reactive Rust GUI projects: evidence of the
+;; direction of GUI development, utility of approach?
+(define b:are-we-gui-yet
+  (make-bib #:title "Are We GUI Yet?"
+            #:url "https://www.areweguiyet.com/"
+            #:note "Accessed 1st April 2023"
+            #:date "2023"))
+
+;; Racket Java+Beta-inspired class system: "OOP is a natural fit for GUIs!" (roughly)
+(define b:super+inner
+  (make-bib #:author "David Goldberg, Robert Bruce Findler, and Matthew Flatt"
+            #:title "Super and Inner---Together at Last!"
+            #:location "Object-Oriented Programming, Languages, Systems, and Applications"
+            #:date "2004"
+            #:url "http://www.cs.utah.edu/plt/publications/oopsla04-gff.pdf"))
+
+;; more on mixins
+(define b:mixins
+  (make-bib #:title "Classes and mixins"
+            #:author (authors "Matthew Flatt" "Shriram Krishnamurthi" "Matthias Felleisen")
+            #:doi "https://doi.org/10.1145/268946.268961"
+            #:url "https://cs.brown.edu/~sk/Publications/Papers/Published/fkf-classes-mixins/"
+            #:location
+            (proceedings-location "25th ACM SIGPLAN-SIGACT symposium on Principles of programming languages"
+                                  #:series "POPL '98"
+                                  #:pages (list 171 183))
+            #:date "1998"))
+
+(define b:functional-core-imperative-shell
+  (make-bib #:title "Functional Core, Imperative Shell"
+            #:author "Gary Bernhardt"
+            #:url "https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell"
+            #:date "2012"))

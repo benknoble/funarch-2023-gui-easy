@@ -61,3 +61,30 @@
             #:author "Gary Bernhardt"
             #:url "https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell"
             #:date "2012"))
+
+;; FrTime
+(define b:frtime-in-plt-scheme
+  (make-bib #:title "FrTime: Functional Reactive Programming in PLT Scheme"
+            #:author (authors "Gregory Cooper" "Shriram Krishnamurthi")
+            #:location (techrpt-location #:institution "Brown"
+                                         #:number "CS-03-20")
+            #:date "2004"
+            #:url "https://cs.brown.edu/research/pubs/techreports/reports/CS-03-20.html"))
+
+(define b:frtime-dataflow
+  (make-bib #:title "Embedding Dynamic Dataflow in a Call-by-Value Language"
+            #:author (authors "Gregory H. Cooper" "Shriram Krishnamurthi")
+            #:date "2006"
+            #:url "https://cs.brown.edu/people/sk/Publications/Papers/Published/ck-frtime/"
+            #:doi "10.1007/11693024_20"
+            #:location (proceedings-location
+                         "Proceedings of the 15th European Conference on Programming Languages and Systems"
+                         #:pages (list 294 308)
+                         #:series "ESOP'06")))
+
+(define b:frtime-thesis
+  (make-bib #:title "Integrating Dataflow Evaluation into a Practical Higher-Order Call-by-Value Language"
+            #:author "Gregory Harold Cooper"
+            #:date "2008"
+            #:url "https://cs.brown.edu/people/ghcooper/thesis.pdf"
+            #:location (dissertation-location "Brown University")))

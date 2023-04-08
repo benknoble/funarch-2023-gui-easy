@@ -87,4 +87,4 @@
             #:author "Gregory Harold Cooper"
             #:date "2008"
             #:url "https://cs.brown.edu/people/ghcooper/thesis.pdf"
-            #:location (dissertation-location "Brown University")))
+            #:location (dissertation-location #:institution "Brown University")))

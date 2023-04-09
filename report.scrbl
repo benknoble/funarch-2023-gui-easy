@@ -135,6 +135,59 @@ projects that taught us many architectural lessons.
 
 @subsection{Quest for Easier GUIs}
 
+Bogdan's dayjob involved writing many small GUI tools for internal
+use.  For his purposes, the Racket GUI framework proved to be an
+excellent way to build those types of GUIs as it provides fast
+iteration times, portability across macOS, Linux and Windows, and the
+ability to distribute self-contained applications on the
+aforementioned platforms.
+
+@; note: the last one is really more of a property of Racket itself
+
+Over time, however, the same set of small annoyances kept cropping up:
+Racket's class system is overly verbose, data management and wiring is
+bespoke to each project, and, Racket GUI's primary means of linking
+parent and child widgets is by passing in the parent to the child at
+construction time.  The latter point makes composability especially
+frustrating since individual components must always be parameterized
+over a parent argument.
+
+@; fixme
+The class system is rarely used in Racket outside the GUI toolkit, so
+it's a barrier to entry to a Racketeer intending to make a GUI.  As
+will hopefully become clear in reading the examples shown in this
+article, it is possible to express the same interfaces using a much
+lighter weight textual representation.
+
+Since Racket GUI offers no special support for managing application
+data and wiring said data to widgets, the user is forced to come up
+with their own abstraction or to write everything up manually (as is
+often the case when putting something together quickly).  See
+@figure-ref{oop-counter.rkt} for an example of manual data management.
+This was the motivation behind the observable abstraction in GUI Easy.
+
+Forcing the user to pass in the parent of a widget at construction
+time means that components have to either be constructed in a very
+specific order, or all components must be wrapped in procedures that
+take a parent widget as argument.  Consider the following piece of
+Racket code:
+
+@racketblock[
+  (define f (new frame% [label "A window"]))
+  (define msg
+    (new message%
+         [parent f]
+         [label "Hello World"]))
+]
+
+It is impossible to create the message before the frame in this case,
+since the button needs a @racket[parent] in order to be constructed in
+the first place.  This constrains the ways in which the user can
+organize their code.  Of course, the user can always abstract over
+button creation, but that needlessly complicates the process of wiring
+up interfaces.  This was the motivation behind the @racket[view<%>]
+abstraction in GUI Easy.
+
 @; GUI Easy origin
 
 @; - Introduce Racket, class system, GUI programming (briefly!)

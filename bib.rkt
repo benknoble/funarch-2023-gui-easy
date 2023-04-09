@@ -14,7 +14,7 @@
   (make-bib #:title "racket-gui-easy"
             #:url "https://github.com/Bogdanp/racket-gui-easy"
             #:author "Bogdan Popa"
-            #:date "2023"))
+            #:date "2021"))
 
 (define b:frosthaven-manager
   (make-bib #:title "frosthaven-manager"

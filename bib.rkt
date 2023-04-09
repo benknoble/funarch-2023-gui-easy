@@ -28,6 +28,23 @@
             #:url "https://cephalofair.com/pages/frosthaven"
             #:date "2023"))
 
+;; https://racket-lang.org/tr/
+(define b:racket
+  (make-bib #:title    "Reference: Racket"
+            #:author   (authors "Matthew Flatt" "PLT")
+            #:date     "2010"
+            #:location (techrpt-location #:institution "PLT Design Inc."
+                                         #:number "PLT-TR-2010-1")
+            #:url      "https://racket-lang.org/tr1/"))
+
+(define b:racket-gui
+  (make-bib #:title    "GUI: Racket Graphics Toolkit"
+            #:author   (authors "Matthew Flatt" "Robert Bruce Findler" "John Clements")
+            #:date     "2010"
+            #:location (techrpt-location #:institution "PLT Design Inc."
+                                         #:number "PLT-TR-2010-3")
+            #:url      "https://racket-lang.org/tr3/"))
+
 ;; many references to functional or reactive Rust GUI projects: evidence of the
 ;; direction of GUI development, utility of approach?
 (define b:are-we-gui-yet

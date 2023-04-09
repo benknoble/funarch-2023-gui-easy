@@ -227,6 +227,52 @@ able to grok GUI Easy.
 
 @section{GUI Easy Overview}
 
+GUI easy can be broadly split up into two parts: the observable
+abstraction and views.
+
+Observables are box-like values with the additional property that
+arbitrary procedures can subscribe to changes in their values.
+@Figure-ref{observables.rkt} shows a usage example of the basic
+observable API in GUI Easy.
+
+@figure**["observables.rkt"
+          "Use of the basic observable API in GUI Easy."
+          @racketblock[(define o (obs 1))
+                       (obs-observe! o (lambda (v) (printf "observer a saw ~a~n" v)))
+                       (obs-observe! o (lambda (v) (printf "observer b saw ~a~n" v)))
+                       (obs-update! o add1)
+                       (code:comment "outputs:")
+                       (code:comment "observer a saw 2")
+                       (code:comment "observer b saw 2")]]
+
+Views in GUI Easy are representations of Racket GUI widgets that, when
+rendered, produce instances of Racket GUI widgets and handle the
+details of transparently wiring the views together.  Additionally,
+they are typically observable aware in ways that make sense for each
+individual view.  For example, the @racket[text] view takes as input
+an observable of a string and the rendered widget's label updates with
+changes to that observable.  @Figure-ref{easy-counter-reuse.rkt} shows
+an example of a reusable counter component made by composing views
+together.
+
+@figure**["easy-counter-reuse.rkt"
+          "Component re-use in GUI Easy."
+          @racketblock[(define (counter |@|count action)
+                         (hpanel
+                           (button "-" (λ () (action sub1)))
+                           (text (~> |@|count ~a))
+                           (button "+" (λ () (action add1)))))
+
+                       (define/obs |@|count-1 0)
+                       (define/obs |@|count-2 5)
+
+                       (render
+                        (window
+                         #:title "Counters"
+                         (counter |@|count-1 (λ (proc) (<~ |@|count-1 proc)))
+                         (counter |@|count-2 (λ (proc) (<~ |@|count-2 proc)))))]]
+
+
 @; Describe GUI Easy enough to follow the rest of the paper. (Is this the best
 @; place to mention mixins/view<%>s, aka flexibility?)
 

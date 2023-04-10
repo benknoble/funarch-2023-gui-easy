@@ -20,7 +20,7 @@
   (make-bib #:title "frosthaven-manager"
             #:url "https://github.com/benknoble/frosthaven-manager"
             #:author "D. Ben Knoble"
-            #:date "2023"))
+            #:date "2022"))
 
 (define b:frosthaven
   (make-bib #:title "Frosthaven"

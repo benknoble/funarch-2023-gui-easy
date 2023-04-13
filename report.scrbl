@@ -160,26 +160,29 @@ aforementioned platforms.
 @; note: the last one is really more of a property of Racket itself
 
 Over time, however, the same set of small annoyances kept cropping up:
-Racket's class system is overly verbose, data management and wiring is
-bespoke to each project, and, Racket GUI's primary means of linking
+Racket's class system is overly verbose; data management and wiring is
+bespoke to each project; and, Racket GUI's primary means of linking
 parent and child widgets is by passing in the parent to the child at
 construction time.  The latter point makes composability especially
 frustrating since individual components must always be parameterized
 over a parent argument.
 
 @; fixme
+@; db library; lexi-lambda/racket-commonmark; http123
 The class system is rarely used in Racket outside the GUI toolkit, so
 it's a barrier to entry to a Racketeer intending to make a GUI.  As
 will hopefully become clear in reading the examples shown in this
 article, it is possible to express the same interfaces using a much
-lighter weight textual representation.
+lighter-weight textual representation.
 
 Since Racket GUI offers no special support for managing application
 data and wiring said data to widgets, the user is forced to come up
 with their own abstraction or to write everything up manually (as is
 often the case when putting something together quickly).  See
 @figure-ref{oop-counter.rkt} for an example of manual data management.
-This was the motivation behind the observable abstraction in GUI Easy.
+This was the motivation behind the observable abstraction in GUI Easy. In
+@secref{GUI_Easy_Overview}, we'll see how observables and observable-aware views
+combine to automatically connect GUI widgets and state changes.
 
 Forcing the user to pass in the parent of a widget at construction
 time means that components have to either be constructed in a very
@@ -187,6 +190,8 @@ specific order, or all components must be wrapped in procedures that
 take a parent widget as argument.  Consider the following piece of
 Racket code:
 
+@; consider joining new-message% line to parent line to keep in the same column
+@; if needed
 @racketblock[
   (define f (new frame% [label "A window"]))
   (define msg
@@ -201,7 +206,9 @@ the first place.  This constrains the ways in which the user can
 organize their code.  Of course, the user can always abstract over
 button creation, but that needlessly complicates the process of wiring
 up interfaces.  This was the motivation behind the @racket[view<%>]
-abstraction in GUI Easy.
+abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how views
+permit functional abstraction, enabling new organizational approaches that we'll
+explore in @secref{Architecting_Frosthaven}.
 
 @; GUI Easy origin
 
@@ -238,7 +245,8 @@ started quickly.
 
 GUI Easy made it possible to begin building a complex system out of simple
 parts: functions and data. Ben was familiar with functional programming and was
-able to grok GUI Easy.
+able to grok GUI Easy. Ben began constructing the Frosthaven
+Manager@~cite[b:frosthaven-manager] in 2022 using GUI Easy.
 
 @section{GUI Easy Overview}
 
@@ -365,7 +373,7 @@ Racket code. About half of that code composes GUI Easy views with application
 code to form the main application. Of the remaining lines, approximately 1000
 implement the data structures and transformations responsible for the state of
 the game; 500 cover the images it draws; 750 implement three plugin languages;
-300 test the project; the remaining lines are small syntactic utilities.
+300 test the project; the remaining lines are small syntactic utilities. The
 Frosthaven Manager also has approximately 3000 lines of Scribble code, a Racket
 documentation language, including a how-to-play guide and developer reference.
 

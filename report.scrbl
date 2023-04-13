@@ -386,7 +386,9 @@ documentation language, including a how-to-play guide and developer reference.
 
 @; Summarize problem, works, architectural principles for large functional GUIs
 
-@; needed?
-@acks{TODO}
+@acks{We thank the anonymous reviewers for their suggestions. Ben is grateful to
+Savannah Knoble, Derrick Franklin, John Hines, and Jake Hicks for playtesting
+the Frosthaven Manager throughout development, and to Isaac Childres for
+bringing us the wonderful world of Gloomhaven and Frosthaven.}
 
 @(generate-bibliography #:sec-title "References")

@@ -1,11 +1,17 @@
 #lang scribble/acmart @sigplan @review @;@anonymous
 
-@(require scribble/racket
+@(require scribble/core
+          scribble/racket
           scriblib/figure
+          scriblib/footnote
           "bib.rkt")
 
 @(define-code racket to-element)
 @(define-code racketblock to-paragraph)
+
+@(define ($ . xs)
+   (make-element (make-style "relax" '(exact-chars))
+                 (list "$" xs "$")))
 
 @title{Functional Reactive Architecture for Easy GUIs}
 @subtitle{Experience Report}
@@ -43,22 +49,31 @@ Racket's GUI toolkit is built atop the Racket programming
 platform@~cite[b:racket].
 
 @; TODO: make this two-column with the code split
-@figure**["oop-counter.rkt"
-          "A counter GUI using Racket GUI's object-oriented widgets."
-          @racketblock[(require racket/gui)
-                       (define f (new frame% [label "Counter"]))
-                       (define container (new horizontal-panel% [parent f]))
-                       (define count 0)
-                       (define (update-count f)
-                         (set! count (f count))
-                         (send count-label set-label (~a count)))
-                       (define -button
-                         (new button% [parent container] [label "-"] [callback (λ (button event) (update-count sub1))]))
-                       (define count-label
-                         (new message% [parent container] [label (~a count)] [auto-resize #t]))
-                       (define +button
-                         (new button% [parent container] [label "+"] [callback (λ (button event) (update-count add1))]))
-                       (send f show #t)]]
+@figure["oop-counter.rkt"
+        "A counter GUI using Racket GUI's object-oriented widgets."
+        @racketblock[(require racket/gui)
+                     (define f (new frame% [label "Counter"]))
+                     (define container
+                       (new horizontal-panel% [parent f]))
+                     (define count 0)
+                     (define (update-count f)
+                       (set! count (f count))
+                       (send count-label set-label (~a count)))
+                     (define -button
+                       (new button% [parent container]
+                            [label "-"]
+                            [callback (λ (button event)
+                                        (update-count sub1))]))
+                     (define count-label
+                       (new message% [parent container]
+                            [label (~a count)]
+                            [auto-resize #t]))
+                     (define +button
+                       (new button% [parent container]
+                            [label "+"]
+                            [callback (λ (button event)
+                                        (update-count add1))]))
+                     (send f show #t)]]
 
 @Figure-ref{oop-counter.rkt} demonstrates typical Racket GUI code: it creates a
 counter GUI, with buttons to increment and decrement a number displayed on the
@@ -76,17 +91,17 @@ match the structure of the widgets in the GUI; and, new abstractions must be
 created as imperative objects.
 
 @; TODO: this should be figure (single-column), but it doesn't show up?
-@figure**["easy-counter.rkt"
-          "A counter GUI using GUI Easy's functional widgets."
-          @racketblock[(require racket/gui/easy racket/gui/easy/operator)
-                       (define/obs |@|count 0)
-                       (render
-                         (window
-                           #:title "Counter"
-                           (hpanel
-                             (button "-" (λ () (<~ |@|count sub1)))
-                             (text (~> |@|count ~a))
-                             (button "+" (λ () (<~ |@|count add1))))))]]
+@figure["easy-counter.rkt"
+        "A counter GUI using GUI Easy's functional widgets."
+        @racketblock[(require racket/gui/easy racket/gui/easy/operator)
+                     (define/obs |@|count 0)
+                     (render
+                       (window
+                         #:title "Counter"
+                         (hpanel
+                           (button "-" (λ () (<~ |@|count sub1)))
+                           (text (~> |@|count ~a))
+                           (button "+" (λ () (<~ |@|count add1))))))]]
 
 GUI Easy is a functional reactive wrapper for Racket's GUI system based on
 immutable observable values and function composition that aims to solve problems
@@ -230,48 +245,75 @@ able to grok GUI Easy.
 GUI easy can be broadly split up into two parts: the observable
 abstraction and views.
 
-Observables are box-like values with the additional property that
-arbitrary procedures can subscribe to changes in their values.
-@Figure-ref{observables.rkt} shows a usage example of the basic
-observable API in GUI Easy.
+Observables are box-like@note{Boxes are mutable cells; typically they hold
+immutable data to permit constrained mutation.} values with the additional
+property that arbitrary procedures can subscribe to changes in their values.
+@Figure-ref{observables.rkt} shows a usage example of the basic observable API
+in GUI Easy. Observables are constructed with @racket[obs] or the shorthand
+@racket[|@|]. The @racket[define/obs] syntactic form creates and binds an
+observable to a name. @Secref{Observable_Values} explains the common observable
+operators.
 
-@figure**["observables.rkt"
-          "Use of the basic observable API in GUI Easy."
-          @racketblock[(define o (obs 1))
-                       (obs-observe! o (lambda (v) (printf "observer a saw ~a~n" v)))
-                       (obs-observe! o (lambda (v) (printf "observer b saw ~a~n" v)))
-                       (obs-update! o add1)
-                       (code:comment "outputs:")
-                       (code:comment "observer a saw 2")
-                       (code:comment "observer b saw 2")]]
+@figure["observables.rkt"
+        "Use of the basic observable API in GUI Easy."
+        @racketblock[(define o (obs 1))
+                     (define (observer name)
+                       (λ (v)
+                         (printf "observer ~a saw ~a~n" name v)))
+                     (obs-observe! o (observer "a"))
+                     (obs-observe! o (observer "b"))
+                     (obs-update! o add1)
+                     (code:comment "outputs:")
+                     (code:comment "observer a saw 2")
+                     (code:comment "observer b saw 2")]]
 
-Views in GUI Easy are representations of Racket GUI widgets that, when
-rendered, produce instances of Racket GUI widgets and handle the
-details of transparently wiring the views together.  Additionally,
-they are typically observable aware in ways that make sense for each
-individual view.  For example, the @racket[text] view takes as input
-an observable of a string and the rendered widget's label updates with
-changes to that observable.  @Figure-ref{easy-counter-reuse.rkt} shows
-an example of a reusable counter component made by composing views
-together.
+Views in GUI Easy are representations of Racket GUI widgets that, when rendered,
+produce instances of Racket GUI widgets and handle the details of transparently
+wiring the views together.  Additionally, they are typically observable-aware in
+ways that make sense for each individual view.  For example, the @racket[text]
+view takes as input an observable of a string and the rendered widget's label
+updates with changes to that observable.  @Figure-ref{easy-counter-reuse.rkt}
+shows an example of a reusable counter component made by composing views
+together. @Secref{view_detail} explains the view abstraction in more detail.
 
-@figure**["easy-counter-reuse.rkt"
-          "Component re-use in GUI Easy."
-          @racketblock[(define (counter |@|count action)
-                         (hpanel
-                           (button "-" (λ () (action sub1)))
-                           (text (~> |@|count ~a))
-                           (button "+" (λ () (action add1)))))
+@figure["easy-counter-reuse.rkt"
+        "Component re-use in GUI Easy."
+        @racketblock[(define (counter |@|count action)
+                       (hpanel
+                         (button "-" (λ () (action sub1)))
+                         (text (~> |@|count ~a))
+                         (button "+" (λ () (action add1)))))
 
-                       (define/obs |@|count-1 0)
-                       (define/obs |@|count-2 5)
+                     (define/obs |@|count-1 0)
+                     (define/obs |@|count-2 5)
 
-                       (render
-                        (window
-                         #:title "Counters"
-                         (counter |@|count-1 (λ (proc) (<~ |@|count-1 proc)))
-                         (counter |@|count-2 (λ (proc) (<~ |@|count-2 proc)))))]]
+                     (define (update-counter |@|counter)
+                       (λ (proc)
+                         (<~ |@|counter proc)))
 
+                     (render
+                      (window
+                       #:title "Counters"
+                       (counter |@|count-1 (update-counter |@|count-1))
+                       (counter |@|count-2 (update-counter |@|count-2))))]]
+
+@subsection{Observable Values}
+
+The core of the observable abstraction is that arbitrary listeners can react to
+changes to the boxed value. Application developers programming with GUI Easy use
+a few core operators to construct, manipulate, and destruct observables.
+Observables can be @italic{peeked} with @racket[obs-peek]; this unwraps the
+inner value for use with normal Racket computation, dual to the observable
+constructor @racket[obs]. Observables can be @italic{updated}: the new value is
+computed byapplying a procedure to the inner value, much like a monadic bind,
+using @racket[obs-update!]. The alias @racket[<~] is reminiscent of mutation
+notations like @tt{:=} or @tt{<-}. Finally, observables can be @italic{derived}
+with @racket[obs-map], computing a derived observable by applying a function to
+the inner value of a parent observable. Derived observables cannot be directly
+updated, but update automatically when their parent observable updates. The
+alias @racket[~>] is reminiscent of threading computations and suggests duality
+with @racket[obs-update!]. An extension @racket[obs-combine] permits mapping
+@${n} observables together into a single observable via an @${n}-ary function.
 
 @; Describe GUI Easy enough to follow the rest of the paper. (Is this the best
 @; place to mention mixins/view<%>s, aka flexibility?)

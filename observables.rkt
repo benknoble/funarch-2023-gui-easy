@@ -3,6 +3,9 @@
 (require racket/gui/easy)
 
 (define o (obs 1))
-(obs-observe! o (lambda (v) (printf "observer a saw ~a~n" v)))
-(obs-observe! o (lambda (v) (printf "observer b saw ~a~n" v)))
+(define (observer name)
+  (λ (v)
+    (printf "observer ~a saw ~a~n" name v)))
+(obs-observe! o (observer "a"))
+(obs-observe! o (observer "b"))
 (obs-update! o add1)

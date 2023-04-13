@@ -318,8 +318,40 @@ with @racket[obs-update!]. An extension @racket[obs-combine] permits mapping
 @; Describe GUI Easy enough to follow the rest of the paper. (Is this the best
 @; place to mention mixins/view<%>s, aka flexibility?)
 
-@subsection{Twist: Functional Shell, Imperative Core}
+@subsection[#:tag "view_detail"]{Views: Functional Shell, Imperative Core}
 @; etc., whatever we need here
+
+A view is represented by a class implementing the @racket[view<%>] interface.
+View objects wrap a GUI object while keeping track of data dependencies and
+responding to their changes@~cite[b:gui-easy].
+
+If the use of class and objects is surprising, it is also sensible: wrapping
+class-based GUI widgets into the view abstraction is often straightforward. At
+the core, in a twist on the classic "Functional Core, Imperative Shell"
+paradigm@~cite[b:functional-core-imperative-shell], lies an imperative object
+lifecycle. Views must know how to @italic{create} GUI widgets, how to
+@italic{update} them in response to changed data dependencies, and how to
+@italic{destroy} them if necessary. They must also be able to report data
+dependencies to a coordinator object. Data dependencies are typically
+observable values; the coordinator object signals updates when dependencies
+change, allowing the view to trigger an update in the underlying widget.
+
+At the edge of the library, most programmers interact only with the functional
+wrappers around view construction. These wrappers delegate their observable and
+non-observable parameters to specific view objects' constructor arguments. Thus
+the shell is functional.
+
+Sometimes the abstraction is too rigid. For flexibility, it is possible to
+program against the underlying GUI widgets when the functional abstraction
+exposes a @italic{mixin}@note{Mixins permit ad-hoc class specialization without
+modifying the source of the class body@~cite[b:mixins b:super+inner].}
+parameter; this mixin is composed with the underlying GUI widget thanks to
+Racket's first-class classes.
+
+The most common core GUI controls are wrapped by GUI Easy, making it easy to get
+started programming a GUI quickly. The view abstraction makes it possible to
+integrate arbitrary GUI widgets, such as those from 3rd-party packages in the
+Racket ecosystem, into a GUI Easy-based GUI project.
 
 @section{Architecting Frosthaven}
 

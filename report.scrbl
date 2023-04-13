@@ -360,8 +360,21 @@ Racket ecosystem, into a GUI Easy-based GUI project.
 @; components/view organization …?). Also mention tradeoffs, problems
 @; encountered, etc.
 
+At time of writing, the Frosthaven Manager includes approximately 5000 lines of
+Racket code. About half of that code composes GUI Easy views with application
+code to form the main application. Of the remaining lines, approximately 1000
+implement the data structures and transformations responsible for the state of
+the game; 500 cover the images it draws; 750 implement three plugin languages;
+300 test the project; the remaining lines are small syntactic utilities.
+Frosthaven Manager also has approximately 3000 lines of Scribble code, a Racket
+documentation language, including a how-to-play guide and developer reference.
+
 @subsection{Functional Core: There and Back Again}
 @; etc.
+
+@subsection{GUI Organization and Reuse}
+
+@subsection{Challenges}
 
 @section[#:tag "related_work"]{Related Work: Are We GUI Yet?}
 

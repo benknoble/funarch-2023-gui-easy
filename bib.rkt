@@ -73,7 +73,7 @@
                                   #:pages (list 171 183))
             #:date "1998"))
 
-(define b:functional-core-imperative-shell
+(define b:functional-core
   (make-bib #:title "Functional Core, Imperative Shell"
             #:author "Gary Bernhardt"
             #:url "https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell"

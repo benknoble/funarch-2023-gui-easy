@@ -174,7 +174,7 @@ lighter-weight textual representation.
 
 Since Racket GUI offers no special support for managing application
 state and wiring said state to widgets, the user is forced to bring
-their own their own state management to the table, leading to ad-hoc
+their own state management to the table, leading to ad-hoc
 solutions for every new project. See @figure-ref{oop-counter.rkt} for an
 example of ad-hoc data management. This was the motivation behind the
 observable abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll

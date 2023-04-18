@@ -369,7 +369,10 @@ in time.
 A view is represented by a class implementing the @racket[view<%>]
 interface (@figure-ref{view-iface.rkt}). View implementations wrap
 Racket GUI widgets while keeping track of data dependencies and
-responding to their changes@~cite[b:gui-easy].
+responding to their changes@~cite[b:gui-easy]. The interface reifies the
+GUI widget lifecyle into a concrete object, making explicit the
+separation between a GUI widget, its creation, and its reaction to
+changes in data dependencies.
 
 @figure["view-iface.rkt"
         "The view<%> interface."

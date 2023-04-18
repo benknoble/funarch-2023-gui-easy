@@ -389,19 +389,20 @@ changes in data dependencies.
     [update (->m widget/c obs? any/c void?)]
     [destroy (-> widget/c void?)]))]]
 
-If the use of class and objects is surprising, it is also sensible:
-wrapping class-based GUI widgets into the view abstraction is often
-straightforward. At the core, in a twist on the classic ``Functional
-Core, Imperative Shell'' paradigm@~cite[b:functional-core], lies an
-imperative object lifecycle. Views must know how to @italic{create} GUI
-widgets, how to @italic{update} them in response to changed data
-dependencies, and how to @italic{destroy} them if necessary. They must
-also be able to propagate data dependencies up the view tree to a
-coordinator object. Data dependencies are any observable values passed
-into a view; the coordinator object signals updates when dependencies
-change, allowing the view to trigger an update in the underlying widget.
-Crucially, view instances must be reusable, so they must carefully
-associate any internal state they need with each rendered widget.
+If the use of classes, interfaces, and objects is surprising, it is also
+sensible: wrapping class-based GUI widgets into the view abstraction is
+often straightforward. At the core, in a twist on the classic
+``Functional Core, Imperative Shell'' paradigm@~cite[b:functional-core],
+lies an imperative object lifecycle. Views must know how to
+@italic{create} GUI widgets, how to @italic{update} them in response to
+changed data dependencies, and how to @italic{destroy} them if
+necessary. They must also be able to propagate data dependencies up the
+view tree to a coordinator object. Data dependencies are any observable
+values passed into a view; the coordinator object signals updates when
+dependencies change, allowing the view to trigger an update in the
+underlying widget. Crucially, view instances must be reusable, so they
+must carefully associate any internal state they need with each rendered
+widget.
 
 At the edge of the library, most programmers interact only with the
 functional wrappers around view construction. These wrappers handle the

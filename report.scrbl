@@ -1,5 +1,7 @@
 #lang scribble/acmart @sigplan @review @;@anonymous
 
+@; vim: textwidth=72
+
 @(require scribble/core
           scribble/racket
           scriblib/figure
@@ -75,20 +77,21 @@ programming platform@~cite[b:racket].
                                         (update-count add1))]))
                      (send f show #t)]]
 
-@Figure-ref{oop-counter.rkt} demonstrates typical Racket GUI code: it creates a
-counter GUI, with buttons to increment and decrement a number displayed on the
-screen. First, we create a top-level window container, called a @racket[frame%].
-To lay out the controls horizontally, we create a @racket[horizontal-panel%] as
-a child of window @racket[f]. Now we define some state to represent the count.
-We'll also define a procedure to simultaneously update the count and its GUI
-display @racket[count-label]. Next, we create the buttons and label for the
-counter. Lastly, we call the @racket[show] method on a @racket[frame%] to
-display it to the user.
+@Figure-ref{oop-counter.rkt} demonstrates typical Racket GUI code: it
+creates a counter GUI, with buttons to increment and decrement a number
+displayed on the screen. First, we create a top-level window container,
+called a @racket[frame%]. To lay out the controls horizontally, we
+create a @racket[horizontal-panel%] as a child of window @racket[f]. Now
+we define some state to represent the count. We'll also define a
+procedure to simultaneously update the count and its GUI display
+@racket[count-label]. Next, we create the buttons and label for the
+counter. Lastly, we call the @racket[show] method on a @racket[frame%]
+to display it to the user.
 
-The code in @figure-ref{oop-counter.rkt} has several shortcomings: it tangles
-state with visual representation; the structure of widget construction does not
-match the structure of the widgets in the GUI; and, new abstractions must be
-created as imperative objects.
+The code in @figure-ref{oop-counter.rkt} has several shortcomings: it
+tangles state with visual representation; the structure of widget
+construction does not match the structure of the widgets in the GUI;
+and, new abstractions must be created as imperative objects.
 
 @; TODO: this should be figure (single-column), but it doesn't show up?
 @figure["easy-counter.rkt"
@@ -103,29 +106,30 @@ created as imperative objects.
                            (text (~> |@|count ~a))
                            (button "+" (λ () (<~ |@|count add1))))))]]
 
-GUI Easy is a functional reactive wrapper for Racket's GUI system based on
-immutable observable values and function composition that aims to solve problems
-with the imperative object-based APIs@~cite[b:gui-easy].
+GUI Easy is a functional reactive wrapper for Racket's GUI system based
+on immutable observable values and function composition that aims to
+solve problems with the imperative object-based APIs@~cite[b:gui-easy].
 
-With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the previous
-shortcomings. We define an observable @racket[|@|count] whose state is the
-number @racket[0]. Then we call @racket[render] to show the GUI described by the
-composition of functions like @racket[window], @racket[hpanel], @racket[button],
-and @racket[text]. The callbacks on the @racket[button] widgets update
-@racket[|@|count] by computing new values; these updates automatically propagate
-to the derived textual label in the GUI.
+With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the
+previous shortcomings. We define an observable @racket[|@|count] whose
+state is the number @racket[0]. Then we call @racket[render] to show the
+GUI described by the composition of functions like @racket[window],
+@racket[hpanel], @racket[button], and @racket[text]. The callbacks on
+the @racket[button] widgets update @racket[|@|count] by computing new
+values; these updates automatically propagate to the derived textual
+label in the GUI.
 
 In this report, we
 @itemlist[
     @item{
-        examine the difficulties of programming with object-oriented GUI systems
-        and motivate the search for a different system in
+        examine the difficulties of programming with object-oriented GUI
+        systems and motivate the search for a different system in
         @secref{A_Tale_of_Two_Programmers},
     }
     @item{describe GUI Easy in @secref{GUI_Easy_Overview},}
     @item{
-        report on our experience constructing large GUI programs, such as the
-        Frosthaven Manager@~cite[b:frosthaven-manager], in
+        report on our experience constructing large GUI programs, such
+        as the Frosthaven Manager@~cite[b:frosthaven-manager], in
         @secref{Architecting_Frosthaven}, and
     }
     @item{
@@ -137,9 +141,10 @@ In this report, we
 @section{A Tale of Two Programmers}
 @; or "… Two Programs" ?
 
-@; Origin stories in subsections for GUI Easy and Frosthaven, including why
-@; Frosthaven chose GUI Easy. Ben thinks the clearest style will be to write
-@; about ourselves in the 3rd person, so that the individual stories are clear?
+@; Origin stories in subsections for GUI Easy and Frosthaven, including
+@; why Frosthaven chose GUI Easy. Ben thinks the clearest style will be
+@; to write about ourselves in the 3rd person, so that the individual
+@; stories are clear?
 
 We will present the origin stories for two projects. First, in
 @secref{Quest_for_Easier_GUIs}, Bogdan describes the frustrations with
@@ -151,48 +156,47 @@ these two projects that taught us many architectural lessons.
 @subsection{Quest for Easier GUIs}
 
 Bogdan's dayjob involved writing many small GUI tools for internal use.
-For his purposes, the Racket GUI framework proved to be an excellent
-way to build those types of GUIs as it provides fast iteration times,
+For his purposes, the Racket GUI framework proved to be an excellent way
+to build those types of GUIs as it provides fast iteration times,
 portability across macOS, Linux and Windows, and the ability to
 distribute self-contained applications on the aforementioned platforms.
 
 Over time, however, the same set of small annoyances kept cropping up:
 Racket's class system is overly verbose; data management and wiring is
-bespoke to each project; and, Racket GUI's primary means of
-constructing view hierarchies is by passing in parent widgets to child
-widgets at construction time. The latter point makes composability
-especially frustrating since individual components must always be
-parameterized over a parent argument.
+bespoke to each project; and, Racket GUI's primary means of constructing
+view hierarchies is by passing in parent widgets to child widgets at
+construction time. The latter point makes composability especially
+frustrating since individual components must always be parameterized
+over a parent argument.
 
 @; fixme
 @; db library; lexi-lambda/racket-commonmark; http123
 The class system is rarely used in Racket outside the GUI toolkit, so
-it's a barrier to entry to a Racketeer intending to make a GUI.  As
-will hopefully become clear in reading the examples shown in this
-article, it is possible to express the same interfaces using a much
-lighter-weight textual representation.
+it's a barrier to entry to a Racketeer intending to make a GUI.  As will
+hopefully become clear in reading the examples shown in this article, it
+is possible to express the same interfaces using a much lighter-weight
+textual representation.
 
 Since Racket GUI offers no special support for managing application
 state and wiring said state to widgets, the user is forced to bring
-their own state management to the table, leading to ad-hoc
-solutions for every new project. See @figure-ref{oop-counter.rkt} for an
-example of ad-hoc data management. This was the motivation behind the
-observable abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll
-see how observables and observable-aware views combine to automatically
-connect GUI widgets and state changes.
+their own state management to the table, leading to ad-hoc solutions for
+every new project. See @figure-ref{oop-counter.rkt} for an example of
+ad-hoc data management. This was the motivation behind the observable
+abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how
+observables and observable-aware views combine to automatically connect
+GUI widgets and state changes.
 
-Forcing the user to pass in the parent of a widget at instantiation
-time means that components have to either be constructed in a very
-specific order, or all components must be wrapped in procedures that
-take a parent widget as argument.  Consider the following piece of
-Racket code:
+Forcing the user to pass in the parent of a widget at instantiation time
+means that components have to either be constructed in a very specific
+order, or all components must be wrapped in procedures that take a
+parent widget as argument.  Consider the following piece of Racket code:
 
 @; Question someone might reasonably ask: are the problems with Racket
 @; GUI caused by its API more than its imperative-ness? Is the state
 @; stuff a satisfying answer?
 
-@; consider joining new-message% line to parent line to keep in the same column
-@; if needed
+@; consider joining new-message% line to parent line to keep in the same
+@; column if needed
 @racketblock[
   (define f (new frame% [label "A window"]))
   (define msg
@@ -202,13 +206,13 @@ Racket code:
 ]
 
 It is impossible to create the message before the frame in this case,
-since the message needs a @racket[parent] in order to be constructed
-in the first place. This constrains the ways in which the user can
-organize their code. Of course, the user can always abstract over
-message creation, but that needlessly complicates the process of wiring
-up interfaces. This was the motivation behind the @racket[view<%>]
-abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see
-how views permit functional abstraction, enabling new organizational
+since the message needs a @racket[parent] in order to be constructed in
+the first place. This constrains the ways in which the user can organize
+their code. Of course, the user can always abstract over message
+creation, but that needlessly complicates the process of wiring up
+interfaces. This was the motivation behind the @racket[view<%>]
+abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how
+views permit functional abstraction, enabling new organizational
 approaches that we'll explore in @secref{Architecting_Frosthaven}.
 
 @; GUI Easy origin
@@ -220,48 +224,49 @@ approaches that we'll explore in @secref{Architecting_Frosthaven}.
 
 @subsection{Embarking for Frosthaven}
 
-Frosthaven is a cooperative tactical fantasy adventure board game for 2 to 4
-players and the sequel to Gloomhaven@~cite[b:frosthaven]. In both games, players
-play cards to determine turns during a scenario; separately, monsters take turns
-based on a deck of cards. Typical scenarios pit the player team against strange
-monsters and challenging obstacles in order to achieve victory. In Frosthaven,
-victory means more resources to rebuild the outpost of Frosthaven.
+Frosthaven is a cooperative tactical fantasy adventure board game for 2
+to 4 players and the sequel to Gloomhaven@~cite[b:frosthaven]. In both
+games, players play cards to determine turns during a scenario;
+separately, monsters take turns based on a deck of cards. Typical
+scenarios pit the player team against strange monsters and challenging
+obstacles in order to achieve victory. In Frosthaven, victory means more
+resources to rebuild the outpost of Frosthaven.
 
-Due to its highly complex nature, Frosthaven includes lots of tokens, cards, and
-other physical pieces that must be manipulated to play the game. This includes
-tracking monster's health and status, the level of power of six elements that
-power special abilities, and more.
+Due to its highly complex nature, Frosthaven includes lots of tokens,
+cards, and other physical pieces that must be manipulated to play the
+game. This includes tracking monster's health and status, the level of
+power of six elements that power special abilities, and more.
 
-The original Gloomhaven game had a helper application for mobile devices to
-manage the complexity; at one point, it appeared Frosthaven would not receive
-the same treatment.
+The original Gloomhaven game had a helper application for mobile devices
+to manage the complexity; at one point, it appeared Frosthaven would not
+receive the same treatment.
 
-Ben, a programmer, decided to solve the problem for his personal gaming group by
-creating his own helper application. But how? Having never created a complex GUI
-program---and knowing this would be a complex GUI---Ben was intimidated by
-classic object-oriented GUI systems like Racket's. To a programmer with intimate
-knowledge of the class, method, and event relationships, such a system probably
-feels natural. To the novice, GUI Easy presents a simple interface to get
-started quickly.
+Ben, a programmer, decided to solve the problem for his personal gaming
+group by creating his own helper application. But how? Having never
+created a complex GUI program---and knowing this would be a complex
+GUI---Ben was intimidated by classic object-oriented GUI systems like
+Racket's. To a programmer with intimate knowledge of the class, method,
+and event relationships, such a system probably feels natural. To the
+novice, GUI Easy presents a simple interface to get started quickly.
 
-GUI Easy made it possible to begin building a complex system out of simple
-parts: functions and data. Ben was familiar with functional programming and was
-able to grok GUI Easy. Ben began constructing the Frosthaven
-Manager@~cite[b:frosthaven-manager] in 2022 using GUI Easy.
+GUI Easy made it possible to begin building a complex system out of
+simple parts: functions and data. Ben was familiar with functional
+programming and was able to grok GUI Easy. Ben began constructing the
+Frosthaven Manager@~cite[b:frosthaven-manager] in 2022 using GUI Easy.
 
 @section{GUI Easy Overview}
 
 GUI easy can be broadly split up into two parts: the observable
 abstraction and views.
 
-Observables are box-like@note{Boxes are mutable cells; typically they hold
-immutable data to permit constrained mutation.} values with the additional
-property that arbitrary procedures can subscribe to changes in their values.
-@Figure-ref{observables.rkt} shows a usage example of the basic observable API
-in GUI Easy. Observables are constructed with @racket[obs] or the shorthand
-@racket[|@|]. The @racket[define/obs] syntactic form creates and binds an
-observable to a name. @Secref{Observable_Values} explains the common observable
-operators.
+Observables are box-like@note{Boxes are mutable cells; typically they
+hold immutable data to permit constrained mutation.} values with the
+additional property that arbitrary procedures can subscribe to changes
+in their values. @Figure-ref{observables.rkt} shows a usage example of
+the basic observable API in GUI Easy. Observables are constructed with
+@racket[obs] or the shorthand @racket[|@|]. The @racket[define/obs]
+syntactic form creates and binds an observable to a name.
+@Secref{Observable_Values} explains the common observable operators.
 
 @figure["observables.rkt"
         "Use of the basic observable API in GUI Easy."
@@ -276,9 +281,9 @@ operators.
                      (code:comment "observer a saw 2")
                      (code:comment "observer b saw 2")]]
 
-Views in GUI Easy are representations of Racket GUI widgets that,
-when rendered, produce instances of Racket GUI widgets and handle the
-details of transparently wiring the views together. They are typically
+Views in GUI Easy are representations of Racket GUI widgets that, when
+rendered, produce instances of Racket GUI widgets and handle the details
+of transparently wiring the views together. They are typically
 observable-aware in ways that make sense for each individual widget. For
 example, the @racket[text] view takes as input an observable of a string
 and the rendered widget's label updates with changes to that observable.
@@ -309,8 +314,8 @@ abstraction in more detail in @Secref{view_detail}.
 
 @subsection{Observable Values}
 
-The core of the observable abstraction is that arbitrary listeners
-can react to changes in the contents of an observable. Application
+The core of the observable abstraction is that arbitrary listeners can
+react to changes in the contents of an observable. Application
 developers programming with GUI Easy use a few core operators to
 construct and manipulate observables.
 
@@ -381,8 +386,8 @@ If the use of class and objects is surprising, it is also sensible:
 wrapping class-based GUI widgets into the view abstraction is often
 straightforward. At the core, in a twist on the classic ``Functional
 Core, Imperative Shell'' paradigm@~cite[b:functional-core], lies an
-imperative object lifecycle. Views must know how to @italic{create}
-GUI widgets, how to @italic{update} them in response to changed data
+imperative object lifecycle. Views must know how to @italic{create} GUI
+widgets, how to @italic{update} them in response to changed data
 dependencies, and how to @italic{destroy} them if necessary. They must
 also be able to propagate data dependencies up the view tree to a
 coordinator object. Data dependencies are any observable values passed
@@ -392,17 +397,17 @@ Crucially, view instances must be reusable, so they must carefully
 associate any internal state they need with each rendered widget.
 
 At the edge of the library, most programmers interact only with the
-functional wrappers around view construction. These wrappers handle
-the construction of @racket[view<%>] instances and delegate their
-observable and non-observable arguments to specific view objects'
-constructor arguments. Thus the shell is functional.
+functional wrappers around view construction. These wrappers handle the
+construction of @racket[view<%>] instances and delegate their observable
+and non-observable arguments to specific view objects' constructor
+arguments. Thus the shell is functional.
 
-Sometimes the abstraction is too rigid. For flexibility, it is possible to
-program against the underlying GUI widgets when the functional abstraction
-exposes a @italic{mixin}@note{Mixins permit ad-hoc class specialization without
-modifying the source of the class body@~cite[b:mixins b:super+inner].}
-parameter; this mixin is composed with the underlying GUI widget thanks to
-Racket's first-class classes.
+Sometimes the abstraction is too rigid. For flexibility, it is possible
+to program against the underlying GUI widgets when the functional
+abstraction exposes a @italic{mixin}@note{Mixins permit ad-hoc class
+specialization without modifying the source of the class
+body@~cite[b:mixins b:super+inner].} parameter; this mixin is composed
+with the underlying GUI widget thanks to Racket's first-class classes.
 
 Most Racket GUI widgets are wrapped by GUI Easy, making it easy to get
 started. Programmers can implement the view abstraction themselves in
@@ -416,14 +421,16 @@ packages in the Racket ecosystem, into a GUI Easy-based project.
 @; components/view organization …?). Also mention tradeoffs, problems
 @; encountered, etc.
 
-At time of writing, the Frosthaven Manager includes approximately 5000 lines of
-Racket code. About half of that code composes GUI Easy views with application
-code to form the main application. Of the remaining lines, approximately 1000
-implement the data structures and transformations responsible for the state of
-the game; 500 cover the images it draws; 750 implement three plugin languages;
-300 test the project; the remaining lines are small syntactic utilities. The
-Frosthaven Manager also has approximately 3000 lines of Scribble code, a Racket
-documentation language, including a how-to-play guide and developer reference.
+At time of writing, the Frosthaven Manager includes approximately 5000
+lines of Racket code. About half of that code composes GUI Easy views
+with application code to form the main application. Of the remaining
+lines, approximately 1000 implement the data structures and
+transformations responsible for the state of the game; 500 cover the
+images it draws; 750 implement three plugin languages; 300 test the
+project; the remaining lines are small syntactic utilities. The
+Frosthaven Manager also has approximately 3000 lines of Scribble code, a
+Racket documentation language, including a how-to-play guide and
+developer reference.
 
 @subsection{Functional Core: There and Back Again}
 @; etc.
@@ -448,9 +455,10 @@ of inspiration include Clojure's Reagent and JavaScript's React.
 
 @; Summarize problem, works, architectural principles for large functional GUIs
 
-@acks{We thank the anonymous reviewers for their suggestions. Ben is grateful to
-Savannah Knoble, Derrick Franklin, John Hines, and Jake Hicks for playtesting
-the Frosthaven Manager throughout development, and to Isaac Childres for
-bringing us the wonderful world of Gloomhaven and Frosthaven.}
+@acks{We thank the anonymous reviewers for their suggestions. Ben is
+grateful to Savannah Knoble, Derrick Franklin, John Hines, and Jake
+Hicks for playtesting the Frosthaven Manager throughout development, and
+to Isaac Childres for bringing us the wonderful world of Gloomhaven and
+Frosthaven.}
 
 @(generate-bibliography #:sec-title "References")

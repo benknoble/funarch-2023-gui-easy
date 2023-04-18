@@ -339,9 +339,13 @@ may not be updated.
 @;about aliases, though right now I'm leaning towards talking about
 @;them.
 
-@;Observables can be @italic{peeked} with @racket[obs-peek];
-@;this unwraps the inner value for use with normal Racket computation,
-@;dual to the observable constructor @racket[obs].
+Observables can be @italic{peeked} with @racket[obs-peek];
+this unwraps the inner value for use with normal Racket computation,
+dual to the observable constructor @racket[obs]. Dialogs and other
+side-effectful computations that do not fit into @racket[obs-update!] or
+@racket[obs-map] paradigms often use @racket[obs-peek] to operate on
+concrete data, effectively collapsing the observable to a single point
+in time.
 
 @; Observables can be
 @; @italic{updated}: the new value is computed by applying a procedure to

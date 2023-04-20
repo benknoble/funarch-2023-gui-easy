@@ -424,6 +424,11 @@ packages in the Racket ecosystem, into a GUI Easy-based project.
 
 @section{Architecting Frosthaven}
 
+This section will describe various pieces of a large GUI Easy
+application, the Frosthaven Manager, and derive principles from our
+experience in constructing such applications using GUI Easy and similar
+frameworks.
+
 @; Describe the architecture of Frosthaven as it pertains to GUI Easy; derive
 @; principles (core/shell, DDAU, centralized v. local state, re-usable
 @; components/view organization …?). Also mention tradeoffs, problems
@@ -441,11 +446,196 @@ Racket documentation language, including a how-to-play guide and
 developer reference.
 
 @subsection{Functional Core: There and Back Again}
-@; etc.
 
-@subsection{GUI Organization and Reuse}
+@; Does this section do enough to describe the situation and actually
+@; derive useful information from it? I feel like it's heavier on
+@; description than analysis.
+
+The Frosthaven Manager manipulates many kinds of data. This includes
+game characters and their various attributes, monsters and their
+attributes, randomized loot, the status of elemental effects, and more.
+
+The functional programmer naturally represents data via immutable data
+structures such as records, enumerations, and collections. This
+programmer also writes pure functions that transform immutable data into
+different representations or representations with different values.
+Programming a GUI with GUI Easy does not require the functional
+programmer to give up this technique to the same degree that
+object-oriented GUI systems do.
+
+In constructing the Frosthaven Manager, Ben organized the main data into
+functional records, enumerations, and collections alongside data that
+transforms them according to the rules of the game. Thus we say that the
+Frosthaven Manager uses a ``functional core,'' a common functional
+architecture@~cite[b:functional-core].
+
+The choice of a functional core has many well-known benefits. For
+example, this code is independent of the choice of GUI presentation and
+is also independently testable or useable for other applications. It is
+also independently auditable for correctness according to the game's
+rules, which is important for the GUI to be useful.
+
+Layered atop the functional core we find two more major components in
+the Frosthaven Manager: GUI-related data and views. In many ways, Ben
+took the functional approach here, too. GUI-related data is organized
+along typical idioms and paired with transformation functions. Views are
+functions that receive only the observable data they need and call input
+procedures rather than triggering side-effects themselves.
+@Secref{Reusable_GUIs} will cover that design in more detail. Since most
+of the relevant data is observable or intended to be observable,
+however, the resulting system feels far more imperative. Pure
+transformations are useful for reasoning. These same transformations are
+paired with observable updates---aka, mutations---for real effect on the
+state of the GUI. As a result, though many important and reusable views
+seem pure, they are easily composed into a highly imperative system.
+This ``imperative shell'' pairs well with typical functional programming
+architectures, like the previous functional
+core@~cite[b:functional-core].
+
+@subsection{Reusable GUIs}
+
+The Frosthaven Manager's main GUI is composed of many smaller views. By
+analogy with functional programming's building blocks (the function),
+small reusable views permit construction large systems by composition.
+Since a view is a function, this kind of composition is naturally suited
+to functional programming architectures.
+
+Reusable views are, in essence, small reusable GUIs. Given the necessary
+state, we can turn a reusable view into a GUI by nesting the view in a
+@racket[window] and calling @racket[render]. Thus, small reusable views
+are amenable to independent testing. The Frosthaven Manager GUI modules
+each contain several related views, or sometimes only a single view.
+They are each also executable scripts that launch a small GUI for the
+module's views: this permits testing the module's views independently of
+the larger context. If the views are integrated correctly, the larger
+GUI needs less exercise to be completely tested.
+
+Reusable views can be general-purpose, like the @racket[counter] view in
+@figure-ref{easy-counter-reuse.rkt} or the Frosthaven Manager's
+@racket[markdown-view]. They can also be domain-specific, like views in
+the Frosthaven Manager for displaying and manipulating magical elements
+or monster groups. Both can be reused and tested as described
+previously; general-purpose views might be considered for extraction to
+a separate library, much like generic data-structure functions.
+
+There is one major design factor of reusable views. @emph{Views should
+not directly manipulate external state.} This is analogous to the rule
+for pure functions, and all the same arguments apply to show that
+manipulating external state makes a view less reusable. Following this
+design principle leads naturally to the principle ``data down, actions
+up,'' or @emph{DDAU}. It also guides us to make decisions about which
+state to centralize at the highest levels of the GUI and which state to
+localize in reusable views.
+
+Let's look at DDAU from two points of view: caller and callee. As a
+running example, we'll use the Frosthaven Manager's ``Loot'' button,
+whose responsibility is to allow the user assign randomly drawn loot to
+a player. An example call is shown in @figure-ref{loot-call.rkt}.
+
+@; Be careful with automatic formatting here; the layout is
+@; non-traditional for size…
+@figure["loot-call.rkt"
+        (list "Extract of and example call to " @racket[loot-button] ".")
+        @racketblock[(define (loot-button |@|loot-deck |@|players
+                                          #:on-player on-player)
+                       (button ... (on-player p) ...))
+                     ...
+                     (loot-button |@|loot-deck |@|players
+                       #:on-player
+                       (λ (p) (give-player-loot |@|players p)))]]
+
+First, we'll take the perspective of the callers of reusable views. It
+is natural to think of the callees as sub-views and thus ``under'' the
+caller. So ``data down'' means that the caller passes observable data
+down to the sub-view. For the Loot button, the caller must pass
+observables representing the pool of loot to choose from and the players
+to which the loot might be assigned. This is all the information the
+button needs to display. Similarly, ``actions up'' means that the
+sub-view will pass actions back up to the caller. This means that
+callers get to specify how to react to events or actions taken by
+interacting with the view. In the case of the Loot button, callers may
+specify how to react when loot is assigned: they are passed back an
+action representing the player to which loot should be assigned. It is
+the caller's responsibility to correctly assign the loot item to the
+chosen player and trigger updates to the relevant observables.
+
+Next, we'll take the perspective of the callee, that is, of the reusable
+view itself. We know from the caller's perspective that the reusable
+view receives observable data as input, analogously to pure functions
+requiring all data to be input. This would be the Loot button's
+observable inputs of the loot pool and players. Similarly, instead of
+triggering side-effects on state directly, reusable views pass actions
+back up to the caller. This means that instead of calling
+@racket[obs-update!] on an input, the view notifies the caller via
+callback of a particular action and allows the caller to decide if or
+how to update any state. The Loot button calls an input procedure with
+local data, such as the ID of the chosen player, to inform its caller of
+the loot being assigned.
+
+In practice, DDAU means that reusable views have two groups of formal
+function parameters. The first is a series of observables that the view
+needs to display itself. The second is a series of callbacks for
+different kinds of actions that might be taken. Sometimes, only a single
+callback is needed for many kinds of events; other times, it is helpful
+to distinguish different events with different callbacks.
+
+DDAU naturally bubbles application state up the view hierarchy, so that
+the top-level of an application contains all of the necessary state. It
+passes the state down to various sub-views and provides procedures to
+respond to their events and actions. This flow of state downward
+continues until we reach the very bottom-most layer of abstraction.
+
+Reusable views often compose other views, just as pure functions often
+compose other pure functions. So it is natural for a caller to also be a
+callee and vice versa. As a consequence, a view sometimes needs to
+transform input observables for use as inputs to sub-views. Derived
+observables and @racket[obs-map] are particularly helpful in this
+situation. Sometimes, however, we need state in a view that is neither
+its caller's nor its callee's responsibility. In this case, a reusable
+view maintains local observable state which it is free to mutate, say,
+in response to an action callback from one of its sub-views. This is in
+keeping with the tradition of optimizing functional programs by allowing
+interior---but invisible---mutability.
 
 @subsection{Challenges}
+
+Naturally constructing such a complex GUI is not without its challenges.
+What do you do when you need access to the underlying object-oriented
+API for a feature not exposed by existing wrappers? How do you handle a
+piece of nearly-global state whose usage is hard to predict when writing
+reusable components? Fortunately, both of these problems have solutions.
+
+The first problem of access to imperative behaviors is solved by GUI
+Easy conventions and APIs.  In the traditional object-based API, we
+would subclass widgets as needed to create new behaviors. Without access
+to the classes, we cannot provide such custom behavior. Thus GUI Easy
+wrappers support a mixin argument, as discussed in @secref{view_detail}.
+This provides a special kind of access to the class implementing the
+underlying widget so that we may override or augment methods of the
+class as we choose, akin to dynamically subclassing GUI widgets. When
+mixins are insufficient, we may choose to write our own @racket[view<%>]
+implementation, which can wrap any GUI widget we desire. This includes
+core classes, custom subclasses, and third-party widgets. The Frosthaven
+Manager makes use of this functionality to implement custom closing
+behavior for certain widgets and to wrap editor widgets to display
+rendered Markdown@note{https://daringfireball.net/projects/markdown/}
+files.
+
+The second problem of global state is handled by functional programming
+techniques. Essentially, we have two choices: threading state or dynamic
+binding. If we are confident that the state will be required in all
+reusable views, we can thread the state as input to every single view.
+This quickly becomes tedious and, when we are not so confident, tangles
+unnecessary concerns. Dynamic binding breaks some functional purity for
+convenience, allowing us to refer to external state. Using dynamic
+binding does make views less reusable: they now have dependencies not
+defined by their inputs. Dynamic binding does permit each view to only
+be concerned with the global state if it absolutely needs to be. The
+Frosthaven Manager threads state as much as possible according to DDAU
+but does use dynamic binding to retain a reference to the top widget of
+the main GUI hierarchy. This reference is needed to calculate the
+correct relative coordinates for mouse clicks and popup menus, among
+other uses.
 
 @section[#:tag "related_work"]{Related Work: Are We GUI Yet?}
 
@@ -455,13 +645,32 @@ GUI Easy draws a lot of inspiration from Swift UI, another system that
 wraps an imperative GUI framework in a functional shell. Other sources
 of inspiration include Clojure's Reagent and JavaScript's React.
 
-@; We've highlighted related work as we went, but now: draw more explicit
-@; connections to other work. frtime, Rust FP/FRP GUI projects, Web stacks like
-@; React, Vue, Elm, Ember, Redux, re-frame. Citations needed :)
+@; We've highlighted related work as we went, but now: draw more
+@; explicit connections to other work. frtime, Rust FP/FRP GUI projects,
+@; Web stacks like React, Vue, Elm, Ember, Redux, re-frame. Citations
+@; needed :)
 
 @section{Conclusion}
 
-@; Summarize problem, works, architectural principles for large functional GUIs
+@; Summarize problem, works, architectural principles for large
+@; functional GUIs
+
+We have reported on the difficulties of programming stateful GUIs with
+imperative, object-based APIs. We also described a functional wrapper
+called GUI Easy that was inspired by functional reactive programming for
+various UI systems. GUI Easy has successfully been used for small and
+large GUI projects, such as the Frosthaven Manager discussed in this
+report. We derived several architectural principles from the
+construction of both projects: functional wrappers over imperative APIs
+enable programming via functional core, even when peeling back layers of
+abstraction reveals an imperative core. This also allows organizing
+views as independent reusable components. Reusable views, much like pure
+functions, should not mutate external state. Like in functional
+programs, smaller and reusable views are more easily tested. The
+functional approach is not without its challenges, particularly when
+abstracting over imperative concerns; escape hatches that pierce the
+veil of abstraction are necessary. With careful control, such piercings
+can be themselves wrapped in abstractions to manage complexity.
 
 @acks{We thank the anonymous reviewers for their suggestions. Ben is
 grateful to Savannah Knoble, Derrick Franklin, John Hines, and Jake

@@ -571,11 +571,11 @@ back up to the caller. This means that instead of calling
 callback of a particular action and allows the caller to decide if or
 how to update any state. The Loot button calls an input procedure with
 local data, such as the ID of the chosen player, to inform its caller of
-the loot being assigned.
-
-@; Should we remind the reader that it would actually be unsafe for a
-@; custom view to try to mutate its observable args b/c those args could
-@; be derived?
+the loot being assigned. It would be unsafe in the general case to
+mutate observable inputs, as they could be derived observables.
+Requiring informally that observable inputs not be derived for a
+particular view creates a trap for programmers that want to reuse the
+view in novel contexts and violates the principles of reusable views.
 
 In practice, DDAU means that reusable views have two groups of formal
 function parameters. The first is a series of observables that the view

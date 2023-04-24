@@ -262,7 +262,7 @@ abstraction and views.
 Observables are box-like@note{Boxes are mutable cells; typically they
 hold immutable data to permit constrained mutation.} values with the
 additional property that arbitrary procedures can subscribe to changes
-in their values. @Figure-ref{observables.rkt} shows a usage example of
+in their contents. @Figure-ref{observables.rkt} shows a usage example of
 the basic observable API in GUI Easy. Observables are constructed with
 @racket[obs] or the shorthand @racket[|@|]. The @racket[define/obs]
 syntactic form creates and binds an observable to a name.
@@ -281,9 +281,9 @@ syntactic form creates and binds an observable to a name.
                      (code:comment "observer a saw 2")
                      (code:comment "observer b saw 2")]]
 
-Views in GUI Easy are representations of Racket GUI widgets that, when
-rendered, produce instances of Racket GUI widgets and handle the details
-of transparently wiring the views together. They are typically
+Views in GUI Easy are representations of Racket GUI widgets that,
+when rendered, produce instances of Racket GUI widgets and handle the
+details of transparently wiring view trees together. They are typically
 observable-aware in ways that make sense for each individual widget. For
 example, the @racket[text] view takes as input an observable of a string
 and the rendered widget's label updates with changes to that observable.
@@ -417,10 +417,11 @@ specialization without modifying the source of the class
 body@~cite[b:mixins b:super+inner].} parameter; this mixin is composed
 with the underlying GUI widget thanks to Racket's first-class classes.
 
-Most Racket GUI widgets are wrapped by GUI Easy, making it easy to get
-started. Programmers can implement the view abstraction themselves in
-order to integrate arbitrary GUI widgets, such as those from 3rd-party
-packages in the Racket ecosystem, into a GUI Easy-based project.
+Most Racket GUI widgets are already wrapped by GUI Easy, making it
+easy to get started. Programmers can implement the view abstraction
+themselves in order to integrate arbitrary GUI widgets, such as those
+from 3rd-party packages in the Racket ecosystem, into a GUI Easy-based
+project.
 
 @section{Architecting Frosthaven}
 
@@ -572,6 +573,10 @@ how to update any state. The Loot button calls an input procedure with
 local data, such as the ID of the chosen player, to inform its caller of
 the loot being assigned.
 
+@; Should we remind the reader that it would actually be unsafe for a
+@; custom view to try to mutate its observable args b/c those args could
+@; be derived?
+
 In practice, DDAU means that reusable views have two groups of formal
 function parameters. The first is a series of observables that the view
 needs to display itself. The second is a series of callbacks for
@@ -599,16 +604,16 @@ interior---but invisible---mutability.
 
 @subsection{Challenges}
 
-Naturally constructing such a complex GUI is not without its challenges.
+Naturally, constructing such a complex GUI is not without its challenges.
 What do you do when you need access to the underlying object-oriented
 API for a feature not exposed by existing wrappers? How do you handle a
 piece of nearly-global state whose usage is hard to predict when writing
 reusable components? Fortunately, both of these problems have solutions.
 
 The first problem of access to imperative behaviors is solved by GUI
-Easy conventions and APIs.  In the traditional object-based API, we
-would subclass widgets as needed to create new behaviors. Without access
-to the classes, we cannot provide such custom behavior. Thus GUI Easy
+Easy conventions and APIs. In the traditional object-based API, we would
+subclass widgets as needed to create new behaviors. Without access to
+the classes, we cannot provide such custom behavior. Thus, many GUI Easy
 wrappers support a mixin argument, as discussed in @secref{view_detail}.
 This provides a special kind of access to the class implementing the
 underlying widget so that we may override or augment methods of the

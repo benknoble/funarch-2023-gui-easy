@@ -51,11 +51,10 @@ for building GUI programs.}
 
 Object-oriented programming is traditionally considered a good paradigm
 for building graphical (GUI) programs@~cite[b:super+inner]. Racket's GUI
-toolkit is based on object-oriented message-passing widgets and mutable
-state@~cite[b:racket-gui]. Racket's GUI toolkit is built atop the Racket
-programming platform@~cite[b:racket].
+toolkit is object-oriented, using message-passing widgets and mutable
+state@~cite[b:racket-gui], and is built atop the Racket programming
+platform@~cite[b:racket].
 
-@; TODO: make this two-column with the code split
 @figure["oop-counter.rkt"
         "A counter GUI using Racket GUI's object-oriented widgets."
         @racketblock[(require racket/gui)
@@ -98,7 +97,6 @@ tangles state with visual representation; the structure of widget
 construction does not match the structure of the widgets in the GUI;
 and, new abstractions must be created as imperative objects.
 
-@; TODO: this should be figure (single-column), but it doesn't show up?
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."
         @racketblock[(require racket/gui/easy racket/gui/easy/operator)

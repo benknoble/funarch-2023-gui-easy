@@ -644,16 +644,36 @@ other uses.
 
 @section[#:tag "related_work"]{Related Work: Are We GUI Yet?}
 
-@; I don't think citations are appropriate here.  Probably footnotes
-@; or regular links should be used instead?
-GUI Easy draws a lot of inspiration from Swift UI, another system that
-wraps an imperative GUI framework in a functional shell. Other sources
-of inspiration include Clojure's Reagent and JavaScript's React.
+@(define (url-note dest)
+   @note[@url[dest]])
 
-@; We've highlighted related work as we went, but now: draw more
-@; explicit connections to other work. frtime, Rust FP/FRP GUI projects,
-@; Web stacks like React, Vue, Elm, Ember, Redux, re-frame. Citations
-@; needed :)
+GUI Easy draws a lot of inspiration from Swift
+UI@url-note{https://developer.apple.com/xcode/swiftui/}, another system
+that wraps an imperative GUI framework in a functional shell. Other
+sources of inspiration include Clojure's
+Reagent@url-note{https://github.com/reagent-project/reagent} and
+JavaScript's React@url-note{https://react.dev}. In Racket,
+FrTime@~cite[b:frtime-in-plt-scheme b:frtime-dataflow b:frtime-thesis]
+implements a functional reactive programming language for GUIs and other
+tasks. FrTime is in the spirit of the original functional reactive
+paradigm, while Vue@url-note{https://vuejs.org}, React, and inspired
+libraries, including GUI Easy, have evolved slightly different notions
+of reactive programming. The Elm@url-note{https://elm-lang.org}
+programming language uses a model-view-update pattern for building
+interactive websites that is similar to GUI Easy's but uses a central
+update messaging system. Clojure's
+re-frame@url-note{https://github.com/day8/re-frame} library builds on
+Reagent to create a ClojureScript library for reactive user interfaces.
+Rust's infamous ``Are We GUI
+Yet?''@url-note{https://www.areweguiyet.com} website mentions at least
+four GUI libraries for functional reactive programming in the style of
+React or FRP.
+
+While we must be careful not to confuse popularity with usefulness, our
+satisfaction programming in the style suggested by GUI Easy and the use
+of similar patterns across a variety of programming languages and
+ecosystems suggests that, for the functional programmer, reactive GUI
+systems are architecturally well-suited to small and large programs.
 
 @section{Conclusion}
 

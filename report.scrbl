@@ -36,8 +36,13 @@
                        #:state "Cluj"
                        #:country "Romania")]
 
-@; needed?
-@abstract{TODO}
+@abstract{Some object-oriented GUI toolkits tangle state management with
+rendering. Functional reactive toolkits like GUI Easy simplify and
+promote the creation of reusable views by analogy to functional
+programming. We have successfully GUI Easy used on small and large GUI
+projects. We report on our experience constructing and using GUI Easy
+and derive from that experience architectural patterns and principles
+for building GUI programs.}
 
 @; TODO @terms{} @keywords{}
 

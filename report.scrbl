@@ -671,11 +671,13 @@ FrTime is in the spirit of the original functional reactive paradigm,
 while Vue@vue, React, and inspired libraries, including GUI Easy,
 have evolved slightly different notions of reactive programming. The
 Elm@|elm| programming language strictly constrains component composition
-to the data down, actions up style. Clojure's re-frame@re-frame library
-builds on Reagent to create a ClojureScript library for reactive user
-interfaces. Rust's infamous ``Are We GUI Yet?''@areweguiyet website
-mentions at least four GUI libraries for functional reactive programming
-in the style of React or FRP.
+to the data down, actions up style. Clojure's re-frame@re-frame
+library builds on Reagent@reagent to add more sophisticated state
+management, with a global store and effect handler (like observable
+update procedures) registry and queries (like derived observables).
+Rust's infamous ``Are We GUI Yet?''@areweguiyet website mentions at
+least four GUI libraries for functional reactive programming in the
+style of React or FRP.
 
 While we must be careful not to confuse popularity with usefulness, our
 satisfaction programming in the style suggested by GUI Easy and the use

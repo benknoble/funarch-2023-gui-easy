@@ -39,7 +39,7 @@
 @abstract{Some object-oriented GUI toolkits tangle state management with
 rendering. Functional reactive toolkits like GUI Easy simplify and
 promote the creation of reusable views by analogy to functional
-programming. We have successfully GUI Easy used on small and large GUI
+programming. We have successfully used GUI Easy on small and large GUI
 projects. We report on our experience constructing and using GUI Easy
 and derive from that experience architectural patterns and principles
 for building GUI programs.}
@@ -82,15 +82,14 @@ platform@~cite[b:racket].
                      (send f show #t)]]
 
 @Figure-ref{oop-counter.rkt} demonstrates typical Racket GUI code: it
-creates a counter GUI, with buttons to increment and decrement a number
+creates a counter, with buttons to increment and decrement a number
 displayed on the screen. First, we create a top-level window container,
 called a @racket[frame%]. To lay out the controls horizontally, we
-create a @racket[horizontal-panel%] as a child of window @racket[f]. Now
-we define some state to represent the count. We'll also define a
-procedure to simultaneously update the count and its GUI display
-@racket[count-label]. Next, we create the buttons and label for the
-counter. Lastly, we call the @racket[show] method on a @racket[frame%]
-to display it to the user.
+create a @racket[horizontal-panel%] as a child of window @racket[f].
+We define some state to represent the count and a procedure to
+simultaneously update the count and its associated label. Next, we
+create the buttons and label for the counter. Lastly, we call the
+@racket[show] method on a @racket[frame%] to display it to the user.
 
 The code in @figure-ref{oop-counter.rkt} has several shortcomings: it
 tangles state with visual representation; the structure of widget
@@ -165,7 +164,7 @@ portability across macOS, Linux and Windows, and the ability to
 distribute self-contained applications on the aforementioned platforms.
 
 Over time, however, the same set of small annoyances kept cropping up:
-Racket's class system is overly verbose; data management and wiring is
+Racket's class system is overly verbose; state management and wiring is
 bespoke to each project; and, Racket GUI's primary means of constructing
 view hierarchies is by passing in parent widgets to child widgets at
 construction time. The latter point makes composability especially
@@ -184,7 +183,7 @@ Since Racket GUI offers no special support for managing application
 state and wiring said state to widgets, the user is forced to bring
 their own state management to the table, leading to ad-hoc solutions for
 every new project. See @figure-ref{oop-counter.rkt} for an example of
-ad-hoc data management. This was the motivation behind the observable
+ad-hoc state management. This was the motivation behind the observable
 abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how
 observables and observable-aware views combine to automatically connect
 GUI widgets and state changes.
@@ -262,14 +261,15 @@ Frosthaven Manager@~cite[b:frosthaven-manager] in 2022 using GUI Easy.
 GUI easy can be broadly split up into two parts: the observable
 abstraction and views.
 
-Observables are box-like@note{Boxes are mutable cells; typically they
-hold immutable data to permit constrained mutation.} values with the
-additional property that arbitrary procedures can subscribe to changes
-in their contents. @Figure-ref{observables.rkt} shows a usage example of
-the basic observable API in GUI Easy. Observables are constructed with
-@racket[obs] or the shorthand @racket[|@|]. The @racket[define/obs]
-syntactic form creates and binds an observable to a name.
-@Secref{Observable_Values} explains the common observable operators.
+Observables are box-like@note{Boxes are mutable cells; typically
+they hold immutable data to permit constrained mutation.} values
+with the added property that arbitrary procedures can subscribe to
+changes in their contents. @Figure-ref{observables.rkt} shows a usage
+example of the basic observable API in GUI Easy. Observables are
+constructed with @racket[obs] or the shorthand @racket[|@|]. The
+@racket[define/obs] syntactic form creates and binds an observable
+to a name. @Secref{Observable_Values} explains the common observable
+operators.
 
 @figure["observables.rkt"
         "Use of the basic observable API in GUI Easy."
@@ -649,28 +649,35 @@ other uses.
 
 @(define (url-note dest)
    @note[@url[dest]])
+@(define-syntax-rule (define-notes [id url] ...)
+   (begin (define id (url-note url)) ...))
+@(define-notes
+   [swift-ui "https://developer.apple.com/xcode/swiftui/"]
+   [reagent "https://github.com/reagent-project/reagent"]
+   [react "https://react.dev"]
+   [vue "https://vuejs.org"]
+   [elm "https://elm-lang.org"]
+   [re-frame "https://github.com/day8/re-frame"]
+   [areweguiyet "https://www.areweguiyet.com"])
+@(define frtime
+   @~cite[b:frtime-in-plt-scheme b:frtime-dataflow b:frtime-thesis])
 
-GUI Easy draws a lot of inspiration from Swift
-UI@url-note{https://developer.apple.com/xcode/swiftui/}, another system
-that wraps an imperative GUI framework in a functional shell. Other
-sources of inspiration include Clojure's
-Reagent@url-note{https://github.com/reagent-project/reagent} and
-JavaScript's React@url-note{https://react.dev}. In Racket,
-FrTime@~cite[b:frtime-in-plt-scheme b:frtime-dataflow b:frtime-thesis]
-implements a functional reactive programming language for GUIs and other
-tasks. FrTime is in the spirit of the original functional reactive
-paradigm, while Vue@url-note{https://vuejs.org}, React, and inspired
-libraries, including GUI Easy, have evolved slightly different notions
-of reactive programming. The Elm@url-note{https://elm-lang.org}
-programming language uses a model-view-update pattern for building
-interactive websites that is similar to GUI Easy's but uses a central
-update messaging system. Clojure's
-re-frame@url-note{https://github.com/day8/re-frame} library builds on
-Reagent to create a ClojureScript library for reactive user interfaces.
-Rust's infamous ``Are We GUI
-Yet?''@url-note{https://www.areweguiyet.com} website mentions at least
-four GUI libraries for functional reactive programming in the style of
-React or FRP.
+GUI Easy draws a lot of inspiration from Swift UI@|swift-ui|, another
+system that wraps an imperative GUI framework in a functional shell.
+Other sources of inspiration include Clojure's Reagent@reagent and
+JavaScript's React@|react|. In Racket, FrTime@frtime implements a
+functional reactive programming language for GUIs and other tasks.
+FrTime is in the spirit of the original functional reactive paradigm,
+while Vue@vue, React, and inspired libraries, including GUI Easy,
+have evolved slightly different notions of reactive programming. The
+Elm@|elm| programming language strictly constrains component composition
+to the data down, actions up style. Clojure's re-frame@re-frame
+library builds on Reagent@reagent to add more sophisticated state
+management, with a global store and effect handler (like observable
+update procedures) registry and queries (like derived observables).
+Rust's infamous ``Are We GUI Yet?''@areweguiyet website mentions at
+least four GUI libraries for functional reactive programming in the
+style of React or FRP.
 
 While we must be careful not to confuse popularity with usefulness, our
 satisfaction programming in the style suggested by GUI Easy and the use
@@ -690,7 +697,7 @@ various UI systems. GUI Easy has successfully been used for small and
 large GUI projects, such as the Frosthaven Manager discussed in this
 report. We derived several architectural principles from the
 construction of both projects: functional wrappers over imperative APIs
-enable programming via functional core, even when peeling back layers of
+enable programming via functional shell, even when peeling back layers of
 abstraction reveals an imperative core. This also allows organizing
 views as independent reusable components. Reusable views, much like pure
 functions, should not mutate external state. Like in functional

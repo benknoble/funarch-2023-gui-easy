@@ -157,7 +157,7 @@ these two projects that taught us many architectural lessons.
 
 @subsection{Quest for Easier GUIs}
 
-Bogdan's dayjob involved writing many small GUI tools for internal use.
+Bogdan's day job involved writing many small GUI tools for internal use.
 For his purposes, the Racket GUI framework proved to be an excellent way
 to build those types of GUIs as it provides fast iteration times,
 portability across macOS, Linux and Windows, and the ability to
@@ -636,14 +636,13 @@ reusable views, we can thread the state as input to every single view.
 This quickly becomes tedious and, when we are not so confident, tangles
 unnecessary concerns. Dynamic binding breaks some functional purity for
 convenience, allowing us to refer to external state. Using dynamic
-binding does make views less reusable: they now have dependencies not
-defined by their inputs. Dynamic binding does permit each view to only
-be concerned with the global state if it absolutely needs to be. The
-Frosthaven Manager threads state as much as possible according to DDAU
-but does use dynamic binding to retain a reference to the top widget of
-the main GUI hierarchy. This reference is needed to calculate the
-correct relative coordinates for mouse clicks and popup menus, among
-other uses.
+binding makes views less reusable: they now have dependencies not
+defined by their inputs. Dynamic binding permits each view to only be
+concerned with the global state if absolutely necessary. The Frosthaven
+Manager threads state as much as possible according to DDAU but does use
+dynamic binding to retain a reference to the top widget of the main GUI
+hierarchy. This reference is needed to calculate the correct relative
+coordinates for mouse clicks and popup menus, among other uses.
 
 @section[#:tag "related_work"]{Related Work: Are We GUI Yet?}
 
@@ -677,7 +676,7 @@ management, with a global store and effect handler (like observable
 update procedures) registry and queries (like derived observables).
 Rust's infamous ``Are We GUI Yet?''@areweguiyet website mentions at
 least four GUI libraries for functional reactive programming in the
-style of React or FRP.
+style of React or FrTrime.
 
 While we must be careful not to confuse popularity with usefulness, our
 satisfaction programming in the style suggested by GUI Easy and the use

@@ -100,8 +100,7 @@ platform@~cite[b:racket].
                      (define -button
                        (new button% [parent container]
                             [label "-"]
-                            [callback (λ (button event)
-                                        (update-count sub1))]))
+                            [callback (λ _ (update-count sub1))]))
                      (define count-label
                        (new message% [parent container]
                             [label (~a count)]
@@ -109,19 +108,18 @@ platform@~cite[b:racket].
                      (define +button
                        (new button% [parent container]
                             [label "+"]
-                            [callback (λ (button event)
-                                        (update-count add1))]))
+                            [callback (λ _ (update-count add1))]))
                      (send f show #t)]]
 
 @Figure-ref{oop-counter.rkt} demonstrates typical Racket GUI code: it
 creates a counter, with buttons to increment and decrement a number
 displayed on the screen. First, we create a top-level window container,
 called a @racket[frame%]. To lay out the controls horizontally, we
-create a @racket[horizontal-panel%] as a child of window @racket[f].
-We define some state to represent the count and a procedure to
-simultaneously update the count and its associated label. Next, we
-create the buttons and label for the counter. Lastly, we call the
-@racket[show] method on a @racket[frame%] to display it to the user.
+create a @racket[horizontal-panel%] as a child of the window. We define
+some state to represent the count and a procedure to simultaneously
+update the count and its associated label. Next, we create the buttons
+and label for the counter. Lastly, we call the @racket[show] method on a
+@racket[frame%] to display it to the user.
 
 The code in @figure-ref{oop-counter.rkt} has several shortcomings: it
 tangles state with visual representation; the structure of widget
@@ -306,9 +304,8 @@ operators.
 @figure["observables.rkt"
         "Use of the basic observable API in GUI Easy."
         @racketblock[(define o (obs 1))
-                     (define (observer name)
-                       (λ (v)
-                         (printf "observer ~a saw ~a~n" name v)))
+                     (define ((observer name) v)
+                       (printf "observer ~a saw ~a~n" name v))
                      (obs-observe! o (observer "a"))
                      (obs-observe! o (observer "b"))
                      (obs-update! o add1)
@@ -337,9 +334,8 @@ abstraction in more detail in @Secref{view_detail}.
                      (define/obs |@|count-1 0)
                      (define/obs |@|count-2 5)
 
-                     (define (update-counter |@|counter)
-                       (λ (proc)
-                         (<~ |@|counter proc)))
+                     (define ((update-counter |@|counter) proc)
+                       (<~ |@|counter proc))
 
                      (render
                       (window

@@ -11,8 +11,7 @@
 (define -button
   (new button% [parent container]
        [label "-"]
-       [callback (λ (button event)
-                   (update-count sub1))]))
+       [callback (λ _ (update-count sub1))]))
 (define count-label
   (new message% [parent container]
        [label (~a count)]
@@ -20,7 +19,6 @@
 (define +button
   (new button% [parent container]
        [label "+"]
-       [callback (λ (button event)
-                   (update-count add1))]))
+       [callback (λ _ (update-count add1))]))
 
 (send f show #t)

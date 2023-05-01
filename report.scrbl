@@ -44,7 +44,39 @@ projects. We report on our experience constructing and using GUI Easy
 and derive from that experience architectural patterns and principles
 for building GUI programs.}
 
-@; TODO @terms{} @keywords{}
+@CCSXML|{
+
+<ccs2012>
+   <concept>
+       <concept_id>10011007.10011006.10011008.10011024.10011029</concept_id>
+       <concept_desc>Software and its engineering~Classes and objects</concept_desc>
+       <concept_significance>300</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10011007.10010940.10010971.10010972.10010975</concept_id>
+       <concept_desc>Software and its engineering~Publish-subscribe / event-based architectures</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10011007.10011006.10011008.10011009.10011019</concept_id>
+       <concept_desc>Software and its engineering~Extensible languages</concept_desc>
+       <concept_significance>300</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10011007.10011074.10011092.10011096</concept_id>
+       <concept_desc>Software and its engineering~Reusability</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+
+ }|
+
+@ccsdesc[#:number 500 "Software and its engineering~Publish-subscribe / event-based architectures"]
+@ccsdesc[#:number 500 "Software and its engineering~Reusability"]
+@ccsdesc[#:number 300 "Software and its engineering~Classes and objects"]
+@ccsdesc[#:number 300 "Software and its engineering~Extensible languages"]
+
+@keywords{Reactive GUI, Functional wrapper}
 
 @section{Introduction}
 @; try and fit on one page, for reader impact?

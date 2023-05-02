@@ -121,10 +121,10 @@ update the count and its associated label. Next, we create the buttons
 and label for the counter. Lastly, we call the @racket[show] method on a
 @racket[frame%] to display it to the user.
 
-The code in @figure-ref{oop-counter.rkt} has several shortcomings: it
-tangles state with visual representation; the structure of widget
-construction does not match the structure of the widgets in the GUI;
-and, new abstractions must be created as imperative objects.
+The code in @figure-ref{oop-counter.rkt} has several shortcomings: it is
+overly verbose and organized in a way that obscures the structure of the
+resulting interface; it has to manually keep application and UI state in
+sync; and, custom components must be created as imperative objects.
 
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."

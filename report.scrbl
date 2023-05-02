@@ -187,8 +187,8 @@ these two projects that taught us many architectural lessons.
 @subsection{Quest for Easier GUIs}
 
 Bogdan's day job involved writing many small GUI tools for internal use.
-For his purposes, the Racket GUI framework proved to be an excellent way
-to build those types of GUIs as it provides fast iteration times,
+For his purposes, the Racket GUI framework proved to be an excellent
+way to build those types of tools as it provides fast iteration times,
 portability across macOS, Linux and Windows, and the ability to
 distribute self-contained applications on the aforementioned platforms.
 

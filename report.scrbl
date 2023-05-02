@@ -138,18 +138,17 @@ sync; and, custom components must be created as imperative objects.
                            (text (~> |@|count ~a))
                            (button "+" (λ () (<~ |@|count add1))))))]]
 
-GUI Easy is a functional reactive wrapper for Racket's GUI system based
-on immutable observable values and function composition that aims to
-solve problems with the imperative object-based APIs@~cite[b:gui-easy].
+GUI Easy is a functional reactive wrapper for Racket's GUI system
+based on observable values and function composition that aims to solve
+problems with the imperative object-based APIs@~cite[b:gui-easy].
 
 With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the
 previous shortcomings. We define an observable @racket[|@|count] whose
-state is the number @racket[0]. Then we call @racket[render] to show the
-GUI described by the composition of functions like @racket[window],
+state is the number @racket[0]. Then we call @racket[render] to show
+the GUI described by the composition of functions like @racket[window],
 @racket[hpanel], @racket[button], and @racket[text]. The callbacks on
 the @racket[button] widgets update @racket[|@|count] by computing new
-values; these updates automatically propagate to the derived textual
-label in the GUI.
+values; these updates automatically propagate to the textual label.
 
 In this report, we
 @itemlist[

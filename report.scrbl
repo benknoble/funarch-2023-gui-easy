@@ -200,14 +200,6 @@ construction time. The latter point makes composability especially
 frustrating since individual components must always be parameterized
 over a parent argument.
 
-@; fixme
-@; db library; lexi-lambda/racket-commonmark; http123
-The class system is rarely used in Racket outside the GUI toolkit, so
-it's a barrier to entry to a Racketeer intending to make a GUI.  As will
-hopefully become clear in reading the examples shown in this article, it
-is possible to express the same interfaces using a much lighter-weight
-textual representation.
-
 Since Racket GUI offers no special support for managing application
 state and wiring said state to widgets, the user is forced to bring
 their own state management to the table, leading to ad-hoc solutions for

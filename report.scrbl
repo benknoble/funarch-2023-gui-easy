@@ -209,41 +209,28 @@ abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how
 observables and observable-aware views combine to automatically connect
 GUI widgets and state changes.
 
-Forcing the user to pass in the parent of a widget at instantiation time
-means that components have to either be constructed in a very specific
-order, or all components must be wrapped in procedures that take a
-parent widget as argument.  Consider the following piece of Racket code:
+Requiring that the user pass in the parent of a widget at instantiation
+time means that components have to either be constructed in a very
+specific order, or all components must be wrapped in procedures that
+take a parent widget as argument. Consider the following piece of Racket
+code:
 
-@; Question someone might reasonably ask: are the problems with Racket
-@; GUI caused by its API more than its imperative-ness? Is the state
-@; stuff a satisfying answer?
-
-@; consider joining new-message% line to parent line to keep in the same
-@; column if needed
 @racketblock[
   (define f (new frame% [label "A window"]))
   (define msg
-    (new message%
-         [parent f]
+    (new message% [parent f]
          [label "Hello World"]))
 ]
 
 It is impossible to create the message before the frame in this case,
-since the message needs a @racket[parent] in order to be constructed in
-the first place. This constrains the ways in which the user can organize
-their code. Of course, the user can always abstract over message
+since the message needs a @racket[parent] in order to be constructed
+in the first place. This constrains the ways in which the code can
+be organized. Of course, the user can always abstract over message
 creation, but that needlessly complicates the process of wiring up
 interfaces. This was the motivation behind the @racket[view<%>]
-abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how
-views permit functional abstraction, enabling new organizational
+abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll see
+how views permit functional abstraction, enabling new organizational
 approaches that we'll explore in @secref{Architecting_Frosthaven}.
-
-@; GUI Easy origin
-
-@; - Introduce Racket, class system, GUI programming (briefly!)
-@; - Motivate the story: example(s) constructing GUIs with (clunky) imperative
-@;   APIs
-@; - This method of GUI programming isn't satisfying (do we briefly include reasons?)
 
 @subsection{Embarking for Frosthaven}
 
@@ -295,24 +282,24 @@ operators.
 @figure["observables.rkt"
         "Use of the basic observable API in GUI Easy."
         @racketblock[(define o (obs 1))
-                     (define ((observer name) v)
+                     (define ((make-observer name) v)
                        (printf "observer ~a saw ~a~n" name v))
-                     (obs-observe! o (observer "a"))
-                     (obs-observe! o (observer "b"))
+                     (obs-observe! o (make-observer "a"))
+                     (obs-observe! o (make-observer "b"))
                      (obs-update! o add1)
                      (code:comment "outputs:")
                      (code:comment "observer a saw 2")
                      (code:comment "observer b saw 2")]]
 
-Views in GUI Easy are representations of Racket GUI widgets that,
-when rendered, produce instances of Racket GUI widgets and handle the
-details of transparently wiring view trees together. They are typically
-observable-aware in ways that make sense for each individual widget. For
-example, the @racket[text] view takes as input an observable of a string
-and the rendered widget's label updates with changes to that observable.
-@Figure-ref{easy-counter-reuse.rkt} shows an example of a reusable
-counter component made by composing views together. We discuss the view
-abstraction in more detail in @Secref{view_detail}.
+Views are representations of Racket GUI widgets that, when rendered,
+produce instances of those widgets and handle the details of
+transparently wiring view trees together. They are typically
+observable-aware in ways that make sense for each individual widget.
+For instance, the @racket[text] view takes as input an observable of
+a string and the rendered widget's label updates with changes to that
+observable. @Figure-ref{easy-counter-reuse.rkt} shows an example of a
+reusable counter component made by composing views together. We discuss
+the view abstraction in more detail in @Secref{view_detail}.
 
 @figure["easy-counter-reuse.rkt"
         "Component re-use in GUI Easy."
@@ -341,49 +328,25 @@ react to changes in the contents of an observable. Application
 developers programming with GUI Easy use a few core operators to
 construct and manipulate observables.
 
-The value of an observable can be changed using @racket[obs-update!]
-(aliased @racket[<~]). The update procedure takes as arguments an
-observable and a procedure of one argument (the current value) to
-generate a new value. Every update is propagated to any observers
+The contents of an observable can be changed using @racket[obs-update!]
+(aliased @racket[<~]). This procedure takes as arguments an observable
+and a procedure of one argument, representing the current value, to
+generate a new value. Every change is propagated to any observers
 registered at the time of the update.
 
 New observables can be derived from existing ones using the
-@racket[obs-map] procedure (aliased @racket[~>]). A derived observable
-applies its mapping procedure to every change in value to the observable
-it's derived from. Finally, two or more observables can be combined
-together into a single derived observable whose value changes when any
-input observable changes using @racket[obs-combine]. Derived observables
-may not be updated.
+@racket[obs-map] procedure (aliased @racket[~>]). Derived observables
+change every time the observables they're derived from change, by
+applying their mapping procedures to the new values of their input
+observables. Two or more observables can be combined together into a
+single derived observable whose value changes when any of the inputs
+change using @racket[obs-combine]. Derived observables cannot be
+directly updated.
 
-@;NOTE(bogdan): might be better not to mention peek unless we need to
-@;for other reasons. The idea being that the smaller we keep the API
-@;presented, the easier it'll be to grok. Likewise, I'm on the fence
-@;about aliases, though right now I'm leaning towards talking about
-@;them.
-
-Observables can be @italic{peeked} with @racket[obs-peek];
-this unwraps the inner value for use with normal Racket computation,
-dual to the observable constructor @racket[obs]. Dialogs and other
-side-effectful computations that do not fit into @racket[obs-update!] or
-@racket[obs-map] paradigms often use @racket[obs-peek] to operate on
-concrete data, effectively collapsing the observable to a single point
-in time.
-
-@; Observables can be
-@; @italic{updated}: the new value is computed by applying a procedure to
-@; the inner value, using @racket[obs-update!]. The alias @racket[<~] is
-@; reminiscent of mutation notations like @tt{:=} or @tt{<-}. Finally,
-@; observables can be @italic{derived} with @racket[obs-map], computing
-@; a derived observable by applying a function to the inner value of a
-@; parent observable. Derived observables cannot be directly updated,
-@; but update automatically when their parent observable updates. The
-@; alias @racket[~>] is reminiscent of threading computations and suggests
-@; duality with @racket[obs-update!]. An extension @racket[obs-combine]
-@; permits mapping @${n} observables together into a single observable via
-@; an @${n}-ary function.
-
-@; Describe GUI Easy enough to follow the rest of the paper. (Is this the best
-@; place to mention mixins/view<%>s, aka flexibility?)
+Observables can be @italic{peeked} with @racket[obs-peek]. Peeking
+an observable returns its contents. This operation is useful to get
+point-in-time values out of observables when displaying modal dialogs or
+other views that require a snapshot of the state.
 
 @subsection[#:tag "view_detail"]{Views: Functional Shell, Imperative Core}
 @; etc., whatever we need here
@@ -391,10 +354,10 @@ in time.
 A view is represented by a class implementing the @racket[view<%>]
 interface (@figure-ref{view-iface.rkt}). View implementations wrap
 Racket GUI widgets while keeping track of data dependencies and
-responding to their changes@~cite[b:gui-easy]. The interface reifies the
-GUI widget lifecyle into a concrete object, making explicit the
-separation between a GUI widget, its creation, and its reaction to
-changes in data dependencies.
+responding to their changes. The interface reifies the GUI widget
+lifecyle into a concrete object, making explicit the separation between
+a GUI widget, its creation, and its reaction to changes in data
+dependencies.
 
 @figure["view-iface.rkt"
         "The view<%> interface."
@@ -411,13 +374,13 @@ changes in data dependencies.
     [update (->m widget/c obs? any/c void?)]
     [destroy (-> widget/c void?)]))]]
 
-If the use of classes, interfaces, and objects is surprising, it is also
-sensible: wrapping class-based GUI widgets into the view abstraction is
-often straightforward. At the core, in a twist on the classic
+If the use of classes, interfaces, and objects is surprising, it is
+also sensible: wrapping class-based widgets into the view abstraction
+is often straightforward. At the core, in a twist on the classic
 ``Functional Core, Imperative Shell'' paradigm@~cite[b:functional-core],
 lies an imperative object lifecycle. Views must know how to
-@italic{create} GUI widgets, how to @italic{update} them in response to
-changed data dependencies, and how to @italic{destroy} them if
+@italic{create} GUI widgets, how to @italic{update} them in response
+to changed data dependencies, and how to @italic{destroy} them if
 necessary. They must also be able to propagate data dependencies up the
 view tree to a coordinator object. Data dependencies are any observable
 values passed into a view; the coordinator object signals updates when
@@ -426,11 +389,31 @@ underlying widget. Crucially, view instances must be reusable, so they
 must carefully associate any internal state they need with each rendered
 widget.
 
+@figure["view-impl.rkt"
+        "An implementation of a custom view<%>."
+        @racketblock[
+(define text%
+  (class* object% (view<%>)
+    (init-field |@|label) (super-new)
+    (define/public (dependencies) (list |@|label))
+    (define/public (create parent)
+      (new gui:message% [parent parent]
+           [label (obs-peek |@|label)]))
+    (define/public (update widget what val)
+      (send widget set-label val))
+    (define/public (destroy widget) (void))))
+
+(define (text |@|label)
+  (new text% [|@|label |@|label]))
+]]
+
 At the edge of the library, most programmers interact only with the
 functional wrappers around view construction. These wrappers handle the
 construction of @racket[view<%>] instances and delegate their observable
 and non-observable arguments to specific view objects' constructor
-arguments. Thus the shell is functional.
+arguments. Thus the shell is functional.  Figure
+@figure-ref{view-impl.rkt} shows an implementation of a custom
+@racket[view<%>] and its function wrapper.
 
 Sometimes the abstraction is too rigid. For flexibility, it is possible
 to program against the underlying GUI widgets when the functional

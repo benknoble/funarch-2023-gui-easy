@@ -125,6 +125,7 @@ The code in @figure-ref{oop-counter.rkt} has several shortcomings: it is
 overly verbose and organized in a way that obscures the structure of the
 resulting interface; it has to manually keep application and UI state in
 sync; and, custom components must be created as imperative objects.
+@; TODO: this paragraph may not be clear enough
 
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."

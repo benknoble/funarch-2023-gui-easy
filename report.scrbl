@@ -500,36 +500,17 @@ functional core@~cite[b:functional-core].
 
 @subsection{Reusable GUIs}
 
-@; TODO something about the flow of organization here feels off: why is
-@; the major design factor of reusable views buried 3 paragraphs in? On
-@; the one hand, moving from specific to general is how we learn…
-
 The Frosthaven Manager's main GUI is composed of many smaller reusable
-views. By analogy with functional programming's building blocks, the
-function, small reusable views permit us to construct large systems via
-composition. Since a view is a function, albeit often a wrapper, this
-kind of composition is naturally suited to functional programming
-architectures.
+views. By analogy with functional programming's building
+blocks---functions---small reusable views permit us to construct large
+systems via composition. Reusable views often compose other views, just
+as pure functions often compose other pure functions. Since a view is a
+function, albeit often a wrapper, this kind of composition is naturally
+suited to functional programming architectures.
 
 Reusable views are, in essence, small reusable GUIs. Given the necessary
 state, we can turn a reusable view into a GUI by nesting the view in a
-@racket[window] and calling @racket[render]. Thus, small reusable views
-are amenable to independent testing. The Frosthaven Manager contains
-multiple independent GUI modules, a hallmark of modular programming.
-Each contains related views; sometimes, only a single view is exported
-from the module, while others are implementation details. Each module
-also acts as an executable script that launches a small GUI
-demonstrating the module's views: this permits testing the module's
-views independently of any larger context. If the views are integrated
-correctly, the larger GUI needs less exercise to be completely tested.
-
-Reusable views can be general-purpose, like the @racket[counter] view in
-@figure-ref{easy-counter-reuse.rkt} or the Frosthaven Manager's
-@racket[markdown-view]. They can also be domain-specific, like views in
-the Frosthaven Manager for displaying and manipulating elemental
-infusions or monster groups. Both can be reused and tested as described
-previously; general-purpose views might be considered for extraction to
-a separate library, much like generic data-structure functions.
+@racket[window] and calling @racket[render].
 
 There is one major design factor of reusable views. @emph{Views should
 not directly manipulate external state.} This is analogous to the rule
@@ -557,62 +538,66 @@ a player. An example call is shown in @figure-ref{loot-call.rkt}.
                        #:on-player
                        (λ (p) (give-player-loot |@|players p)))]]
 
-First, we'll take the perspective of the callers of reusable views. It
-is natural to think of the callees as sub-views and thus ``under'' the
-caller. So ``data down'' means that the caller passes observable data
-down to the sub-view. For the Loot button, the caller must pass
-observables representing the pool of loot to choose from and the players
-to which the loot might be assigned. This is all the information the
-button needs to display. Similarly, ``actions up'' means that the
-sub-view will pass actions back up to the caller. This means that
-callers get to specify how to react to events or actions taken by
-interacting with the view. In the case of the Loot button, callers may
-specify how to react when loot is assigned: they are passed back an
-action representing the player to which loot should be assigned. It is
-the caller's responsibility to correctly assign the loot item to the
-chosen player and trigger updates to the relevant observables.
+First, we'll take the perspective of the callers of reusable views.
+``Data down'' means that the caller passes observable data down to the
+called view. For the Loot button, the caller must pass observables
+@racket[|@|loot-deck] and @racket[|@|players]. This is all the
+information the button needs to display. Similarly, ``actions up'' means
+that the called view will pass actions back up to the caller. Callers
+specify how to react to events or actions taken by interacting with the
+view. In the case of the Loot button, callers may specify how to react
+``on choosing a player.'' It is the caller's responsibility to correctly
+assign the loot item to the chosen player and trigger updates to the
+relevant observables.
 
 Next, we'll take the perspective of the callee, that is, of the reusable
 view itself. We know from the caller's perspective that the reusable
 view receives observable data as input, analogously to pure functions
 requiring all data to be input. This would be the Loot button's
-observable inputs of the loot pool and players. Similarly, instead of
-triggering side-effects on state directly, reusable views pass actions
-back up to the caller. This means that instead of calling
-@racket[obs-update!] on an input, the view notifies the caller via
-callback of a particular action and allows the caller to decide if or
-how to update any state. The Loot button calls an input procedure with
-local data, such as the ID of the chosen player, to inform its caller of
-the loot being assigned. It would be unsafe in the general case to
-mutate observable inputs, as they could be derived observables.
-Requiring informally that observable inputs not be derived for a
-particular view creates a trap for programmers that want to reuse the
-view in novel contexts and violates the principles of reusable views.
+observable inputs. Similarly, instead of triggering side-effects on
+state directly, reusable views pass actions back up to the caller.
+Instead of calling @racket[obs-update!] on an input, the view notifies
+the caller via callback. The Loot button calls an input procedure
+@racket[on-player] with local data, such as the chosen player, to inform
+its caller of the loot assignment.
+
+It would be unsafe in the general case to mutate observable inputs, as
+they could be derived observables. Requiring informally that observable
+inputs not be derived for a particular view creates a trap for
+programmers that want to reuse the view in novel contexts and violates
+the principles of reusable views.
 
 In practice, DDAU means that reusable views have two groups of formal
-function parameters. The first is a series of observables that the view
-needs to display itself. The second is a series of callbacks for
-different kinds of actions that might be taken. Sometimes, only a single
-callback is needed for many kinds of events; other times, it is helpful
-to distinguish different events with different callbacks.
+function parameters. The first is a series of observables for display.
+The second is a series of callbacks for different kinds of actions.
+Sometimes, only a single callback is needed for many kinds of events;
+other times, it is helpful to distinguish different events with
+different callbacks.
 
 DDAU naturally bubbles application state up the view hierarchy, so that
-the top-level of an application contains all of the necessary state. It
-passes the state down to various sub-views and provides procedures to
-respond to their events and actions. This flow of state downward
-continues until we reach the very bottom-most layer of abstraction.
+the top-level of an application contains all of the necessary state.
+Callers pass the state down to various sub-views and provide procedures
+to respond to events and actions. This downward flow of state continues
+until we reach the bottom-most layer. Sometimes, however, we need state
+in a view that is neither its caller's nor its callee's responsibility.
+In this case, a reusable view maintains local observable state which it
+is free to mutate, say, in response to an action callback from one of
+its sub-views. This is in keeping with the tradition of optimizing
+functional programs by allowing interior---but invisible---mutability.
 
-Reusable views often compose other views, just as pure functions often
-compose other pure functions. So it is natural for a caller to also be a
-callee and vice versa. As a consequence, a view sometimes needs to
-transform input observables for use as inputs to sub-views. Derived
-observables and @racket[obs-map] are particularly helpful in this
-situation. Sometimes, however, we need state in a view that is neither
-its caller's nor its callee's responsibility. In this case, a reusable
-view maintains local observable state which it is free to mutate, say,
-in response to an action callback from one of its sub-views. This is in
-keeping with the tradition of optimizing functional programs by allowing
-interior---but invisible---mutability.
+Small reusable views are amenable to independent testing. The Frosthaven
+Manager contains multiple independent GUI modules, a hallmark of modular
+programming. Each contains related views; sometimes, only a single view
+is exported from the module, while others are implementation details.
+Each module also acts as an executable script that launches a small GUI
+demonstrating the module's views: this permits testing the module's
+views independently of any larger context. If the views are integrated
+correctly, the larger GUI needs less exercise to be completely tested.
+
+General-purpose views can be considered for extraction to a separate
+library, much like generic data-structure functions. Domain-specific
+reusable views facilitate cohesive visual style and functionality for an
+application.
 
 @subsection{Challenges}
 
@@ -623,18 +608,17 @@ piece of nearly-global state whose usage is hard to predict when writing
 reusable components? Fortunately, both of these problems have solutions.
 
 The first problem of access to imperative behaviors is solved by GUI
-Easy conventions and APIs. In the traditional object-based API, we would
-subclass widgets as needed to create new behaviors. Without access to
-the classes, we cannot provide such custom behavior. Thus, many GUI Easy
-wrappers support a mixin argument, as discussed in @secref{view_detail}.
-This provides a special kind of access to the class implementing the
-underlying widget so that we may override or augment methods of the
-class as we choose, akin to dynamically subclassing GUI widgets. When
-mixins are insufficient, we may choose to write our own @racket[view<%>]
-implementation, which can wrap any GUI widget we desire. This includes
-core classes, custom subclasses, and third-party widgets. The Frosthaven
-Manager makes use of this functionality to implement custom closing
-behavior for certain widgets and to wrap editor widgets to display
+Easy conventions. In the traditional object-based toolkit, we would
+subclass widgets as needed to create new behaviors. We cannot subclass a
+class we cannot access. In response, many GUI Easy wrappers support a
+mixin as discussed in @secref{view_detail}. This provides special access
+to the class implementing the underlying widget so that we may override
+or augment methods of the class as we choose, akin to dynamically
+subclassing GUI widgets. When mixins are insufficient, we choose to
+write our own @racket[view<%>] implementation, which wraps any GUI
+widget(s) we desire. This includes core classes, custom subclasses, and
+third-party widgets. The Frosthaven Manager uses mixins and custom
+@racket[view<%>]s to implement custom close behavior and to display
 rendered Markdown@note{https://daringfireball.net/projects/markdown/}
 files.
 
@@ -642,16 +626,15 @@ The second problem of global state is handled by functional programming
 techniques. Essentially, we have two choices: threading state or dynamic
 binding. If we are confident that the state will be required in all
 reusable views, we can thread the state as input to every single view.
-This quickly becomes tedious and, when we are not so confident, tangles
-unnecessary concerns. Dynamic binding breaks some functional purity for
-convenience, allowing us to refer to external state. Using dynamic
-binding makes views less reusable: they now have dependencies not
-defined by their inputs. Dynamic binding permits each view to only be
-concerned with the global state if absolutely necessary. The Frosthaven
-Manager threads state as much as possible according to DDAU but does use
-dynamic binding to retain a reference to the top widget of the main GUI
-hierarchy. This reference is needed to calculate the correct relative
-coordinates for mouse clicks and popup menus, among other uses.
+Threading state is the solution preferred by DDAU and reusuable views.
+Threading rarely-used state quickly becomes tedious and, when we are not
+so confident, tangles unnecessary concerns. Dynamic binding breaks some
+functional purity for convenience, allowing us to refer to external
+state. Using dynamic binding makes views less reusable: they now have
+dependencies not defined by their inputs. Dynamic binding permits each
+view to only be concerned with the global state if absolutely necessary.
+The Frosthaven Manager threads state as much as possible but does use
+dynamic binding in rare instances
 
 @section[#:tag "related_work"]{Related Work: Are We GUI Yet?}
 
@@ -718,7 +701,6 @@ can be themselves wrapped in abstractions to manage complexity.
 @acks{We thank the anonymous reviewers for their suggestions. Ben is
 grateful to Savannah Knoble, Derrick Franklin, John Hines, and Jake
 Hicks for playtesting the Frosthaven Manager throughout development, and
-to Isaac Childres for bringing us the wonderful world of Gloomhaven and
-Frosthaven.}
+to Isaac Childres for bringing us the wonderful world of Frosthaven.}
 
 @(generate-bibliography #:sec-title "References")

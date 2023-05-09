@@ -9,8 +9,8 @@
    (text (~> @count ~a))
    (button "+" (λ () (action add1)))))
 
-(define/obs @count-1 0)
-(define/obs @count-2 5)
+(define @count-1 (@ 0))
+(define @count-2 (@ 5))
 
 (render
  (window

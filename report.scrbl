@@ -130,7 +130,7 @@ sync; and, state is managed by mutation.
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."
         @racketblock[(require racket/gui/easy racket/gui/easy/operator)
-                     (define/obs |@|count 0)
+                     (define |@|count (|@| 0))
                      (render
                        (window
                          #:title "Counter"
@@ -273,13 +273,11 @@ abstraction and views.
 
 Observables are box-like@note{Boxes are mutable cells; typically they
 hold immutable data to permit constrained mutation.} values with the
-added property that arbitrary procedures can subscribe to changes in
-their contents. @Figure-ref{observables.rkt} shows an example of how we
-might use the low-level observable API in GUI Easy. We create
-observables with @racket[obs] or the shorthand @racket[|@|]. With the
-@racket[define/obs] syntactic form, we create and bind an observable to
-a name. @Secref{Observable_Values} explains the higher-level observable
-operators.
+added property that arbitrary procedures can subscribe to changes
+in their contents. @Figure-ref{observables.rkt} shows an example
+of how we might use the low-level observable API in GUI Easy. We
+create observables with @racket[obs] or the shorthand @racket[|@|].
+@Secref{Observable_Values} explains the other observable operators.
 
 @figure["observables.rkt"
         "Using the low-level observable API in GUI Easy."
@@ -311,8 +309,8 @@ abstraction in more detail in @Secref{view_detail}.
                          (text (~> |@|count ~a))
                          (button "+" (λ () (action add1)))))
 
-                     (define/obs |@|c1 0)
-                     (define/obs |@|c2 5)
+                     (define |@|c1 (|@| 0))
+                     (define |@|c2 (|@| 5))
 
                      (render
                       (window

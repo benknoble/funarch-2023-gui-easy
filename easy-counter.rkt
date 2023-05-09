@@ -2,7 +2,7 @@
 
 (require racket/gui/easy
          racket/gui/easy/operator)
-(define/obs @count 0)
+(define @count (@ 0))
 (render
   (window
     #:title "Counter"

@@ -311,17 +311,14 @@ abstraction in more detail in @Secref{view_detail}.
                          (text (~> |@|count ~a))
                          (button "+" (λ () (action add1)))))
 
-                     (define/obs |@|count-1 0)
-                     (define/obs |@|count-2 5)
-
-                     (define ((update-counter |@|counter) proc)
-                       (<~ |@|counter proc))
+                     (define/obs |@|c1 0)
+                     (define/obs |@|c2 5)
 
                      (render
                       (window
                        #:title "Counters"
-                       (counter |@|count-1 (update-counter |@|count-1))
-                       (counter |@|count-2 (update-counter |@|count-2))))]]
+                       (counter |@|c1 (λ (proc) (<~ |@|c1 proc)))
+                       (counter |@|c2 (λ (proc) (<~ |@|c2 proc)))))]]
 
 @subsection{Observable Values}
 

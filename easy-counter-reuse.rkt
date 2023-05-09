@@ -12,11 +12,8 @@
 (define/obs @count-1 0)
 (define/obs @count-2 5)
 
-(define ((update-counter @counter) proc)
-  (<~ @counter proc))
-
 (render
  (window
   #:title "Counters"
-  (counter @count-1 (update-counter @count-1))
-  (counter @count-2 (update-counter @count-2))))
+  (counter @count-1 (λ (proc) (<~ @count-1 proc)))
+  (counter @count-2 (λ (proc) (<~ @count-2 proc)))))

@@ -631,7 +631,7 @@ view to only be concerned with the global state if absolutely necessary.
 The Frosthaven Manager threads state as much as possible but does use
 dynamic binding in rare instances
 
-@section[#:tag "related_work"]{Related Work: Are We GUI Yet?}
+@section[#:tag "related_work"]{Related Work}
 
 @(define (url-note dest)
    @note[@url[dest]])

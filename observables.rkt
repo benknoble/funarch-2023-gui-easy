@@ -1,10 +1,10 @@
 #lang racket/base
 
-(require racket/gui/easy)
+(require racket/gui/easy racket/gui/easy/operator)
 
-(define o (obs 1))
-(define ((make-observer name) v)
-  (printf "observer ~a saw ~a~n" name v))
-(obs-observe! o (make-observer "a"))
-(obs-observe! o (make-observer "b"))
-(obs-update! o add1)
+(define @o (@ 1))
+(obs-observe! @o
+              (λ (x) (printf "observer a saw ~a\n" x)))
+(obs-observe! @o
+              (λ (x) (printf "observer b saw ~a\n" x)))
+(<~ @o add1)

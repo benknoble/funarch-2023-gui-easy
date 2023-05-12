@@ -3,13 +3,13 @@
 @; vim: textwidth=72
 
 @(require scribble/core
-          scribble/racket
+          (only-in scribble/manual
+                   racket
+                   racketblock
+                   racketmod0)
           scriblib/figure
           scriblib/footnote
           "bib.rkt")
-
-@(define-code racket to-element)
-@(define-code racketblock to-paragraph)
 
 @(define ($ . xs)
    (make-element (make-style "relax" '(exact-chars))
@@ -104,27 +104,29 @@ library for the GUI toolkit.
 
 @figure["oop-counter.rkt"
         "A counter GUI using Racket GUI's object-oriented widgets."
-        @racketblock[(require racket/gui)
-                     (define f (new frame% [label "Counter"]))
-                     (define container
-                       (new horizontal-panel% [parent f]))
-                     (define count 0)
-                     (define (update-count f)
-                       (set! count (f count))
-                       (send count-label set-label (~a count)))
-                     (define -button
-                       (new button% [parent container]
-                            [label "-"]
-                            [callback (λ _ (update-count sub1))]))
-                     (define count-label
-                       (new message% [parent container]
-                            [label (~a count)]
-                            [auto-resize #t]))
-                     (define +button
-                       (new button% [parent container]
-                            [label "+"]
-                            [callback (λ _ (update-count add1))]))
-                     (send f show #t)]]
+        @racketmod0[
+        racket/gui
+        (define f (new frame% [label "Counter"]))
+        (define container
+          (new horizontal-panel% [parent f]))
+        (define count 0)
+        (define (update-count f)
+          (set! count (f count))
+          (define new-label (number->string count))
+          (send count-label set-label new-label))
+        (define minus-button
+          (new button% [parent container]
+               [label "-"]
+               [callback (λ _ (update-count sub1))]))
+        (define count-label
+          (new message% [parent container]
+               [label "0"]
+               [auto-resize #t]))
+        (define plus-button
+          (new button% [parent container]
+               [label "+"]
+               [callback (λ _ (update-count add1))]))
+        (send f show #t)]]
 
 @Figure-ref{oop-counter.rkt} demonstrates typical Racket GUI code: it
 renders a counter with buttons to increment and decrement a number.
@@ -143,28 +145,31 @@ and UI state by mutating it.
 
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."
-        @racketblock[(require racket/gui/easy racket/gui/easy/operator)
-                     (define |@|count (|@| 0))
-                     (render
-                       (window
-                         #:title "Counter"
-                         (hpanel
-                           (button "-" (λ () (<~ |@|count sub1)))
-                           (text (~> |@|count ~a))
-                           (button "+" (λ () (<~ |@|count add1))))))]]
+        @racketmod0[
+        racket
+        (require racket/gui/easy racket/gui/easy/operator)
+        (define |@|count (|@| 0))
+        (render
+          (window
+            #:title "Counter"
+            (hpanel
+              (button "-" (λ () (<~ |@|count sub1)))
+              (text (~> |@|count number->string))
+              (button "+" (λ () (<~ |@|count add1))))))]]
 
 GUI Easy is a functional shell for Racket's GUI system based on
 observable values and function composition that aims to solve the
 problems with the imperative object-based APIs@~cite[b:gui-easy].
 
 With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the
-previous shortcomings. We define an observable @racket[|@|count] whose
-initial value is the number @racket[0]. Then we call @racket[render] to
-show the GUI described by the composition of functions like
-@racket[window], @racket[hpanel], @racket[button], and @racket[text].
-The callbacks on the @racket[button] widgets update @racket[|@|count] by
-computing new values from the old; these updates automatically propagate
-to the textual label.
+previous shortcomings. As state, we define an observable
+@racket[|@|count] whose initial value is the number @racket[0]. Then we
+@racket[render] the GUI composed of widgets like @racket[window],
+@racket[hpanel], @racket[button], and @racket[text]. Their properties,
+such as size or label, may be constant values or observables. The
+rendered GUI is automatically updated when observables change, as in
+React@|react| for the Web. Buttons on the GUI update the counter state,
+triggering updates to the GUI.
 
 In this report, we
 @itemlist[
@@ -285,22 +290,23 @@ Manager@~cite[b:frosthaven-manager] with GUI Easy in 2022.
 GUI easy can be broadly split up into two parts: the observable
 abstraction and views.
 
-Observables are box-like@note{Boxes are mutable cells; typically they
-hold immutable data to permit constrained mutation.} values with the
-added property that arbitrary procedures can subscribe to changes
-in their contents. @Figure-ref{observables.rkt} shows an example
-of how we might use the low-level observable API in GUI Easy. We
-create observables with @racket[obs] or the shorthand @racket[|@|].
-@Secref{Observable_Values} explains the other observable operators.
+Observables contain values and notify subscribed observers of changes
+from @racket[<~]. @Figure-ref{observables.rkt} shows an example of how
+we might use the low-level observable API in GUI Easy. We create
+observables with @racket[|@|]. @Secref{Observable_Values} explains the
+other observable operators.
 
+@; Be careful with automatic formatting here; the layout is
+@; non-traditional for size…
 @figure["observables.rkt"
         "Using the low-level observable API in GUI Easy."
-        @racketblock[(define o (obs 1))
-                     (define ((make-observer name) v)
-                       (printf "observer ~a saw ~a~n" name v))
-                     (obs-observe! o (make-observer "a"))
-                     (obs-observe! o (make-observer "b"))
-                     (obs-update! o add1)
+        @racketblock[(define |@|o (|@| 1))
+                     (obs-observe! |@|o
+                       (λ (x) (printf "observer a saw ~a\n" x)))
+                     (obs-observe! |@|o
+                       (λ (x) (printf "observer b saw ~a\n" x)))
+                     (code:comment "change the observable by adding 1")
+                     (<~ |@|o add1)
                      (code:comment "outputs:")
                      (code:comment "observer a saw 2")
                      (code:comment "observer b saw 2")]]
@@ -320,7 +326,7 @@ abstraction in more detail in @Secref{view_detail}.
         @racketblock[(define (counter |@|count action)
                        (hpanel
                          (button "-" (λ () (action sub1)))
-                         (text (~> |@|count ~a))
+                         (text (~> |@|count number->string))
                          (button "+" (λ () (action add1)))))
 
                      (define |@|c1 (|@| 0))
@@ -339,40 +345,42 @@ to changes in the value of an observable. Application developers
 programming with GUI Easy use a few core operators to construct and
 manipulate observables.
 
-We can change the contents of an observable using @racket[obs-update!]
-(aliased @racket[<~]). This procedure takes as arguments an observable
-and a procedure of one argument, representing the current value, to
-generate a new value. Every change is propagated to any observers
-registered at the time of the update.
+We can change the contents of an observable using @racket[<~]. This
+procedure takes as arguments an observable and a procedure of one
+argument, representing the current value, to generate a new value. Every
+change is propagated to any observers registered at the time of the
+update.
 
-We can derive new observables from existing ones using the
-@racket[obs-map] procedure (aliased @racket[~>]). Derived observables
-change every time the observables they're derived from change, by
-applying their mapping procedures to the new values of their input
-observables. We can combine two or more observables together into a
-single derived observable whose value changes when any of the inputs
-change using @racket[obs-combine]. We cannot directly update derived
-observables.
-
-We can peek at the value of an observable with @racket[obs-peek].
-Peeking an observable returns its contents. This operation is useful to
-get point-in-time values out of observables when displaying modal
-dialogs or other views that require a snapshot of the state.
+We can derive new observables from existing ones using @racket[~>]. A
+derived observable changes with its input observable by applying its
+mapping procedure to the values of its input observables. In
+@figure-ref["easy-counter-reuse.rkt"], the derived observable
+@racket[(~> |@|count number->string)] changes every time
+@racket[|@|count] is updated by @racket[<~]; its value is the result of
+applying @racket[number->string] to the value of @racket[|@|count]. We
+cannot directly update derived observables.
 
 @subsection[#:tag "view_detail"]{Views: Functional Shell, Imperative Core}
 @; etc., whatever we need here
 
-At the core, in a twist on the classic ``Functional Core, Imperative
-Shell'' paradigm@~cite[b:functional-core], lies an imperative object
-lifecycle. Views must know how to @italic{create} GUI widgets, how to
-@italic{update} them in response to changed data dependencies, and how
-to @italic{destroy} them if necessary. They must also propagate data
-dependencies up the view tree to a coordinator object. Data dependencies
-are any observable values the view knows about; the coordinator object
-signals updates when dependencies change, allowing the view to trigger
-an update in the underlying widget. Crucially, view instances must be
-reusable, so they must carefully associate any internal state they need
-with each rendered widget.
+The functional architecture popularized by
+@cite-author[b:functional-core]'s ``Functional Core, Imperative Shell''
+video@~cite[b:functional-core] involves wrapping a core of pure
+functional code with a shell of imperative commands. This makes the core
+testable without side-effects or complex mocks and simplifies state
+management. In a twist on this classic paradigm, at the core of GUI Easy
+lies an imperative object lifecycle while its shell is functional.
+
+The lifecycle is embodied by a view. Views must know how to
+@italic{create} GUI widgets, how to @italic{update} them in response to
+changed data dependencies, and how to @italic{destroy} them if
+necessary. They must also propagate data dependencies up the view tree
+to a coordinator object. Data dependencies are any observable values the
+view knows about; the coordinator object signals updates when
+dependencies change, allowing the view to trigger an update in the
+underlying widget. Crucially, view instances must be reusable, so they
+must carefully associate any internal state they need with each rendered
+widget.
 
 A class implementing the @racket[view<%>] interface represents a view.
 The interface is shown in @figure-ref{view-iface.rkt}. View
@@ -380,10 +388,7 @@ implementations wrap Racket GUI widgets while keeping track of data
 dependencies and responding to their changes@~cite[b:gui-easy]. The
 interface reifies the GUI widget lifecyle into a concrete object, making
 explicit the separation between a GUI widget, its creation, and its
-reaction to changes in data dependencies. If the use of classes,
-interfaces, and objects for a functional abstraction is surprising, it
-is also sensible: we can wrap class-based widgets in the view
-abstraction in often straightforward code.
+reaction to changes in data dependencies.
 
 @figure["view-iface.rkt"
         "The view<%> interface."
@@ -424,16 +429,6 @@ non-observable arguments to specific view objects' constructor
 arguments. Thus the shell is functional. @Figure-ref{view-impl.rkt}
 shows an implementation of a custom @racket[view<%>] and its function
 wrapper.
-
-@(define cite-mixins
-   (~cite b:flavors b:denote-inheritance b:jigsaw b:mixins b:super+inner))
-
-Sometimes the abstraction is too rigid. For flexibility, it is possible
-to program against the underlying GUI widgets when the functional
-abstraction exposes a @italic{mixin}@note{Mixins permit ad hoc class
-specialization without modifying the source of the class
-body@|cite-mixins|.} parameter; this mixin is composed with the
-underlying GUI widget thanks to Racket's first-class classes.
 
 Most Racket GUI widgets are already wrapped by GUI Easy. Programmers can
 implement the view abstraction themselves in order to integrate
@@ -618,17 +613,21 @@ API for a feature not exposed by existing wrappers? How do you handle a
 piece of nearly-global state whose usage is hard to predict when writing
 reusable components? Fortunately, both of these problems have solutions.
 
+@(define mixins
+   (~cite b:flavors b:denote-inheritance b:jigsaw b:mixins b:super+inner))
+
 The first problem of access to imperative behaviors is solved by GUI
 Easy conventions. In the traditional object-based toolkit, we would
 subclass widgets as needed to create new behaviors. We cannot subclass a
 class we cannot access. In response, many GUI Easy wrappers support a
-mixin as discussed in @secref{view_detail}. This provides special access
-to the class implementing the underlying widget so that we may override
-or augment methods of the class as we choose, akin to dynamically
-subclassing GUI widgets. When mixins are insufficient, we choose to
-write our own @racket[view<%>] implementation, which wraps any GUI
-widget(s) we desire. This includes core classes, custom subclasses, and
-third-party widgets. The Frosthaven Manager uses mixins and custom
+mixin@|mixins|, a function from class to class. This provides special
+access to the class implementing the underlying widget so that we may
+override or augment methods of the class as we choose by dynamically
+subclassing GUI widgets. This access is crucially achieved without
+modifying the source of the class body. When mixins are insufficient, we
+choose to write our own @racket[view<%>] implementation, which wraps any
+GUI widget(s) we desire. This includes core classes, custom subclasses,
+and third-party widgets. The Frosthaven Manager uses mixins and custom
 @racket[view<%>]s to implement custom close behavior and to display
 rendered Markdown@|markdown| files.
 

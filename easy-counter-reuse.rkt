@@ -6,7 +6,7 @@
 (define (counter @count action)
   (hpanel
    (button "-" (λ () (action sub1)))
-   (text (~> @count ~a))
+   (text (~> @count number->string))
    (button "+" (λ () (action add1)))))
 
 (define @count-1 (@ 0))

@@ -8,7 +8,8 @@
 
 (define-cite ~cite citet generate-bibliography
              #:cite-author cite-author
-             #:cite-year cite-year)
+             #:cite-year cite-year
+             #:style number-style)
 
 (define b:gui-easy
   (make-bib #:title "racket-gui-easy"
@@ -55,9 +56,10 @@
 
 ;; Racket Java+Beta-inspired class system: "OOP is a natural fit for GUIs!" (roughly)
 (define b:super+inner
-  (make-bib #:author "David Goldberg, Robert Bruce Findler, and Matthew Flatt"
+  (make-bib #:author (authors "David Goldberg" "Robert Bruce Findler" "Matthew Flatt")
             #:title "Super and Inner---Together at Last!"
-            #:location "Object-Oriented Programming, Languages, Systems, and Applications"
+            #:location (proceedings-location
+                        "Object-Oriented Programming, Languages, Systems, and Applications")
             #:date "2004"
             #:url "http://www.cs.utah.edu/plt/publications/oopsla04-gff.pdf"))
 
@@ -72,6 +74,31 @@
                                   #:series "POPL '98"
                                   #:pages (list 171 183))
             #:date "1998"))
+
+(define b:jigsaw
+  (make-bib #:title "The Programming Languages Jigsaw: Mixins, Modularity, and Inheritance"
+            #:author "Gilad Bracha"
+            #:location (dissertation-location #:institution "University of Utah")
+            #:date "1992"
+            #:url "https://bracha.org/jigsaw.pdf"
+            #:note "Ch. 3"))
+
+(define b:denote-inheritance
+  (make-bib #:title "A Denotational Semantics of Inheritance"
+            #:author "William R. Cook"
+            #:location (dissertation-location #:institution "Brown University")
+            #:date "1989"
+            #:url "https://www.cs.utexas.edu/~wcook/papers/thesis/cook89.pdf"
+            #:note "Ch. 10"))
+
+(define b:flavors
+  (make-bib #:title "Object-oriented programming with Flavors"
+            #:author "David A. Moon"
+            #:location (proceedings-location
+                        "ACM Conference on Object-oriented Programming, Systems, Languages, and Applications"
+                        #:pages (list 1 8))
+            #:date "1986"
+            #:url "https://www.cs.tufts.edu/comp/150FP/archive/david-moon/flavors.pdf"))
 
 (define b:functional-core
   (make-bib #:title "Functional Core, Imperative Shell"
@@ -95,7 +122,7 @@
             #:url "https://cs.brown.edu/people/sk/Publications/Papers/Published/ck-frtime/"
             #:doi "10.1007/11693024_20"
             #:location (proceedings-location
-                         "Proceedings of the 15th European Conference on Programming Languages and Systems"
+                         "15th European Conference on Programming Languages and Systems"
                          #:pages (list 294 308)
                          #:series "ESOP'06")))
 
@@ -105,3 +132,21 @@
             #:date "2008"
             #:url "https://cs.brown.edu/people/ghcooper/thesis.pdf"
             #:location (dissertation-location #:institution "Brown University")))
+
+;; FRP
+(define b:fran
+  (make-bib #:title "Functional reactive animation."
+            #:author (authors "Conal Elliot" "Paul Hudak")
+            #:date "1997"
+            #:location (proceedings-location
+                        "ACM SIGPLAN International Conference on Functional Programming"
+                        #:pages (list 263 277))
+            #:url "http://conal.net/papers/icfp97/"))
+
+(define b:frp-cont
+  (make-bib #:title "Functional Reactive Programming, Continued"
+            #:author (authors "Henrik Nilsson" "Antony Courtney" "John Peterson")
+            #:date "2002"
+            #:location (proceedings-location "ACM SIGPLAN Workshop on Haskell"
+                                             #:pages (list 51 64))
+            #:url "https://www.antonycourtney.com/pubs/frpcont.pdf"))

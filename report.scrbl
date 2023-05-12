@@ -15,6 +15,20 @@
    (make-element (make-style "relax" '(exact-chars))
                  (list "$" xs "$")))
 
+@(define (url-note dest)
+   @note[@url[dest]])
+@(define-syntax-rule (define-notes [id url] ...)
+   (begin (define id (url-note url)) ...))
+@(define-notes
+   [swift-ui "https://developer.apple.com/xcode/swiftui/"]
+   [reagent "https://github.com/reagent-project/reagent"]
+   [react "https://react.dev"]
+   [vue "https://vuejs.org"]
+   [elm "https://elm-lang.org"]
+   [re-frame "https://github.com/day8/re-frame"]
+   [areweguiyet "https://www.areweguiyet.com"]
+   [markdown "https://daringfireball.net/projects/markdown/"])
+
 @title{Functional Shell and Observable Architecture for Easy GUIs}
 @subtitle{Experience Report}
 
@@ -83,10 +97,10 @@ principles for building GUI programs.}
 
 Object-oriented programming is traditionally considered a good paradigm
 for building graphical (GUI) programs due to inheritance, composition,
-and specialization@~cite[b:super+inner]. Racket's GUI
-toolkit@~cite[b:racket-gui] is object-oriented, with message-passing
-widgets and mutable state. The Racket platform@~cite[b:racket] provides
-the core class and object library for the GUI toolkit.
+and specialization. Racket's GUI toolkit@~cite[b:racket-gui] is
+object-oriented, with message-passing widgets and mutable state. The
+Racket platform@~cite[b:racket] provides the core class and object
+library for the GUI toolkit.
 
 @figure["oop-counter.rkt"
         "A counter GUI using Racket GUI's object-oriented widgets."
@@ -122,10 +136,10 @@ associated label. Next, we create the buttons and label for the counter.
 Lastly, we call the @racket[show] method on the @racket[frame%] to
 render it for the user.
 
-The code in @figure-ref{oop-counter.rkt} has several shortcomings: it is
-overly verbose and organized in a way that obscures the structure of the
-resulting interface; it has to manually keep application and UI state in
-sync; and, state is managed by mutation.
+The code in @figure-ref{oop-counter.rkt} has several shortcomings. It is
+verbose and organized in a way that obscures the structure of the
+resulting interface. The programmer manually synchronizes application
+and UI state by mutating it.
 
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."
@@ -163,7 +177,7 @@ In this report, we
     @item{
         report on our experience constructing large GUI programs, such
         as the Frosthaven Manager@~cite[b:frosthaven-manager], in
-        @secref{Architecting_Frosthaven}, and
+        @secref{arch-frost}, and
     }
     @item{
         explore related trends in GUI and Web programming in
@@ -185,7 +199,7 @@ Racket's GUI system that drove him to create GUI Easy. Second, in
 @secref{Embarking_for_Frosthaven}, Ben describes his desire to construct
 a large GUI program without mutable state. The happy union of these two
 desires taught us the architectural lessons we present in
-@secref{Architecting_Frosthaven}.
+@secref{arch-frost}.
 
 @subsection{Quest for Easier GUIs}
 
@@ -194,18 +208,18 @@ The Racket GUI framework proved an excellent way to build those types of
 tools as it provides fast iteration times, portability across major
 operating systems, and distribution of self-contained applications.
 
-Over time, however, the same set of small annoyances kept cropping up:
-Racket's class system is overly verbose; state management and wiring is
-bespoke to each project; and, Racket GUI's primary means of constructing
-view hierarchies is to construct child widgets with references to their
-parent widgets. The latter point makes composability especially
+Over time, however, the same set of small annoyances kept cropping up.
+Racket's class system requires verbose code. Each project handles state
+updates in its own way. Racket GUI's primary means of constructing view
+hierarchies is to construct child widgets with references to their
+parent widgets. The latter point makes composition especially
 frustrating since individual components must always be parameterized
 over their parent.
 
 Since Racket GUI offers no special support for managing application
 state and wiring said state to widgets, we must bring our own state
-management to the table, leading to ad-hoc solutions for every new
-project. See @figure-ref{oop-counter.rkt} for an example of ad-hoc state
+management to the table, leading to ad hoc solutions for every new
+project. See @figure-ref{oop-counter.rkt} for an example of ad hoc state
 management. This was the motivation behind the observable abstraction in
 GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how observables and
 observable-aware views combine to automatically connect GUI widgets and
@@ -225,13 +239,13 @@ parameter. Consider the following piece of Racket code:
 
 We cannot create the message object before the frame object in this
 case, since we need a @racket[parent] for the message object. This
-constrains the ways in which we can organize code. Of course, the we can
-always abstract over message object construction, but that needlessly
+constrains the ways in which we can organize code. We can always
+abstract over message object construction, but that needlessly
 complicates the process of wiring up interfaces. This was the motivation
 behind the @racket[view<%>] abstraction in GUI Easy. In
 @secref{GUI_Easy_Overview}, we'll see how views permit functional
 abstraction, enabling new organizational approaches that we'll explore
-in @secref{Architecting_Frosthaven}.
+in @secref{arch-frost}.
 
 @subsection{Embarking for Frosthaven}
 
@@ -407,23 +421,26 @@ functional wrappers around view construction, which is also synonymous
 with the view. These wrappers handle the construction of
 @racket[view<%>] instances and delegate their observable and
 non-observable arguments to specific view objects' constructor
-arguments. Thus the shell is functional.  Figure
-@figure-ref{view-impl.rkt} shows an implementation of a custom
-@racket[view<%>] and its function wrapper.
+arguments. Thus the shell is functional. @Figure-ref{view-impl.rkt}
+shows an implementation of a custom @racket[view<%>] and its function
+wrapper.
+
+@(define cite-mixins
+   (~cite b:flavors b:denote-inheritance b:jigsaw b:mixins b:super+inner))
 
 Sometimes the abstraction is too rigid. For flexibility, it is possible
 to program against the underlying GUI widgets when the functional
-abstraction exposes a @italic{mixin}@note{Mixins permit ad-hoc class
+abstraction exposes a @italic{mixin}@note{Mixins permit ad hoc class
 specialization without modifying the source of the class
-body@~cite[b:mixins b:super+inner].} parameter; this mixin is composed
-with the underlying GUI widget thanks to Racket's first-class classes.
+body@|cite-mixins|.} parameter; this mixin is composed with the
+underlying GUI widget thanks to Racket's first-class classes.
 
 Most Racket GUI widgets are already wrapped by GUI Easy. Programmers can
 implement the view abstraction themselves in order to integrate
 arbitrary GUI widgets, such as those from 3rd-party packages in the
 Racket ecosystem, into a GUI Easy-based project.
 
-@section{Architecting Frosthaven}
+@section[#:tag "arch-frost"]{The Architecture of Frosthaven}
 
 In this section, we describe various pieces of a large GUI Easy
 application, the Frosthaven Manager, and derive principles from our
@@ -436,10 +453,10 @@ frameworks.
 @; encountered, etc.
 
 At time of writing, the Frosthaven Manager includes approximately 5000
-lines of Racket code. About half of that code composes GUI Easy views
-with domain-specific code to form the main application. Of the remaining
-lines, approximately 1000 implement the data structures and
-transformations responsible for the state of the game; 500 cover the
+lines of Racket code. About half of that code construct the main
+application by combining GUI Easy views with domain-specific code. Of
+the remaining lines, approximately 1000 implement the data structures
+and transformations responsible for the state of the game; 500 cover the
 images it draws; 750 implement three plugin languages; 300 test the
 project; the remaining lines are small syntactic utilities. The
 Frosthaven Manager also has approximately 3000 lines of
@@ -488,20 +505,20 @@ intended to be observable, however, the resulting system feels far more
 imperative. Pure transformations are useful for reasoning. These same
 transformations are paired with observable updates---aka,
 mutations---for real effect on the state of the GUI. As a result, though
-many important and reusable views seem pure, they are easily composed
+many important and reusable views seem pure, they are easily combined
 into a highly imperative system. This ``imperative shell'' pairs well
 with typical functional programming architectures, like the previous
 functional core@~cite[b:functional-core].
 
 @subsection{Reusable GUIs}
 
-The Frosthaven Manager's main GUI is composed of many smaller reusable
-views. By analogy with functional programming's building
+The Frosthaven Manager's main GUI comprises many smaller reusable views.
+By analogy with functional programming's building
 blocks---functions---small reusable views permit us to construct large
-systems via composition. Reusable views often compose other views, just
-as pure functions often compose other pure functions. Since a view is a
-function, albeit often a wrapper, this kind of composition is naturally
-suited to functional programming architectures.
+systems via composition. Reusable views often consist of other views,
+just as pure functions often are composed of other pure functions. Since
+a view is a function, albeit often a wrapper, this kind of composition
+is naturally suited to functional programming architectures.
 
 Reusable views are, in essence, small reusable GUIs. Given the necessary
 state, we can turn a reusable view into a GUI by nesting the view in a
@@ -518,8 +535,8 @@ localize in reusable views.
 
 Let's look at DDAU from two points of view: caller and callee. As a
 running example, we'll use the Frosthaven Manager's ``Loot'' button,
-whose responsibility is to allow the user assign randomly drawn loot to
-a player. An example call is shown in @figure-ref{loot-call.rkt}.
+whose responsibility is to assign randomly drawn loot to a player. An
+example call is shown in @figure-ref{loot-call.rkt}.
 
 @; Be careful with automatic formatting here; the layout is
 @; non-traditional for size…
@@ -528,7 +545,6 @@ a player. An example call is shown in @figure-ref{loot-call.rkt}.
         @racketblock[(define (loot-button |@|loot-deck |@|players
                                           #:on-player on-player)
                        (button ... (on-player p) ...))
-                     ...
                      (loot-button |@|loot-deck |@|players
                        #:on-player
                        (λ (p) (give-player-loot |@|players p)))]]
@@ -614,8 +630,7 @@ write our own @racket[view<%>] implementation, which wraps any GUI
 widget(s) we desire. This includes core classes, custom subclasses, and
 third-party widgets. The Frosthaven Manager uses mixins and custom
 @racket[view<%>]s to implement custom close behavior and to display
-rendered Markdown@note{https://daringfireball.net/projects/markdown/}
-files.
+rendered Markdown@|markdown| files.
 
 The second problem of global state is handled by functional programming
 techniques. Essentially, we have two choices: threading state or dynamic
@@ -629,22 +644,10 @@ state. Using dynamic binding makes views less reusable: they now have
 dependencies not defined by their inputs. Dynamic binding permits each
 view to only be concerned with the global state if absolutely necessary.
 The Frosthaven Manager threads state as much as possible but does use
-dynamic binding in rare instances
+dynamic binding in rare instances.
 
 @section[#:tag "related_work"]{Related Work}
 
-@(define (url-note dest)
-   @note[@url[dest]])
-@(define-syntax-rule (define-notes [id url] ...)
-   (begin (define id (url-note url)) ...))
-@(define-notes
-   [swift-ui "https://developer.apple.com/xcode/swiftui/"]
-   [reagent "https://github.com/reagent-project/reagent"]
-   [react "https://react.dev"]
-   [vue "https://vuejs.org"]
-   [elm "https://elm-lang.org"]
-   [re-frame "https://github.com/day8/re-frame"]
-   [areweguiyet "https://www.areweguiyet.com"])
 @(define frtime
    @~cite[b:frtime-in-plt-scheme b:frtime-dataflow b:frtime-thesis])
 
@@ -653,17 +656,19 @@ system that wraps an imperative GUI framework in a functional shell.
 Other sources of inspiration include Clojure's Reagent@reagent and
 JavaScript's React@|react|. In Racket, FrTime@frtime implements a
 functional reactive programming language for GUIs and other tasks.
-FrTime is in the spirit of the original functional reactive paradigm,
-while Vue@vue, React, and inspired libraries, including GUI Easy,
-have evolved slightly different notions of reactive programming. The
+FrTime extends the spirit of the original functional reactive
+paradigm@~cite[b:fran b:frp-cont] based on time flow and signals. Vue@vue,
+React, and inspired libraries, including GUI Easy, have evolved slightly
+different notions of reactive programming; namely, programs react to
+changes in state rather than in response to time-varying signals. The
 Elm@|elm| programming language strictly constrains component composition
-to the data down, actions up style. Clojure's re-frame@re-frame
-library builds on Reagent@reagent to add more sophisticated state
-management, with a global store and effect handler (like observable
-update procedures) registry and queries (like derived observables).
-Rust's infamous ``Are We GUI Yet?''@areweguiyet website mentions at
-least four GUI libraries for functional reactive programming in the
-style of React or FrTrime.
+to the data down, actions up style. Clojure's re-frame@re-frame library
+builds on Reagent@reagent to add more sophisticated state management.
+This includes a global store and effect handler, akin to GUI Easy's
+observable update procedures, and queries, akin to GUI Easy's derived
+observables. Rust's infamous ``Are We GUI Yet?''@areweguiyet website
+mentions at least four GUI libraries for functional reactive programming
+in the style of React or FrTrime.
 
 While we must be careful not to confuse popularity with usefulness, our
 satisfaction programming in the style suggested by GUI Easy and the use
@@ -693,9 +698,9 @@ abstracting over imperative concerns; escape hatches that pierce the
 veil of abstraction are necessary. With careful control, such piercings
 can be themselves wrapped in abstractions to manage complexity.
 
-@acks{We thank the anonymous reviewers for their suggestions. Ben is
-grateful to Savannah Knoble, Derrick Franklin, John Hines, and Jake
-Hicks for playtesting the Frosthaven Manager throughout development, and
-to Isaac Childres for bringing us the wonderful world of Frosthaven.}
+@acks{Ben is grateful to Savannah Knoble, Derrick Franklin, John Hines,
+and Jake Hicks for playtesting the Frosthaven Manager throughout
+development, and to Isaac Childres for bringing us the wonderful world
+of Frosthaven.}
 
 @(generate-bibliography #:sec-title "References")

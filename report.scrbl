@@ -213,20 +213,20 @@ The Racket GUI framework proved an excellent way to build those types of
 tools as it provides fast iteration times, portability across major
 operating systems, and distribution of self-contained applications.
 
-Over time, however, the same set of small annoyances kept cropping up.
-Racket's class system requires verbose code. Each project handles state
-updates in its own way. Racket GUI's primary means of constructing view
-hierarchies is to construct child widgets with references to their
-parent widgets. The latter point makes composition especially
+Over time, however, Bogdan was repeatedly annoyed by the same
+inconveniences. Racket's class system requires verbose code. Each
+project handles state updates in its own way. Racket GUI's primary means
+of constructing view hierarchies is to construct child widgets with
+references to their parent widgets, which makes composition especially
 frustrating since individual components must always be parameterized
 over their parent.
 
 Since Racket GUI offers no special support for managing application
-state and wiring said state to widgets, we must bring our own state
-management to the table, leading to ad hoc solutions for every new
+state and wiring said state to widgets, Bogdan had to bring his own
+state management to the table, leading to ad hoc solutions for every new
 project. See @figure-ref{oop-counter.rkt} for an example of ad hoc state
-management. This was the motivation behind the observable abstraction in
-GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how observables and
+management. This motivated Bogdan's observable abstraction in GUI Easy.
+In @secref{GUI_Easy_Overview}, we'll see how observables and
 observable-aware views combine to automatically connect GUI widgets and
 state changes.
 
@@ -254,23 +254,15 @@ in @secref{arch-frost}.
 
 @subsection{Embarking for Frosthaven}
 
-Frosthaven is a cooperative tactical fantasy adventure board game for 2
-to 4 players and the sequel to Gloomhaven@~cite[b:frosthaven]. In both
-games, players play cards to determine turns during a scenario;
-separately, monsters take turns based on a deck of cards. Typical
-scenarios pit the player team against strange monsters and challenging
-obstacles in order to achieve victory. In Frosthaven, victory means more
-resources to rebuild the outpost of Frosthaven.
-
-Due to its highly complex nature, Frosthaven includes lots of tokens,
-cards, and other physical pieces that we, the players, must manipulate
-to play the game. This includes tracking monster's health and status,
-the level of power of six elements that power special abilities, and
-more.
-
+Ben enjoys boardgames with a group of friends, especially
+Frosthaven@~cite[b:frosthaven], the sequel to Gloomhaven. Due to its
+highly complex nature, Frosthaven includes lots of tokens, cards, and
+other physical pieces that we the players must manipulate to play the
+game. This includes tracking monster's health and conditions, the
+strength of six magical elements that power special abilities, and more.
 The original Gloomhaven game had a helper application for mobile devices
-to manage the complexity; at one point, it appeared Frosthaven would not
-receive the same treatment.
+to reduce physical manipulation; at one point, it appeared Frosthaven
+would not receive the same treatment.
 
 Ben, a programmer, decided to solve the problem for his personal gaming
 group by creating his own helper application. But how? Having never
@@ -282,7 +274,7 @@ novice, like Ben, GUI Easy represents a simpler path to GUI programming.
 
 GUI Easy makes it possible to build a complex system out of simple
 parts: functions and data. Ben was familiar with functional programming
-and grokked GUI Easy. Ben started programming the Frosthaven
+and grokked GUI Easy, so Ben started programming the Frosthaven
 Manager@~cite[b:frosthaven-manager] with GUI Easy in 2022.
 
 @section{GUI Easy Overview}

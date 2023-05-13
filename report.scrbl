@@ -231,8 +231,8 @@ observable-aware views combine to automatically connect GUI widgets and
 state changes.
 
 If constructing a component requires the parent widget, then either (a)
-all components must be constructed in a specific, hard-to-change order
-or (b) all components must be wrapped in procedures with a parent
+Bogdan must construct all components in a specific, hard-to-change order
+or (b) Bogdan must wrap all components in procedures with a parent
 parameter. Consider the following piece of Racket code:
 
 @racketblock[
@@ -242,12 +242,12 @@ parameter. Consider the following piece of Racket code:
          [label "Hello World"]))
 ]
 
+@; is the switch from Bogdan to We jarring?
 We cannot create the message object before the frame object in this
 case, since we need a @racket[parent] for the message object. This
-constrains the ways in which we can organize code. We can always
-abstract over message object construction, but that needlessly
-complicates the process of wiring up interfaces. This was the motivation
-behind the @racket[view<%>] abstraction in GUI Easy. In
+constrains how we can organize code. We can abstract over message object
+construction, but that needlessly complicates wiring up interfaces. This
+motivated Bogdan's view abstraction in GUI Easy. In
 @secref{GUI_Easy_Overview}, we'll see how views permit functional
 abstraction, enabling new organizational approaches that we'll explore
 in @secref{arch-frost}.

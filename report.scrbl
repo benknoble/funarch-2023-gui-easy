@@ -281,6 +281,17 @@ Manager@~cite[b:frosthaven-manager] with GUI Easy in 2022.
 
 @section{GUI Easy Overview}
 
+The functional programmer naturally represents data via immutable data
+structures such as records, enumerations, and collections. They also
+write pure functions that transform immutable data into different
+representations or representations with different values. In contrast,
+object-oriented systems rely on mutable state and side-effecting class
+methods, which usually clash with functional programming techniques.
+Programming a GUI with GUI Easy permits the functional programmer to
+retain functional programming techniques to a greater degree than
+object-oriented GUI systems do. In this section, we give a brief
+overview of how GUI Easy achieves this.
+
 GUI easy can be broadly split up into two parts: @italic{observables}
 and @italic{views}.
 
@@ -381,9 +392,7 @@ Easy-based project.
 @section[#:tag "arch-frost"]{The Architecture of Frosthaven}
 
 In this section, we describe various pieces of a large GUI Easy
-application, the Frosthaven Manager, and derive principles from our
-experience in constructing such applications using GUI Easy and similar
-frameworks.
+application, the Frosthaven Manager.
 
 @; Describe the architecture of Frosthaven as it pertains to GUI Easy; derive
 @; principles (core/shell, DDAU, centralized v. local state, re-usable
@@ -395,73 +404,55 @@ lines of Racket code. About half of that code construct the main
 application by combining GUI Easy views with domain-specific code. Of
 the remaining lines, approximately 1000 implement the data structures
 and transformations responsible for the state of the game; 500 cover the
-images it draws; 750 implement three plugin languages; 300 test the
-project; the remaining lines are small syntactic utilities. The
-Frosthaven Manager also has approximately 3000 lines of
-Scribble@note{Scribble is a Racket prose and documentation language.}
-code which includes a how-to-play guide and developer reference.
-
-@subsection{Functional Core: There and Back Again}
-
-@; Does this section do enough to describe the situation and actually
-@; derive useful information from it? I feel like it's heavier on
-@; description than analysis.
+images it draws; 750 implement three user-programmable data-definition
+languages@url-note{https://benknoble.github.io/frosthaven-manager/Programming_a_Scenario.html};
+300 test the project; the remaining lines are small syntactic utilities.
+The Frosthaven Manager also has approximately 3000 lines of Scribble, a
+Racket prose and documentation language, which includes a how-to-play
+guide and developer reference.
 
 The Frosthaven Manager manipulates many kinds of data. This includes
 game characters and their various attributes, monsters and their
 attributes, randomized loot, the status of elemental effects, and more.
+To organize and manipulate this data, Ben chose a ``functional core,
+imperative shell'' architecture@~cite[b:functional-core].
 
-The functional programmer naturally represents data via immutable data
-structures such as records, enumerations, and collections. They also
-writes pure functions that transform immutable data into different
-representations or representations with different values. In contrast,
-object-oriented systems rely on mutable state and side-effecting class
-methods, which usually clash with functional programming techniques.
-Programming a GUI with GUI Easy permits the functional programmer to
-retain functional programming techniques to a greater degree than
-object-oriented GUI systems do.
+The choice of a functional core and imperative shell has many well-known
+benefits. For example, core code is independent of the choice of UI
+presentation and is independently testable or useable for other
+applications. Functional cores also simplify programmer reasoning about
+application data flow, keeping state change at the boundaries of the
+system.
 
 In constructing the Frosthaven Manager, Ben organized the main data into
 immutable records, enumerations, and collections alongside pure
-functions that transform data according to the rules of the game. Thus
-we say that the Frosthaven Manager uses a ``functional core,'' a common
-functional architecture@~cite[b:functional-core].
-
-The choice of a functional core has many well-known benefits. For
-example, this code is independent of the choice of GUI presentation and
-is also independently testable or useable for other applications. It
-also simplifies programmer reasoning about core application data flow.
+functions that transform data according to the rules of the game. We
+thus say that the Frosthaven Manager uses a functional core.
 
 Layered atop the functional core we find two more major components in
-the Frosthaven Manager: GUI-related data and domain-specific views. In
-many ways, Ben took the functional approach here, too. GUI-related data
-is organized along typical idioms and paired with transformation
-functions. Domain-specific views are reusable components built out of
-GUI Easy views and other domain-specific views. In
-@secref{Reusable_GUIs}, we will cover the design of such reusable GUIs
-in more detail. Despite these functional qualities, since most of the
-relevant data is observable or intended to be observable, the resulting
-system feels far more imperative. For example, pure transformations from
-the core are paired with observable updates---akin to mutations---for
-real effect on the state of the GUI. As a result, though many important
-and reusable views seem pure, they are easily combined into a highly
-imperative system. This ``imperative shell'' pairs well with the
-previous functional core, giving us a familiar functional
-architecture@~cite[b:functional-core].
-
-@subsection{Reusable GUIs}
+the Frosthaven Manager: GUI-specific data and domain-specific views
+built on GUI Easy. In many ways, Ben took the functional approach here,
+too. GUI-related data is organized along typical idioms and paired with
+transformation functions. Despite these functional qualities, since most
+of the relevant data is observable or intended to be observable, the
+resulting system feels far more imperative. For example, pure
+transformations from the functional layers are paired with observable
+updates---akin to mutations---for real effect on the state of the GUI.
+As a result, though many important and reusable views seem pure, they
+are easily combined into a highly imperative system. These views and
+updates form the Frosthaven Manager's imperative shell.
 
 The Frosthaven Manager's main GUI comprises many smaller reusable views.
 By analogy with functional programming's building
 blocks---functions---small reusable views permit us to construct large
-systems via composition. Reusable views often consist of other views,
-just as pure functions often are composed of other pure functions. Since
-a view is a function, albeit often a wrapper, this kind of composition
-is naturally suited to functional programming architectures.
+systems via composition. We'll discuss the design principles behind
+reusable views in @secref{Reusable_Views}.
 
-Reusable views are, in essence, small reusable GUIs. Given the necessary
-state, we can turn a reusable view into a GUI by nesting the view in a
-@racket[window] and calling @racket[render].
+@subsection{Reusable Views}
+
+Our experience with GUI Easy led us to the concept of reusable views.
+Much like pure functions, a reusable view is composable. All the views
+provided by GUI Easy are reusable as described in this section.
 
 There is one major design factor of reusable views. @emph{Views should
 not directly manipulate external state.} This is analogous to the rule

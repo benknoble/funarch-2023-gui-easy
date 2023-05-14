@@ -596,10 +596,10 @@ much as possible but does use dynamic binding in rare instances.
 The functional architecture popularized by
 @cite-author[b:functional-core]'s ``Functional Core, Imperative Shell''
 video@~cite[b:functional-core] involves wrapping a core of pure
-functional code with a shell of imperative commands. We've discussed the
-benefits of such an architecture in previous sections. In a twist on the
-classic paradigm, the core of GUI Easy views is an imperative object
-lifecycle, while its shell is functional.
+functional code with a shell of imperative commands, whose benefits
+we've already discussed. In a twist on the classic paradigm, the core of
+GUI Easy views is an imperative object lifecycle, while its shell is
+functional.
 
 The lifecycle is embodied by the @racket[view<%>] interface. Instances
 must know how to @italic{create} GUI widgets, how to @italic{update}

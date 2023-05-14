@@ -305,14 +305,9 @@ other observable operators.
                      (code:comment "observer a saw 2")
                      (code:comment "observer b saw 2")]]
 
-Views are representations of Racket GUI widgets that, when rendered,
-produce instances of those widgets and handle the details of
-transparently wiring view trees together. They are typically
-observable-aware in ways that make sense for each individual widget. For
-instance, the @racket[text] view takes as input an observable string and
-the rendered widget's label updates with changes to that observable.
-@Figure-ref{easy-counter-reuse.rkt} shows an example of a reusable
-counter component made by composing views together. We discuss the view
+Views are representations of Racket GUI widget trees that, when
+rendered, produce instances of those trees and handle the details of
+transparently wiring state and view together. We discuss the view
 abstraction in more detail in @Secref{view_detail}.
 
 @figure["easy-counter-reuse.rkt"
@@ -360,80 +355,28 @@ contents of the observable. This operation is useful to get
 point-in-time values out of observables when displaying modal dialogs or
 other views that require a snapshot of the state.
 
-@subsection[#:tag "view_detail"]{Views: Functional Shell, Imperative Core}
+@subsection[#:tag "view_detail"]{Views as Functions}
 @; etc., whatever we need here
 
-The functional architecture popularized by
-@cite-author[b:functional-core]'s ``Functional Core, Imperative Shell''
-video@~cite[b:functional-core] involves wrapping a core of pure
-functional code with a shell of imperative commands. This makes the core
-testable without side-effects or complex mocks and simplifies state
-management. In a twist on this classic paradigm, at the core of GUI Easy
-lies an imperative object lifecycle while its shell is functional.
+Views are functions that return a @racket[view<%>] instance, whose
+underlying details we'll cover in @secref{view_impl}. Views might wrap a
+specific GUI widget, like a text message or button, or they might
+construct a tree of smaller views, forming a larger component. Both
+forms are synonymous with ``view'' in this paper. We've already seen
+many examples of views like @racket[text], @racket[hpanel], and
+@racket[counter].
 
-The lifecycle is embodied by a view. Views must know how to
-@italic{create} GUI widgets, how to @italic{update} them in response to
-changed data dependencies, and how to @italic{destroy} them if
-necessary. They must also propagate data dependencies up the view tree
-to a coordinator object. Data dependencies are any observable values the
-view knows about; the coordinator object signals updates when
-dependencies change, allowing the view to trigger an update in the
-underlying widget. Crucially, view instances must be reusable, so they
-must carefully associate any internal state they need with each rendered
-widget.
+Views are typically observable-aware in ways that make sense for each
+view. For instance, the @racket[text] view takes as input an observable
+string and the rendered text label updates with changes to that
+observable. @Figure-ref{easy-counter-reuse.rkt} shows an example of a
+reusable counter component made by composing views together.
 
-A class implementing the @racket[view<%>] interface represents a view.
-The interface is shown in @figure-ref{view-iface.rkt}. View
-implementations wrap Racket GUI widgets while keeping track of data
-dependencies and responding to their changes@~cite[b:gui-easy]. The
-interface reifies the GUI widget lifecycle into a concrete object,
-making explicit the separation between a GUI widget, its creation, and
-its reaction to changes in data dependencies.
-
-@figure["view-iface.rkt"
-        "The view<%> interface."
-        @racketblock[
-(define container/c (is-a?/c area-container<%>))
-(define widget/c (is-a?/c area<%>))
-
-(define view<%>
-  (interface ()
-    [dependencies (->m (listof obs?))]
-    [create (->m container/c widget/c)]
-    [update (->m widget/c obs? any/c void?)]
-    [destroy (-> widget/c void?)]))]]
-
-@figure["view-impl.rkt"
-        "An implementation of a custom view<%>."
-        @racketblock[
-(define text%
-  (class* object% (view<%>)
-    (init-field |@|label) (super-new)
-    (define/public (dependencies) (list |@|label))
-    (define/public (create parent)
-      (new gui:message% [parent parent]
-           [label (obs-peek |@|label)]))
-    (define/public (update widget what val)
-      (send widget set-label val))
-    (define/public (destroy widget) (void))))
-
-(define (text |@|label)
-  (new text% [|@|label |@|label]))
-]]
-
-At the edge of the library, most programmers interact only with the
-functional wrappers around view construction, which is also synonymous
-with the view. These wrappers handle the construction of
-@racket[view<%>] instances and delegate their observable and
-non-observable arguments to specific view objects' constructor
-arguments. Thus, the shell is functional. @Figure-ref{view-impl.rkt}
-shows an implementation of a custom @racket[view<%>] and its function
-wrapper.
-
-Most Racket GUI widgets are already wrapped by GUI Easy. Programmers can
-implement the view abstraction themselves in order to integrate
-arbitrary GUI widgets, such as those from 3rd-party packages in the
-Racket ecosystem, into a GUI Easy-based project.
+Many Racket GUI widgets are already wrapped by GUI Easy. Programmers can
+implement the @racket[view<%>] interface, discussed in
+@secref{view_impl}, in order to integrate arbitrary GUI widgets, such as
+those from 3rd-party packages in the Racket ecosystem, into a GUI
+Easy-based project.
 
 @section[#:tag "arch-frost"]{The Architecture of Frosthaven}
 
@@ -646,6 +589,78 @@ reusable: they now have dependencies not defined by their inputs.
 Dynamic binding permits each view to only be concerned with the global
 state if absolutely necessary. The Frosthaven Manager threads state as
 much as possible but does use dynamic binding in rare instances.
+
+@; very temporary placement
+@subsection[#:tag "view_impl"]{@racket[view<%>]: Functional Shell, Imperative Core}
+
+The functional architecture popularized by
+@cite-author[b:functional-core]'s ``Functional Core, Imperative Shell''
+video@~cite[b:functional-core] involves wrapping a core of pure
+functional code with a shell of imperative commands. This makes the core
+testable without side-effects or complex mocks and simplifies state
+management. In a twist on this classic paradigm, at the core of GUI Easy
+views lies an imperative object lifecycle, while its shell is functional
+as seen in @secref{view_detail}.
+
+The lifecycle is embodied by a view. Views must know how to
+@italic{create} GUI widgets, how to @italic{update} them in response to
+changed data dependencies, and how to @italic{destroy} them if
+necessary. They must also propagate data dependencies up the view tree
+to a coordinator object. Data dependencies are any observable values the
+view knows about; the coordinator object signals updates when
+dependencies change, allowing the view to trigger an update in the
+underlying widget. Crucially, view instances must be reusable, so they
+must carefully associate any internal state they need with each rendered
+widget.
+
+A class implementing the @racket[view<%>] interface represents a view.
+The interface is shown in @figure-ref{view-iface.rkt}. View
+implementations wrap Racket GUI widgets while keeping track of data
+dependencies and responding to their changes@~cite[b:gui-easy]. The
+interface reifies the GUI widget lifecycle into a concrete object,
+making explicit the separation between a GUI widget, its creation, and
+its reaction to changes in data dependencies.
+
+@figure["view-iface.rkt"
+        "The view<%> interface."
+        @racketblock[
+(define container/c (is-a?/c area-container<%>))
+(define widget/c (is-a?/c area<%>))
+
+(define view<%>
+  (interface ()
+    [dependencies (->m (listof obs?))]
+    [create (->m container/c widget/c)]
+    [update (->m widget/c obs? any/c void?)]
+    [destroy (-> widget/c void?)]))]]
+
+@figure["view-impl.rkt"
+        "An implementation of a custom view<%>."
+        @racketblock[
+(define text%
+  (class* object% (view<%>)
+    (init-field |@|label) (super-new)
+    (define/public (dependencies) (list |@|label))
+    (define/public (create parent)
+      (new gui:message% [parent parent]
+           [label (obs-peek |@|label)]))
+    (define/public (update widget what val)
+      (send widget set-label val))
+    (define/public (destroy widget) (void))))
+
+(define (text |@|label)
+  (new text% [|@|label |@|label]))
+]]
+
+At the edge of the library, most programmers interact only with the
+functional wrappers around view construction, which is also synonymous
+with the view. These wrappers handle the construction of
+@racket[view<%>] instances and delegate their observable and
+non-observable arguments to specific view objects' constructor
+arguments. Thus, the shell is functional. @Figure-ref{view-impl.rkt}
+shows an implementation of a custom @racket[view<%>] and its function
+wrapper.
+
 
 @section[#:tag "related_work"]{Related Work}
 

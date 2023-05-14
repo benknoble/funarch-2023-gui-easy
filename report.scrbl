@@ -590,34 +590,30 @@ Dynamic binding permits each view to only be concerned with the global
 state if absolutely necessary. The Frosthaven Manager threads state as
 much as possible but does use dynamic binding in rare instances.
 
-@; very temporary placement
+@; very temporary placement (in terms of headings and such)
 @subsection[#:tag "view_impl"]{@racket[view<%>]: Functional Shell, Imperative Core}
 
 The functional architecture popularized by
 @cite-author[b:functional-core]'s ``Functional Core, Imperative Shell''
 video@~cite[b:functional-core] involves wrapping a core of pure
-functional code with a shell of imperative commands. This makes the core
-testable without side-effects or complex mocks and simplifies state
-management. In a twist on this classic paradigm, at the core of GUI Easy
-views lies an imperative object lifecycle, while its shell is functional
-as seen in @secref{view_detail}.
+functional code with a shell of imperative commands. We've discussed the
+benefits of such an architecture in previous sections. In a twist on the
+classic paradigm, the core of GUI Easy views is an imperative object
+lifecycle, while its shell is functional.
 
-The lifecycle is embodied by a view. Views must know how to
-@italic{create} GUI widgets, how to @italic{update} them in response to
-changed data dependencies, and how to @italic{destroy} them if
-necessary. They must also propagate data dependencies up the view tree
-to a coordinator object. Data dependencies are any observable values the
-view knows about; the coordinator object signals updates when
-dependencies change, allowing the view to trigger an update in the
-underlying widget. Crucially, view instances must be reusable, so they
-must carefully associate any internal state they need with each rendered
-widget.
+The lifecycle is embodied by the @racket[view<%>] interface. Instances
+must know how to @italic{create} GUI widgets, how to @italic{update}
+them in response to changed data dependencies, and how to
+@italic{destroy} them if necessary@~cite[b:gui-easy]. They must also
+propagate data dependencies up the object tree to a coordinator object.
+Data dependencies are any known observable values; the coordinator
+object signals updates when dependencies change, allowing the
+@racket[view<%>] to trigger an update in the wrapped widget. Crucially,
+@racket[view<%>] instances must be reusable, so they must carefully
+associate any internal state they need with each rendered widget.
 
-A class implementing the @racket[view<%>] interface represents a view.
-The interface is shown in @figure-ref{view-iface.rkt}. View
-implementations wrap Racket GUI widgets while keeping track of data
-dependencies and responding to their changes@~cite[b:gui-easy]. The
-interface reifies the GUI widget lifecycle into a concrete object,
+The @racket[view<%>] interface is shown in @figure-ref{view-iface.rkt}.
+The interface reifies the GUI widget lifecycle into a concrete object,
 making explicit the separation between a GUI widget, its creation, and
 its reaction to changes in data dependencies.
 
@@ -652,15 +648,10 @@ its reaction to changes in data dependencies.
   (new text% [|@|label |@|label]))
 ]]
 
-At the edge of the library, most programmers interact only with the
-functional wrappers around view construction, which is also synonymous
-with the view. These wrappers handle the construction of
-@racket[view<%>] instances and delegate their observable and
-non-observable arguments to specific view objects' constructor
-arguments. Thus, the shell is functional. @Figure-ref{view-impl.rkt}
-shows an implementation of a custom @racket[view<%>] and its function
-wrapper.
-
+To go from a @racket[view<%>] to a functional view, all that remains is
+to wrap object construction in a function. Thus, the shell is
+functional. @Figure-ref{view-impl.rkt} shows an implementation of a
+custom @racket[view<%>] and its function wrapper.
 
 @section[#:tag "related_work"]{Related Work}
 

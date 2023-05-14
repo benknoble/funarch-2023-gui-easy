@@ -179,7 +179,7 @@ In this report, we
         systems and motivate the search for a different system in
         @secref{A_Tale_of_Two_Programmers},
     }
-    @item{describe GUI Easy in @secref{GUI_Easy_Overview},}
+    @item{describe the key GUI Easy abstractions in @secref{GUI_Easy_Overview},}
     @item{
         report on our experience constructing large GUI programs, such
         as the Frosthaven Manager@~cite[b:frosthaven-manager], in

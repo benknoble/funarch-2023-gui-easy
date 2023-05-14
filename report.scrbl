@@ -618,7 +618,7 @@ making explicit the separation between a GUI widget, its creation, and
 its reaction to changes in data dependencies.
 
 @figure["view-iface.rkt"
-        "The view<%> interface."
+        (list "The " @racket[view<%>] " interface.")
         @racketblock[
 (define container/c (is-a?/c area-container<%>))
 (define widget/c (is-a?/c area<%>))
@@ -631,7 +631,7 @@ its reaction to changes in data dependencies.
     [destroy (-> widget/c void?)]))]]
 
 @figure["view-impl.rkt"
-        "An implementation of a custom view<%>."
+        (list "An implementation of a custom " @racket[view<%>] ".")
         @racketblock[
 (define text%
   (class* object% (view<%>)

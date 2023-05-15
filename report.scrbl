@@ -245,21 +245,20 @@ in @secref{arch-frost}.
 Ben enjoys boardgames with a group of friends, especially
 Frosthaven@~cite[b:frosthaven], the sequel to Gloomhaven. Due to its
 highly complex nature, Frosthaven includes lots of tokens, cards, and
-other physical pieces that we the players must manipulate to play the
-game. This includes tracking monsters' health and conditions, the
-strength of six magical elements that power special abilities, and more.
-The original Gloomhaven game had a helper application for mobile devices
-to reduce physical manipulation; at one point, it appeared Frosthaven
-would not receive the same treatment.
+other physical pieces that the players must manipulate to play the game.
+This includes tracking monsters' health and conditions, the strength
+of six magical elements that power special abilities, and more. The
+original Gloomhaven game had a helper application for mobile devices to
+reduce physical manipulation; at one point, it appeared Frosthaven would
+not receive the same treatment.
 
-Ben, a programmer, decided to solve the problem for his personal gaming
-group by creating his own helper application. But how? Having never
-created a complex GUI program---and knowing this would be a complex
-GUI---Ben was intimidated by classic object-oriented GUI systems like
-Racket's. To a programmer with intimate knowledge of the class, method,
-and event relationships, such a system may feel natural. To the GUI
-novice, like Ben, GUI Easy represents a simpler functional-oriented path
-to GUI programming.
+Ben, a programmer, decided to solve the problem for his personal
+gaming group by creating his own helper application. But how? Having
+never created a complex GUI program, Ben was intimidated by classic
+object-oriented systems like Racket's. To a programmer with intimate
+knowledge of the class, method, and event relationships, such a system
+may feel natural. To the novice, like Ben, GUI Easy represents a
+simpler, functional-oriented, path to interface programming.
 
 GUI Easy makes it possible to build a complex system out of simple
 parts: functions and data. Ben was familiar with functional programming
@@ -352,8 +351,8 @@ In @figure-ref["easy-counter-reuse.rkt"], the derived observable
 applying @racket[number->string] to the value of @racket[|@|count]. We
 cannot directly update derived observables.
 
-We can peek at an observable with @racket[obs-peek], which returns the
-contents of the observable. This operation is useful to get
+We can peek at an observable with @racket[obs-peek], which returns
+the contents of the observable. This operation is useful to get
 point-in-time values out of observables when displaying modal dialogs or
 other views that require a snapshot of the state.
 

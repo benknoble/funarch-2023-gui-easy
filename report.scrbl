@@ -173,25 +173,13 @@ change @~cite[b:react b:swiftui]. In this example, pressing the buttons
 causes the counter to be updated, which transparently updates the text
 label.
 
-In this report, we
-@itemlist[
-    @item{
-        examine the difficulties of programming with object-oriented GUI
-        systems and motivate the search for a different system in
-        @secref{A_Tale_of_Two_Programmers},
-    }
-    @item{describe the key GUI Easy abstractions in @secref{GUI_Easy_Overview},}
-    @item{
-        report on our experience constructing large GUI programs, such
-        as the Frosthaven Manager@~cite[b:frosthaven-manager], in
-        @secref{arch-frost},
-    }
-    @item{explore two key architectural lessons in @secref{Architectural_Lessons}, and}
-    @item{
-        explore related trends in GUI and Web programming in
-        @secref{related_work}.
-    }
-]
+In this report, we examine the difficulties of programming with
+object-oriented GUI systems and motivate the search for a different
+system in @secref{A_Tale_of_Two_Programmers}, describe the key GUI Easy
+abstractions in @secref{GUI_Easy_Overview}, report on our experience
+constructing large GUI programs in @secref{arch-frost}, explore two key
+architectural lessons in @secref{Architectural_Lessons}, and explore
+related trends in GUI programming in @secref{related_work}.
 
 @section{A Tale of Two Programmers}
 @; or "… Two Programs" ?

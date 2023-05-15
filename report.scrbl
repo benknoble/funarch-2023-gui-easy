@@ -293,16 +293,14 @@ other observable operators.
         "Using the low-level observable API in GUI Easy."
         @racketmod0[
         racket/gui/easy
-        (define |@|o (|@| 1))
-        (obs-observe! |@|o
-         (λ (x) (printf "observer a saw ~a\n" x)))
-        (obs-observe! |@|o
-         (λ (x) (printf "observer b saw ~a\n" x)))
+        (define o (|@| 1))
+        (obs-observe! o (λ (x) (printf "a got ~a\n" x)))
+        (obs-observe! o (λ (x) (printf "b got ~a\n" x)))
         (code:comment "change the observable by adding 1")
-        (<~ |@|o add1)
+        (<~ o add1)
         (code:comment "outputs:")
-        (code:comment "observer a saw 2")
-        (code:comment "observer b saw 2")]]
+        (code:comment "a got 2")
+        (code:comment "b got 2")]]
 
 Views are representations of Racket GUI widget trees that, when
 rendered, produce instances of those trees and handle the details of
@@ -319,14 +317,14 @@ abstraction in more detail in @Secref{view_detail}.
            (text (~> |@|count number->string))
            (button "+" (λ () (action add1)))))
 
-          (define |@|c1 (|@| 0))
-          (define |@|c2 (|@| 5))
+        (define |@|c1 (|@| 0))
+        (define |@|c2 (|@| 5))
 
-          (render
-           (window
-            #:title "Counters"
-            (counter |@|c1 (λ (proc) (<~ |@|c1 proc)))
-            (counter |@|c2 (λ (proc) (<~ |@|c2 proc)))))]]
+        (render
+         (window
+          #:title "Counters"
+          (counter |@|c1 (λ (proc) (<~ |@|c1 proc)))
+          (counter |@|c2 (λ (proc) (<~ |@|c2 proc)))))]]
 
 @subsection{Observable Values}
 

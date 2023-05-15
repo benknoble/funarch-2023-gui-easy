@@ -1,6 +1,6 @@
 #lang racket/gui/easy
 
-(define @o (@ 1))
-(obs-observe! @o (λ (x) (printf "observer a saw ~a\n" x)))
-(obs-observe! @o (λ (x) (printf "observer b saw ~a\n" x)))
-(<~ @o add1)
+(define o (@ 1))
+(obs-observe! o (λ (x) (printf "a got ~a\n" x)))
+(obs-observe! o (λ (x) (printf "b got ~a\n" x)))
+(<~ o add1)

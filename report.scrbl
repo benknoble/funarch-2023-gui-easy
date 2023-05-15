@@ -147,8 +147,7 @@ UI state, like the message label, by mutation.
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."
         @racketmod0[
-        racket/base
-        (require racket/gui/easy racket/gui/easy/operator)
+        racket/gui/easy
         (define |@|count (|@| 0))
         (render
          (window
@@ -293,16 +292,18 @@ other observable operators.
 @; non-traditional for size…
 @figure["observables.rkt"
         "Using the low-level observable API in GUI Easy."
-        @racketblock[(define |@|o (|@| 1))
-                     (obs-observe! |@|o
-                       (λ (x) (printf "observer a saw ~a\n" x)))
-                     (obs-observe! |@|o
-                       (λ (x) (printf "observer b saw ~a\n" x)))
-                     (code:comment "change the observable by adding 1")
-                     (<~ |@|o add1)
-                     (code:comment "outputs:")
-                     (code:comment "observer a saw 2")
-                     (code:comment "observer b saw 2")]]
+        @racketmod0[
+        racket/gui/easy
+        (define |@|o (|@| 1))
+        (obs-observe! |@|o
+         (λ (x) (printf "observer a saw ~a\n" x)))
+        (obs-observe! |@|o
+         (λ (x) (printf "observer b saw ~a\n" x)))
+        (code:comment "change the observable by adding 1")
+        (<~ |@|o add1)
+        (code:comment "outputs:")
+        (code:comment "observer a saw 2")
+        (code:comment "observer b saw 2")]]
 
 Views are representations of Racket GUI widget trees that, when
 rendered, produce instances of those trees and handle the details of
@@ -311,25 +312,27 @@ abstraction in more detail in @Secref{view_detail}.
 
 @figure["easy-counter-reuse.rkt"
         "Component re-use in GUI Easy."
-        @racketblock[(define (counter |@|count action)
-                       (hpanel
-                         (button "-" (λ () (action sub1)))
-                         (text (~> |@|count number->string))
-                         (button "+" (λ () (action add1)))))
+        @racketmod0[
+        racket/gui/easy
+        (define (counter |@|count action)
+          (hpanel
+           (button "-" (λ () (action sub1)))
+           (text (~> |@|count number->string))
+           (button "+" (λ () (action add1)))))
 
-                     (define |@|c1 (|@| 0))
-                     (define |@|c2 (|@| 5))
+          (define |@|c1 (|@| 0))
+          (define |@|c2 (|@| 5))
 
-                     (render
-                      (window
-                       #:title "Counters"
-                       (counter |@|c1 (λ (proc) (<~ |@|c1 proc)))
-                       (counter |@|c2 (λ (proc) (<~ |@|c2 proc)))))]]
+          (render
+           (window
+            #:title "Counters"
+            (counter |@|c1 (λ (proc) (<~ |@|c1 proc)))
+            (counter |@|c2 (λ (proc) (<~ |@|c2 proc)))))]]
 
 @subsection{Observable Values}
 
-The core of the observable abstraction is that arbitrary observers react
-to changes in the value of an observable. Application developers
+The core of the observable abstraction is that arbitrary observers can
+react to changes in the content of an observable. Application developers
 programming with GUI Easy use a few core operators to construct and
 manipulate observables.
 

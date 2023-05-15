@@ -1,7 +1,4 @@
-#lang racket
-
-(require racket/gui/easy
-         racket/gui/easy/operator)
+#lang racket/gui/easy
 
 (define (counter @count action)
   (hpanel

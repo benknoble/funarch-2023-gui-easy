@@ -147,30 +147,31 @@ UI state, like the message label, by mutation.
 @figure["easy-counter.rkt"
         "A counter GUI using GUI Easy's functional widgets."
         @racketmod0[
-        racket
+        racket/base
         (require racket/gui/easy racket/gui/easy/operator)
         (define |@|count (|@| 0))
         (render
-          (window
-            #:title "Counter"
-            (hpanel
-              (button "-" (λ () (<~ |@|count sub1)))
-              (text (~> |@|count number->string))
-              (button "+" (λ () (<~ |@|count add1))))))]]
+         (window
+          #:title "Counter"
+          (hpanel
+           (button "-" (λ () (<~ |@|count sub1)))
+           (text (~> |@|count number->string))
+           (button "+" (λ () (<~ |@|count add1))))))]]
 
 GUI Easy is a functional shell for Racket's GUI system based on
 observable values and function composition that aims to solve the
 problems with the imperative object-based APIs@~cite[b:gui-easy].
 
-With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the
-previous shortcomings. As state, we define an observable
+With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves
+the previous shortcomings. As state, we define an observable
 @racket[|@|count] whose initial value is the number @racket[0]. Then we
-@racket[render] the GUI composed of widgets like @racket[window],
-@racket[hpanel], @racket[button], and @racket[text]. Their properties,
+@racket[render] an interface composed of widgets like @racket[window],
+@racket[hpanel], @racket[button], and @racket[text]. Widget properties,
 such as size or label, may be constant values or observables. The
-rendered GUI is automatically updated when observables change, as in
-React@|react| for the Web. Buttons on the GUI update the counter state,
-triggering updates to the GUI.
+rendered widgets automatically update when their observable inputs
+change @~cite[b:react b:swiftui]. In this example, pressing the buttons
+causes the counter to be updated, which transparently updates the text
+label.
 
 In this report, we
 @itemlist[
@@ -203,10 +204,9 @@ In this report, we
 We present the origin stories for two projects. First, in
 @secref{Quest_for_Easier_GUIs}, Bogdan describes his frustrations with
 Racket's GUI system that drove him to create GUI Easy. Second, in
-@secref{Embarking_for_Frosthaven}, Ben describes his desire to construct
-a large GUI program without mutable state. The happy union of these two
-desires taught us the architectural lessons we present in
-@secref{arch-frost}.
+@secref{embarking}, Ben describes his desire to construct a large GUI
+program without mutable state. The happy union of these two desires
+taught us the architectural lessons we present in @secref{arch-frost}.
 
 @subsection{Quest for Easier GUIs}
 
@@ -254,7 +254,7 @@ motivated Bogdan's view abstraction in GUI Easy. In
 abstraction, enabling new organizational approaches that we'll explore
 in @secref{arch-frost}.
 
-@subsection{Embarking for the Town of Frosthaven}
+@subsection[#:tag "embarking"]{Embarking for the Town of Frosthaven}
 
 Ben enjoys boardgames with a group of friends, especially
 Frosthaven@~cite[b:frosthaven], the sequel to Gloomhaven. Due to its

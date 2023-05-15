@@ -11,6 +11,18 @@
              #:cite-year cite-year
              #:style number-style)
 
+(define b:react
+  (make-bib #:title "React"
+            #:url "https://react.dev"
+            #:author (authors "Jordan Walke" "Meta")
+            #:date "2013"))
+
+(define b:swiftui
+  (make-bib #:title "SwiftUI"
+            #:url "https://developer.apple.com/xcode/swiftui/"
+            #:author "Apple, Inc."
+            #:date "2019"))
+
 (define b:gui-easy
   (make-bib #:title "racket-gui-easy"
             #:url "https://github.com/Bogdanp/racket-gui-easy"

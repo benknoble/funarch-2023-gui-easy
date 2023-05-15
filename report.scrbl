@@ -212,18 +212,17 @@ frustrating since individual components must always be parameterized
 over their parent.
 
 Since Racket GUI offers no special support for managing application
-state and wiring said state to widgets, Bogdan had to bring his own
-state management to the table, leading to ad hoc solutions for every new
-project. See @racket[update-count] in @figure-ref{oop-counter.rkt} for
-an example of ad hoc state management. This motivated Bogdan's
-observable abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll
-see how observables and observable-aware views combine to automatically
-connect GUI widgets and state changes.
+state, Bogdan had to bring his own state management to the
+table, leading to ad hoc solutions for every new project. See
+@racket[update-count] in @figure-ref{oop-counter.rkt} for an example of
+ad hoc state management. This motivated the observable abstraction in
+GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how observables and
+observable-aware views combine to automatically connect GUI widgets and
+state changes.
 
-It is also inconvenient that constructing a component requires the
-parent widget. So Bogdan must either (a) construct all components in a
-specific, hard-to-change order or (b) wrap all components in procedures
-with a parent parameter. Consider the following piece of Racket code:
+Bogdan found it inconvenient that constructing most widgets requires a
+reference to a parent widget. Consider the following piece of Racket
+code:
 
 @racketblock[
   (define f (new frame% [label "A window"]))
@@ -236,9 +235,9 @@ with a parent parameter. Consider the following piece of Racket code:
 We cannot create the message object before the frame object in this
 case, since we need a @racket[parent] for the message object. This
 constrains how we can organize code. We can abstract over message object
-construction, but that needlessly complicates wiring up interfaces. This
-motivated Bogdan's view abstraction in GUI Easy. In
-@secref{GUI_Easy_Overview}, we'll see how views permit functional
+construction, but that needlessly complicates wiring up interfaces.
+This motivated Bogdan to come up with the view abstraction in GUI Easy.
+In @secref{GUI_Easy_Overview}, we'll see how views permit functional
 abstraction, enabling new organizational approaches that we'll explore
 in @secref{arch-frost}.
 

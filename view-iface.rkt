@@ -11,4 +11,4 @@
     [dependencies (->m (listof obs?))]
     [create (->m container/c widget/c)]
     [update (->m widget/c obs? any/c void?)]
-    [destroy (-> widget/c void?)]))
+    [destroy (->m widget/c void?)]))

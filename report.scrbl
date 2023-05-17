@@ -384,17 +384,19 @@ application, the Frosthaven Manager.
 @; components/view organization …?). Also mention tradeoffs, problems
 @; encountered, etc.
 
-At time of writing, the Frosthaven Manager includes approximately 5000
-lines of Racket code. About half of that code construct the main
+@(define scenario-note
+   @url-note{https://benknoble.github.io/frosthaven-manager/Programming_a_Scenario.html})
+
+At time of writing, the Frosthaven Manager includes approximately
+5000 lines of Racket code. About half of that code makes up the main
 application by combining GUI Easy views with domain-specific code. Of
 the remaining lines, approximately 1000 implement the data structures
 and transformations responsible for the state of the game; 500 cover the
 images it draws; 750 implement three user-programmable data-definition
-languages@url-note{https://benknoble.github.io/frosthaven-manager/Programming_a_Scenario.html};
-300 test the project; the remaining lines are small syntactic utilities.
-The Frosthaven Manager also has approximately 3000 lines of Scribble, a
-Racket prose and documentation language, which includes a how-to-play
-guide and developer reference.
+languages@|scenario-note|; 300 test the project; the remaining lines are
+small syntactic utilities. The Frosthaven Manager also has approximately
+3000 lines of Scribble, a Racket prose and documentation language, which
+includes a how-to-play guide and developer reference.
 
 The Frosthaven Manager manipulates many kinds of data. This includes
 game characters and their various attributes, monsters and their
@@ -509,31 +511,27 @@ constraining such state manipulation is a useful way to contain state in
 a smaller portion of code and to permit functional techniques in the
 remainder.
 
-@subsection[#:tag "view_impl"]{@racket[view<%>]: Functional Shell, Imperative Core}
+@subsection[#:tag "view_impl"]{@tt{view<%>}: Functional Shell, Imperative Core}
 
 The ``Functional Core, Imperative Shell'' architecture involves wrapping
 a core of pure functional code with a shell of imperative commands,
-whose benefits we've already discussed. In a twist on the classic
-paradigm, the core of GUI Easy views is an imperative object lifecycle,
-while its shell is functional. In this section, we'll describe that
-shell in detail and explain how it permits retaining functional
-programming techniques when dealing with imperative systems.
+whose benefits we've already discussed. In a twist on the paradigm, the
+core of GUI Easy views is an imperative object lifecycle, while its
+shell is functional. In this section, we describe that shell in detail
+and explain how it permits retaining functional programming techniques
+when dealing with imperative systems.
 
-The GUI object lifecycle is embodied by the @racket[view<%>] interface.
-Instances must know how to @italic{create} GUI widgets, how to
-@italic{update} them in response to changed data dependencies, and how
-to @italic{destroy} them if necessary@~cite[b:gui-easy]. They must also
-propagate data dependencies up the object tree to a coordinator object.
-Data dependencies are any known observable values; the coordinator
-object signals updates when dependencies change, allowing the
-@racket[view<%>] to trigger an update in the wrapped widget. Crucially,
-@racket[view<%>] instances must be reusable, so they must carefully
-associate any internal state they need with each rendered widget.
-
-The @racket[view<%>] interface is shown in @figure-ref{view-iface.rkt}.
-The interface reifies the GUI widget lifecycle into a concrete object,
-making explicit the separation between a GUI widget, its creation, and
-its reaction to changes in data dependencies.
+The GUI object lifecycle is embodied by the @racket[view<%>] interface
+(@figure-ref{view-iface.rkt}). Implementations of the interface must
+know how to @italic{create} widgets, how to @italic{update} them in
+response to changed data dependencies, and how to @italic{destroy}
+them if necessary@~cite[b:gui-easy]. They must also propagate data
+dependencies up the object tree. Data dependencies are any observable
+inputs to a view. The framework signals updates when dependencies
+change, allowing @racket[view<%>]s to propagate updates to their wrapped
+widgets. Crucially, @racket[view<%>] instances must be reusable, so they
+must carefully associate any internal state they need with each rendered
+widget.
 
 @figure["view-iface.rkt"
         (list "The " @racket[view<%>] " interface.")
@@ -546,7 +544,7 @@ its reaction to changes in data dependencies.
     [dependencies (->m (listof obs?))]
     [create (->m container/c widget/c)]
     [update (->m widget/c obs? any/c void?)]
-    [destroy (-> widget/c void?)]))]]
+    [destroy (->m widget/c void?)]))]]
 
 @figure["view-impl.rkt"
         (list "An implementation of a custom " @racket[view<%>] ".")

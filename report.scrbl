@@ -257,38 +257,35 @@ gaming group by creating his own helper application. But how? Having
 never created a complex GUI program, Ben was intimidated by classic
 object-oriented systems like Racket's. To a programmer with intimate
 knowledge of the class, method, and event relationships, such a system
-may feel natural. To the novice, like Ben, GUI Easy represents a
-simpler, functional-oriented, path to interface programming.
+may feel natural. To the novice, GUI Easy represents a simpler,
+functional-oriented, path to interface programming.
 
 GUI Easy makes it possible to build a complex system out of simple
 parts: functions and data. Ben was familiar with functional programming
-and grokked GUI Easy, so Ben started programming the Frosthaven
+and grokked GUI Easy, so he started programming the Frosthaven
 Manager@~cite[b:frosthaven-manager] with GUI Easy in 2022.
 
 @section{GUI Easy Overview}
 
-The functional programmer naturally represents data via immutable data
-structures such as records, enumerations, and collections. They also
+The functional programmer naturally represents data via immutable
+data structures such as records, enumerations, and collections. They
 write pure functions that transform immutable data into different
 representations or representations with different values. In contrast,
 object-oriented systems rely on mutable state and side-effecting class
 methods, which usually clash with functional programming techniques.
-Programming a GUI with GUI Easy permits the functional programmer to
+Programming with GUI Easy permits the functional programmer to
 retain functional programming techniques to a greater degree than
-object-oriented GUI systems do. In this section, we give a brief
-overview of how GUI Easy achieves this.
+object-oriented systems do. In this section, we give a brief overview of
+how GUI Easy achieves this.
 
 GUI easy can be broadly split up into two parts: @italic{observables}
 and @italic{views}.
 
-Observables contain values and notify subscribed observers of changes
-from @racket[<~]. @Figure-ref{observables.rkt} shows an example of how
-we might use the low-level observable API in GUI Easy. We create
-observables with @racket[|@|]. @Secref{Observable_Values} explains the
-other observable operators.
+Observables contain values and notify subscribed observers of changes to
+their contents. @Figure-ref{observables.rkt} demonstrates the low-level
+observable API. @Secref{Observable_Values} explains the observable
+operators.
 
-@; Be careful with automatic formatting here; the layout is
-@; non-traditional for size…
 @figure["observables.rkt"
         "Using the low-level observable API in GUI Easy."
         @racketmod0[
@@ -328,10 +325,12 @@ abstraction in more detail in @Secref{view_detail}.
 
 @subsection{Observable Values}
 
-The core of the observable abstraction is that arbitrary observers can
-react to changes in the content of an observable. Application developers
-programming with GUI Easy use a few core operators to construct and
-manipulate observables.
+The core of the observable abstraction is that arbitrary observers
+can react to changes in the contents of an observable. Application
+developers programming with GUI Easy use a few core operators to
+construct and manipulate observables.
+
+We create observables with @racket[|@|].
 
 We can change the contents of an observable using @racket[<~]. This
 procedure takes as arguments an observable and a procedure of one
@@ -339,15 +338,15 @@ argument, representing the current value, to generate a new value. Every
 change is propagated to any observers registered at the time of the
 update.
 
-We can derive new observables from existing ones using @racket[~>]. This
-procedure also takes an observable and a procedure of one argument, the
-current value. A derived observable changes with its input observable by
-applying its mapping procedure to the values of its input observables.
-In @figure-ref["easy-counter-reuse.rkt"], the derived observable
-@racket[(~> |@|count number->string)] changes every time
-@racket[|@|count] is updated by @racket[<~]; its value is the result of
-applying @racket[number->string] to the value of @racket[|@|count]. We
-cannot directly update derived observables.
+We can derive new observables from existing ones using @racket[~>].
+This procedure takes an observable and a procedure of one argument, the
+current value. A derived observable changes with the observable it's
+derived from by applying its mapping procedure to the values of its
+input observable. In @figure-ref["easy-counter-reuse.rkt"], the derived
+observable @racket[(~> |@|count number->string)] changes every time
+@racket[|@|count] is updated by @racket[<~]; its value is the result
+of applying @racket[number->string] to the value of @racket[|@|count].
+Derived observables may not be directly updated.
 
 We can peek at an observable with @racket[obs-peek], which returns
 the contents of the observable. This operation is useful to get
@@ -355,27 +354,25 @@ point-in-time values out of observables when displaying modal dialogs or
 other views that require a snapshot of the state.
 
 @subsection[#:tag "view_detail"]{Views as Functions}
-@; etc., whatever we need here
 
 Views are functions that return a @racket[view<%>] instance, whose
-underlying details we'll cover in @secref{view_impl}. Views might wrap a
-specific GUI widget, like a text message or button, or they might
-construct a tree of smaller views, forming a larger component. Both
-forms are synonymous with ``view'' in this paper. We've already seen
-many examples of views like @racket[text], @racket[hpanel], and
+underlying details we'll cover in @secref{view_impl}. Views might
+wrap a specific GUI widget, like a text message or button, or they
+might construct a tree of smaller views, forming a larger component.
+Both forms are synonymous with ``view'' in this paper. We've already
+seen many examples of views like @racket[text], @racket[hpanel], and
 @racket[counter].
 
 Views are typically observable-aware in ways that make sense for each
-view. For instance, the @racket[text] view takes as input an observable
-string and the rendered text label updates with changes to that
-observable. @Figure-ref{easy-counter-reuse.rkt} shows an example of a
-reusable counter component made by composing views together.
+individual view. For instance, the @racket[text] view takes as input an
+observable string and the rendered text label updates with changes to
+that observable. @Figure-ref{easy-counter-reuse.rkt} shows an example of
+a reusable counter component made by composing views together.
 
-Many Racket GUI widgets are already wrapped by GUI Easy. Programmers can
-implement the @racket[view<%>] interface, discussed in
-@secref{view_impl}, in order to integrate arbitrary GUI widgets, such as
-those from 3rd-party packages in the Racket ecosystem, into a GUI
-Easy-based project.
+Many Racket GUI widgets are already wrapped by GUI Easy, but programmers
+can implement the @racket[view<%>] interface themselves in order to
+integrate arbitrary widgets, such as those from 3rd-party packages in
+the Racket ecosystem, into their projects.
 
 @section[#:tag "arch-frost"]{The Architecture of Frosthaven}
 

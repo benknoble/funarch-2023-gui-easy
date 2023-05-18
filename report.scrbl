@@ -157,6 +157,10 @@ UI state, like the message label, by mutation.
            (text (~> |@|count number->string))
            (button "+" (λ () (<~ |@|count add1))))))]]
 
+@figure["screenshot-counter.png"
+        "The rendered counter GUI."
+        (image "screenshot-counter.png" #:scale 0.50)]
+
 GUI Easy is a functional shell for Racket's GUI system based on
 observable values and function composition that aims to solve the
 problems with the imperative object-based APIs@~cite[b:gui-easy].
@@ -375,6 +379,10 @@ the Racket ecosystem, into their projects.
 
 @section[#:tag "arch-frost"]{The Architecture of Frosthaven}
 
+@figure["screenshot-frosthaven.png"
+        "The Frosthaven Manager's main window."
+        (image "screenshot-frosthaven.png" #:scale 0.15)]
+
 In this section, we describe various pieces of a large GUI Easy
 application, the Frosthaven Manager.
 
@@ -436,12 +444,13 @@ reusable views in @secref{Reusable_Views}.
 
 @section{Architectural Lessons}
 
-In this section, we will cover the following two major lessons. First,
-reusable components (@secref{Reusable_Views}) permit composition akin to
-functional composition by constraining state manipulation. Second,
-wrapping an imperative API with a functional shell (@secref{view_impl})
-allows programmers to use functional techniques and architectures when
-constructing imperative systems.
+In this section, we cover the two major lessons learned while developing
+these systems. First, reusable views (@secref{Reusable_Views}) permit
+interface composition akin to functional composition by constraining
+how state is manipulated. Second, wrapping an imperative API with
+a functional shell (@secref{view_impl}) allows programmers to use
+functional techniques and architectures when constructing imperative
+systems.
 
 @subsection{Reusable Views}
 
@@ -560,9 +569,9 @@ widget.
   (new text% [|@|label |@|label]))
 ]]
 
-To go from a @racket[view<%>] to a functional view, all that remains is
-to wrap object construction in a function. Thus, the shell---the part
-that most library consumers interact with---is functional.
+To go from a @racket[view<%>] to a functional view, all that remains
+is to wrap object construction in a function. Thus, the shell---the
+part that most library consumers interact with---is functional.
 @Figure-ref{view-impl.rkt} shows an implementation of a custom
 @racket[view<%>] and its function wrapper.
 
@@ -572,9 +581,9 @@ examples that this shell abstracts away all the imperative details from
 most library consumers: until now, we haven't needed to understand
 the imperative object-based API being wrapped in order to write GUI
 programs. Further, those GUI programs have used functional programming
-techniques, such as composition of reusable components. Even the
-Frosthaven Manager sticks mostly to the functional shell and is thus
-able to use the ``Functional Core, Imperative Shell'' architecture.
+techniques, such as composition of reusable views. Even the Frosthaven
+Manager sticks mostly to the functional shell and is thus able to use
+the ``Functional Core, Imperative Shell'' architecture.
 
 The key lesson for functional programmers here is that, when possible,
 wrapping an imperative API in a functional shell enables all the

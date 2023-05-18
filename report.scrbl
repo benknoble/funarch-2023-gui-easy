@@ -344,9 +344,9 @@ current value. A derived observable changes with the observable it's
 derived from by applying its mapping procedure to the values of its
 input observable. In @figure-ref["easy-counter-reuse.rkt"], the derived
 observable @racket[(~> |@|count number->string)] changes every time
-@racket[|@|count] is updated by @racket[<~]; its value is the result
-of applying @racket[number->string] to the value of @racket[|@|count].
-Derived observables may not be directly updated.
+@racket[|@|count] is updated by @racket[<~]; its value is the result of
+applying @racket[number->string] to the value of @racket[|@|count]. We
+cannot directly update derived observables.
 
 We can peek at an observable with @racket[obs-peek], which returns
 the contents of the observable. This operation is useful to get
@@ -356,12 +356,11 @@ other views that require a snapshot of the state.
 @subsection[#:tag "view_detail"]{Views as Functions}
 
 Views are functions that return a @racket[view<%>] instance, whose
-underlying details we'll cover in @secref{view_impl}. Views might
-wrap a specific GUI widget, like a text message or button, or they
-might construct a tree of smaller views, forming a larger component.
-Both forms are synonymous with ``view'' in this paper. We've already
-seen many examples of views like @racket[text], @racket[hpanel], and
-@racket[counter].
+underlying details we'll cover in @secref{view_impl}. Views might wrap
+a specific GUI widget, like a text message or button, or they might
+construct a tree of smaller views, forming a larger component. Both are
+synonymous with ``view'' in this paper. We've already seen many examples
+of views like @racket[text], @racket[hpanel], and @racket[counter].
 
 Views are typically observable-aware in ways that make sense for each
 individual view. For instance, the @racket[text] view takes as input an

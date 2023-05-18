@@ -452,56 +452,53 @@ like pure functions, a reusable view is composable and is subject to
 constraints on state manipulation. All the views provided by GUI Easy
 are reusable as described in this section.
 
-There is one major design factor of reusable views. @emph{Views should
-not directly manipulate external state.} This is analogous to the rule
-for pure functions, and all the same arguments apply to show that
-manipulating external state makes a view less reusable. Following this
-design principle leads naturally to the principle ``data down, actions
-up,'' or @emph{DDAU}. It also guides us to make decisions about which
-state to centralize at the highest levels of the GUI and which state to
-localize in reusable views.
+There is one major design constraint on reusable views. @emph{Views
+should not directly manipulate external state.} This is analogous to
+the rule for pure functions, and all the same arguments apply to show
+that manipulating external state makes a view less reusable. This leads
+naturally to the principle ``data down, actions up,'' or @emph{DDAU}. It
+also guides us to make decisions about which state to centralize at the
+highest levels of the GUI and which state to localize in reusable views.
 
-DDAU prescribes how a function, like a reusable view, should manipulate
-state. The ``data down'' prescription means that all necessary data, be
-it state or not, must be inputs to a function or reusable view. For GUI
-Easy, these inputs are observables. Recall the @racket[counter] view
-from @figure-ref{easy-counter-reuse.rkt}: the data needed to display the
-value of the counter was an input to the view called @racket[|@|count].
-Similarly, the ``actions up'' prescription means that functions and
-views should not directly manipulate state; rather, they should pass
-actionable date back to their caller, which is better positioned to
-decide how to manipulate state. In the @racket[counter] view and in GUI
-Easy, actions are represented by callbacks. For the @racket[counter]
-view, the @racket[action] callback is passed a procedure indicating
-whether the minus or plus button was clicked; the caller of the
-@racket[counter] view decides how to react to user manipulations of the
-GUI.
+DDAU prescribes how a reusable view should manipulate state.
+The ``data down'' prescription means that all necessary data
+must be inputs to a view. Recall the @racket[counter] view from
+@figure-ref{easy-counter-reuse.rkt}: the data needed to display the
+value of the counter was an observable input to the view called
+@racket[|@|count]. The ``actions up'' prescription means that views
+should not directly manipulate state; rather, they should pass
+actionable data back to their caller, which is better positioned to
+decide how to manipulate state. Actions are represented by callbacks.
+For the @racket[counter] view, the @racket[action] callback is passed
+a procedure indicating whether the minus or plus button was clicked;
+the caller of the @racket[counter] view decides how to react to user
+manipulations of the GUI.
 
-Notice that it would be generally unsafe to mutate observable inputs, as
-they could be derived observables. Requiring informally that a
-particular view's observable inputs are not derived observables creates
-a trap for programmers that want to reuse the view in novel contexts and
-violates the principles of reusable views.
+It would be generally unsafe to mutate observable inputs, as they
+could be derived observables. Requiring informally that a particular
+view's observable inputs are not derived observables creates a trap
+for programmers that want to reuse the view in novel contexts and
+violates the principles of reusable views. Reusable views could take
+separate input and output observable formal argouments to work around
+this restriction, but that approach is generally less flexible and less
+convenient for the user than callbacks.
 
 DDAU naturally bubbles application state up the layers of application
 architecture, so that the top-level of an application contains all of
-the necessary state. Callers pass the state down to various components
-and provide procedures to respond to events and actions. This downward
-flow of state continues until we reach the bottom-most layer. Sometimes,
-however, we need state that is neither the caller's nor callee's
-responsibility. In this case, a reusable view maintains local state
-which it is free to mutate, say, in response to an action callback from
-one of its components This is in keeping with the tradition of
-optimizing functional programs by allowing interior---but
+the necessary state. Callers pass the state, or a subset of it, down to
+various component views and provide procedures to respond to actions.
+This downward flow of state continues until we reach the bottom-most
+layer. Sometimes, however, we need state that is neither the caller's
+nor callee's responsibility. In such cases, a reusable view maintains
+local state which it is free to manipulate. This is in keeping with the
+tradition of optimizing functional programs by allowing interior---but
 invisible---mutability.
 
-The benefits of reusable views and reusable components are threefold.
-Small reusable components are amenable to independent testing.
-General-purpose components can be considered for extraction to a
-separate library, much like generic data-structure functions.
-Domain-specific components facilitate cohesion, such as visual style for
-a GUI application. Thus we highly recommend reusable components across a
-variety of functional architectures.
+The benefits of reusable views are threefold. Small reusable views are
+amenable to independent testing. General-purpose views can be considered
+for extraction to a separate library, much like generic data-structure
+functions. Domain-specific views facilitate cohesion, such as visual
+style for a GUI application.
 
 While reusable views are a GUI-specific idea, the notions of DDAU and
 constrained state management are also a more general lesson for

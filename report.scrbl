@@ -488,7 +488,7 @@ could be derived observables. Requiring informally that a particular
 view's observable inputs are not derived observables creates a trap
 for programmers that want to reuse the view in novel contexts and
 violates the principles of reusable views. Reusable views could take
-separate input and output observable formal argouments to work around
+separate input and output observable formal arguments to work around
 this restriction, but that approach is generally less flexible and less
 convenient for the user than callbacks.
 
@@ -582,8 +582,8 @@ most library consumers: until now, we haven't needed to understand
 the imperative object-based API being wrapped in order to write GUI
 programs. Further, those GUI programs have used functional programming
 techniques, such as composition of reusable views. Even the Frosthaven
-Manager sticks mostly to the functional shell and is thus able to use
-the ``Functional Core, Imperative Shell'' architecture.
+Manager sticks mostly to GUI Easy's functional shell and is thus able to
+use the ``Functional Core, Imperative Shell'' architecture.
 
 The key lesson for functional programmers here is that, when possible,
 wrapping an imperative API in a functional shell enables all the

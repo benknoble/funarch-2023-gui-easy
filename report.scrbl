@@ -599,23 +599,19 @@ Fortunately, both of these problems have solutions.
 @(define mixins
    (~cite b:flavors b:denote-inheritance b:jigsaw b:mixins b:super+inner))
 
-The first problem of access to imperative behaviors is solved by GUI
-Easy conventions. In the traditional object-based toolkit, we would
-subclass widgets as needed to create new behaviors. We cannot subclass
-a class we cannot access, for it is ostensibly hidden by the wrapper.
-In response, some GUI Easy views support a mixin@|mixins| argument,
-a function from class to class. This provides special access to the
-class implementing the underlying widget so that we may override or
-augment methods of the class as we choose by dynamically subclassing
-GUI widgets. This access is crucially achieved without modifying the
-source of the class body. When mixins are insufficient, we choose to
-write our own @racket[view<%>] implementation, which wraps any GUI
-widget(s) we desire. This includes core classes, custom subclasses,
-and third-party widgets. The Frosthaven Manager uses mixins and custom
-@racket[view<%>]s to implement custom close behavior and to display
-rendered Markdown@|markdown| files. Here is a lesson for functional
-shells: provide hooks back to the original API, since piercing the
-abstraction may be necessary.
+The problem of access to imperative behaviors is solved by GUI Easy
+conventions. In the traditional object-based toolkit, we would subclass
+widgets as needed to create new behaviors. We cannot subclass a class we
+cannot access, for it is ostensibly hidden by the wrapper. In response,
+some GUI Easy views support a mixin@|mixins| argument, a function from
+class to class. This provides access to the class implementing the
+underlying widget so that we may override or augment methods of the
+class as we choose by dynamically subclassing GUI widgets. When mixins
+are insufficient, we can choose to write our own @racket[view<%>]
+implementation, which wraps any GUI widget(s) we desire. This includes
+core classes, custom subclasses, and third-party widgets. The Frosthaven
+Manager uses mixins and custom @racket[view<%>]s to implement custom
+close behavior and to display rendered Markdown@|markdown| files.
 
 The problem of global state is handled by functional programming
 techniques. Essentially, we have two choices: threading state or

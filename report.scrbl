@@ -539,9 +539,6 @@ widget.
 @figure["view-iface.rkt"
         (list "The " @racket[view<%>] " interface.")
         @racketblock[
-(define container/c (is-a?/c area-container<%>))
-(define widget/c (is-a?/c area<%>))
-
 (define view<%>
   (interface ()
     [dependencies (->m (listof obs?))]

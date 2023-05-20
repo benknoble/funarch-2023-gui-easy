@@ -192,12 +192,11 @@ related trends in GUI programming in @secref{related_work}.
 @; to write about ourselves in the 3rd person, so that the individual
 @; stories are clear?
 
-We present the origin stories for two projects. First, in
-@secref{Quest_for_Easier_GUIs}, Bogdan describes his frustrations with
-Racket's GUI system that drove him to create GUI Easy. Second, in
-@secref{embarking}, Ben describes his desire to construct a large GUI
-program without mutable state. The happy union of these two desires
-taught us the architectural lessons we present in @secref{arch-frost}.
+We present the origin stories for two projects. First, Bogdan describes
+his frustrations with Racket's GUI system that drove him to create GUI
+Easy. Second, Ben describes his desire to construct a large GUI program
+using a functional approach. The happy union of these two desires taught
+us the architectural lessons we present in @secref{arch-frost}.
 
 @subsection{Quest for Easier GUIs}
 
@@ -208,8 +207,8 @@ operating systems, and distribution of self-contained applications.
 
 Over time, however, Bogdan was repeatedly annoyed by the same
 inconveniences. Racket's class system requires verbose code. Each
-project handles state updates in its own way. Racket GUI's primary means
-of constructing view hierarchies is to construct child widgets with
+project manages state in its own way. Racket GUI's primary means of
+constructing view hierarchies is to construct child widgets with
 references to their parent widgets, which makes composition especially
 frustrating since individual components must always be parameterized
 over their parent.
@@ -217,9 +216,9 @@ over their parent.
 Since Racket GUI offers no special support for managing application
 state, Bogdan had to bring his own state management to the
 table, leading to ad hoc solutions for every new project. See
-@racket[update-count] in @figure-ref{oop-counter.rkt} for an example of
-ad hoc state management. This motivated the observable abstraction in
-GUI Easy. In @secref{GUI_Easy_Overview}, we'll see how observables and
+@racket[update-count] in @figure-ref{oop-counter.rkt} for an example
+of ad hoc state management. This motivated the observable abstraction
+in GUI Easy. In the next section, we'll see how observables and
 observable-aware views combine to automatically connect GUI widgets and
 state changes.
 
@@ -237,12 +236,12 @@ code:
 @; is the switch from Bogdan to We jarring?
 We cannot create the message object before the frame object in this
 case, since we need a @racket[parent] for the message object. This
-constrains how we can organize code. We can abstract over message object
-construction, but that needlessly complicates wiring up interfaces.
-This motivated Bogdan to come up with the view abstraction in GUI Easy.
-In @secref{GUI_Easy_Overview}, we'll see how views permit functional
-abstraction, enabling new organizational approaches that we'll explore
-in @secref{arch-frost}.
+constrains how we can organize code. To work around the issue, we
+can abstract over message object construction, but that needlessly
+complicates wiring up interfaces. This motivated Bogdan to come up with
+the view abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll
+see how views permit functional abstraction, enabling new organizational
+approaches that we'll explore in @secref{arch-frost}.
 
 @subsection[#:tag "embarking"]{Embarking for the Town of Frosthaven}
 
@@ -287,7 +286,7 @@ and @italic{views}.
 
 Observables contain values and notify subscribed observers of changes to
 their contents. @Figure-ref{observables.rkt} demonstrates the low-level
-observable API. @Secref{Observable_Values} explains the observable
+observable API and @secref{Observable_Values} explains the observable
 operators.
 
 @figure["observables.rkt"
@@ -304,9 +303,9 @@ operators.
         (code:comment "b got 2")]]
 
 Views are representations of Racket GUI widget trees that, when
-rendered, produce instances of those trees and handle the details of
-transparently wiring state and view together. We discuss the view
-abstraction in more detail in @Secref{view_detail}.
+rendered, produce concrete instances of those trees and handle the
+details of transparently wiring state and widgets together. We discuss
+the view abstraction in more detail in @Secref{view_detail}.
 
 @figure["easy-counter-reuse.rkt"
         "Component re-use in GUI Easy."
@@ -519,12 +518,11 @@ remainder.
 @subsection[#:tag "view_impl"]{@tt{view<%>}: Functional Shell, Imperative Core}
 
 The ``Functional Core, Imperative Shell'' architecture involves wrapping
-a core of pure functional code with a shell of imperative commands,
-whose benefits we've already discussed. In a twist on the paradigm, the
-core of GUI Easy views is an imperative object lifecycle, while its
-shell is functional. In this section, we describe that shell in detail
-and explain how it permits retaining functional programming techniques
-when dealing with imperative systems.
+a core of pure functional code with a shell of imperative commands. In
+a twist on the paradigm, the core of GUI Easy views is an imperative
+object lifecycle, while its shell is functional. In this section, we
+describe that shell in detail and explain how it permits retaining
+functional programming techniques when dealing with imperative systems.
 
 The GUI object lifecycle is embodied by the @racket[view<%>] interface
 (@figure-ref{view-iface.rkt}). Implementations of the interface must
@@ -606,40 +604,40 @@ Fortunately, both of these problems have solutions.
 
 The first problem of access to imperative behaviors is solved by GUI
 Easy conventions. In the traditional object-based toolkit, we would
-subclass widgets as needed to create new behaviors. We cannot subclass a
-class we cannot access, for it is ostensibly hidden by the wrapper. In
-response, all GUI Easy views support a mixin@|mixins| argument, a
-function from class to class. This provides special access to the class
-implementing the underlying widget so that we may override or augment
-methods of the class as we choose by dynamically subclassing GUI
-widgets. This access is crucially achieved without modifying the source
-of the class body. When mixins are insufficient, we choose to write our
-own @racket[view<%>] implementation, which wraps any GUI widget(s) we
-desire. This includes core classes, custom subclasses, and third-party
-widgets. The Frosthaven Manager uses mixins and custom @racket[view<%>]s
-to implement custom close behavior and to display rendered
-Markdown@|markdown| files. Here is a lesson for functional shells:
-provide hooks back to the original API, since piercing the abstraction
-may be necessary.
+subclass widgets as needed to create new behaviors. We cannot subclass
+a class we cannot access, for it is ostensibly hidden by the wrapper.
+In response, some GUI Easy views support a mixin@|mixins| argument,
+a function from class to class. This provides special access to the
+class implementing the underlying widget so that we may override or
+augment methods of the class as we choose by dynamically subclassing
+GUI widgets. This access is crucially achieved without modifying the
+source of the class body. When mixins are insufficient, we choose to
+write our own @racket[view<%>] implementation, which wraps any GUI
+widget(s) we desire. This includes core classes, custom subclasses,
+and third-party widgets. The Frosthaven Manager uses mixins and custom
+@racket[view<%>]s to implement custom close behavior and to display
+rendered Markdown@|markdown| files. Here is a lesson for functional
+shells: provide hooks back to the original API, since piercing the
+abstraction may be necessary.
 
-The second problem of global state is handled by functional programming
-techniques. Essentially, we have two choices: threading state or dynamic
-binding. If we are confident that the state will be required in all
-reusable views, we can thread the state as input from one view to the
-next, like threading a needle through all parts of the program. Threaded
-state is the solution preferred by DDAU and reusuable views. Threading
-rarely-used state quickly becomes tedious and, when not needed
+The problem of global state is handled by functional programming
+techniques. Essentially, we have two choices: threading state or
+dynamic binding. If we are confident that the state will be required
+in all reusable views, we can thread the state as input from one view
+to the next, like threading a needle through all parts of the program.
+Threaded state is the solution preferred by DDAU and reusuable views.
+Threading rarely-used state quickly becomes tedious and, when not needed
 everywhere, tangles unnecessary concerns. In response, we can use
-dynamic binding, which breaks some functional purity for convenience and
-allows us to refer to external state. Using dynamic binding makes views
-less reusable: they now have dependencies not defined by their inputs.
-Dynamic binding permits each view to only be concerned with the global
-state if absolutely necessary. The Frosthaven Manager threads state as
-much as possible but does use dynamic binding in rare instances. It is
-important to mention that using dynamic binding via Racket's parameters
-is not straightforward when working with the GUI system due to the
-multi-threaded environment and queued callbacks; to achieve
-dynamic-binding for the Frosthaven Manager, Ben had to both bind
+dynamic binding, which breaks some functional purity for convenience
+and allows us to refer to external state. Using dynamic binding makes
+views less reusable: they now have dependencies not defined by their
+inputs. Dynamic binding permits each view to only be concerned with
+the global state if absolutely necessary. The Frosthaven Manager
+threads state as much as possible but does use dynamic binding in rare
+instances. It is important to mention that using dynamic binding via
+Racket's parameters is not straightforward when working with the GUI
+system due to the multi-threaded environment and queued callbacks; to
+achieve dynamic-binding for the Frosthaven Manager, Ben had to both bind
 parameters in the GUI event threads and take care to spawn more event
 threads when new bindings were needed. This complexity may not be worth
 it in all applications.
@@ -672,7 +670,7 @@ While we must be careful not to confuse popularity with usefulness, our
 satisfaction programming in the style suggested by GUI Easy and the use
 of similar patterns across a variety of programming languages and
 ecosystems suggests that, for the functional programmer, reactive GUI
-systems are architecturally well-suited all sizes of programs.
+systems are architecturally well-suited for all sizes of programs.
 
 @section{Conclusion}
 
@@ -680,17 +678,19 @@ systems are architecturally well-suited all sizes of programs.
 @; functional GUIs
 
 We have reported on the difficulties of programming stateful GUIs with
-imperative, object-based APIs. We also described a functional wrapper,
+imperative, object-based APIs. We also described a functional wrapper
 called GUI Easy, inspired by functional reactive programming for UI
-systems. GUI Easy has successfully been used for small and large GUI
-projects, such as the Frosthaven Manager discussed in this report. We
-derived several architectural principles from the construction of both
-projects: functional shells over imperative APIs enable functional
-programming techniques via functional shell. Reusable components from
-the shell, much like pure functions, should not mutate external state.
-Like in functional programs, reusable components are independently
-testable. Extensible hooks are necessary in functional shells to permit
-access to the underlying abstraction.
+systems, that aims to solve some of those shortcomings. GUI Easy has
+successfully been used for small and large GUI projects, such as
+the Frosthaven Manager discussed in this report. We derived several
+architectural principles from the construction of both projects:
+functional shells over imperative APIs enable programmers to use
+functional programming techniques even when dealing with a system whose
+underlying implementation is imperative. Reusable components from the
+shell, much like pure functions, should not mutate external state. Like
+in functional programs, reusable components are independently testable
+and are easily composed with one another. Extensible hooks are necessary
+in functional shells to permit access to the underlying systems.
 
 @acks{Ben is grateful to Savannah Knoble, Derrick Franklin, John Hines,
 and Jake Hicks for playtesting the Frosthaven Manager throughout

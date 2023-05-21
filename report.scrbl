@@ -646,16 +646,13 @@ Other sources of inspiration include Clojure's Reagent@reagent and
 JavaScript's React@|react|. In Racket, FrTime@frtime implements a
 functional reactive programming language for GUIs and other tasks.
 FrTime extends the spirit of the original functional reactive
-paradigm@~cite[b:fran b:frp-cont] based on time flow and signals.
-Vue@|vue|, React, and inspired libraries, including GUI Easy, have
-evolved slightly different notions of reactive programming; namely,
-programs react to changes in state rather than in response to
-time-varying signals. The Elm@|elm| programming language strictly
-constrains component composition to the data down, actions up style.
-Clojure's re-frame@re-frame library builds on Reagent@reagent to add
-more sophisticated state management. This includes a global store and
-effect handler, akin to GUI Easy's observable update procedures, and
-queries, akin to GUI Easy's derived observables.
+paradigm@~cite[b:fran b:frp-cont] based on time flow and signals. The
+Elm@|elm| programming language strictly constrains component composition
+to the data down, actions up style. Clojure's re-frame@re-frame library
+builds on Reagent@reagent to add more sophisticated state management.
+This includes a global store and effect handler, akin to GUI Easy's
+observables and update procedures, and queries, akin to GUI Easy's
+derived observables.
 
 @section{Conclusion}
 

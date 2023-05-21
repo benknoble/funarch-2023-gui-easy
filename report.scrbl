@@ -453,12 +453,10 @@ systems.
 
 @subsection{Reusable Views}
 
-@; TODO should we mention something from FH in here?
-
-Our experience with GUI Easy led us to strive for reusable views. Much
-like pure functions, a reusable view is composable and is subject to
-constraints on state manipulation. All the views provided by GUI Easy
-are reusable as described in this section.
+Our experience building applications taught us to prefer reusable views
+where possible. Much like pure functions, a reusable view is composable
+and is subject to constraints on state manipulation. All the views
+provided by GUI Easy are reusable as described in this section.
 
 There is one major design constraint on reusable views. @emph{Views
 should not directly manipulate external state.} This is analogous to
@@ -474,7 +472,7 @@ must be inputs to a view. Recall the @racket[counter] view from
 @figure-ref{easy-counter-reuse.rkt}: the data needed to display the
 value of the counter was an observable input to the view called
 @racket[|@|count]. The ``actions up'' prescription means that views
-should not directly manipulate state; rather, they should pass
+should not directly manipulate state; instead, they should pass
 actionable data back to their caller, which is better positioned to
 decide how to manipulate state. Actions are represented by callbacks.
 For the @racket[counter] view, the @racket[action] callback is passed
@@ -584,7 +582,7 @@ The key lesson for functional programmers here is that, when possible,
 wrapping an imperative API in a functional shell enables all the
 benefits of functional programming. For highly complex systems, like
 GUIs, to rewrite the entire system in a functional style may be
-impractical. Instead, it may be practical to reuse existing imperative
+impractical. Instead, it is more practical to reuse existing imperative
 or object-based work by wrapping it in a functional shell.
 
 @subsection{Challenges}

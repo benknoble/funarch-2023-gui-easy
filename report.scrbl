@@ -172,9 +172,9 @@ the previous shortcomings. As state, we define an observable
 @racket[hpanel], @racket[button], and @racket[text]. Widget properties,
 such as size or label, may be constant values or observables. The
 rendered widgets automatically update when their observable inputs
-change @~cite[b:react b:swiftui]. In this example, pressing the buttons
-causes the counter to be updated, which transparently updates the text
-label.
+change, similar to systems like React@|react| and SwiftUI@|swift-ui|.
+In this example, pressing the buttons causes the counter to be updated,
+which transparently updates the text label.
 
 In this report, we examine the difficulties of programming with
 object-oriented GUI systems and motivate the search for a different

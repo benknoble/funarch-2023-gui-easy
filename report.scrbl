@@ -261,7 +261,7 @@ never created a complex GUI program, Ben was intimidated by classic
 object-oriented systems like Racket's. To a programmer with intimate
 knowledge of the class, method, and event relationships, such a system
 may feel natural. To the novice, GUI Easy represents a simpler,
-functional-oriented, path to interface programming.
+functional, path to interface programming.
 
 GUI Easy makes it possible to build a complex system out of simple
 parts: functions and data. Ben was familiar with functional programming

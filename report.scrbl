@@ -659,23 +659,20 @@ queries, akin to GUI Easy's derived observables.
 
 @section{Conclusion}
 
-@; Summarize problem, works, architectural principles for large
-@; functional GUIs
-
-We have reported on the difficulties of programming stateful GUIs with
-imperative, object-based APIs. We also described a functional wrapper
-called GUI Easy, inspired by functional reactive programming for UI
-systems, that aims to solve some of those shortcomings. GUI Easy has
-successfully been used for small and large GUI projects, such as
-the Frosthaven Manager discussed in this report. We derived several
-architectural principles from the construction of both projects:
-functional shells over imperative APIs enable programmers to use
-functional programming techniques even when dealing with a system whose
-underlying implementation is imperative. Reusable components from the
-shell, much like pure functions, should not mutate external state. Like
-in functional programs, reusable components are independently testable
-and are easily composed with one another. Extensible hooks are necessary
-in functional shells to permit access to the underlying systems.
+We have reported on the difficulties of programming stateful GUIs
+with imperative, object-based APIs. We also described a functional
+wrapper around Racket's object-oriented GUI library that aims to solve
+some of those shortcomings. GUI Easy has been successfully used for
+small and large projects, including the Frosthaven Manager discussed
+in this report. We derived several architectural principles from the
+construction of both projects: functional shells over imperative APIs
+enable programmers to use functional programming techniques even when
+dealing with a system whose underlying implementation is imperative.
+Extensible hooks are necessary in functional shells to permit access
+to the underlying systems where needed. Reusable components, much like
+pure functions, should not mutate external state. Like pure functions,
+reusable components are independently testable and are easily composed
+with one another.
 
 @acks{Ben is grateful to Savannah Knoble, Derrick Franklin, John Hines,
 and Jake Hicks for playtesting the Frosthaven Manager throughout

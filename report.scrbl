@@ -410,12 +410,11 @@ attributes, randomized loot, the status of elemental effects, and more.
 To organize and manipulate this data, Ben chose a ``functional core,
 imperative shell'' architecture@~cite[b:functional-core].
 
-The choice of a functional core and imperative shell has many well-known
-benefits. For example, core code is independent of the choice of UI
-presentation and is independently testable or useable for other
-applications. Functional cores also simplify programmer reasoning about
-application data flow, keeping state change at the boundaries of the
-system.
+The choice of a functional core and imperative shell has many benefits.
+For example, core code is independent of the choice of UI presentation
+and is independently testable or usable for other applications.
+Functional cores also simplify programmer reasoning about application
+data flow, keeping state change at the boundaries of the system.
 
 In constructing the Frosthaven Manager, Ben organized the main data into
 immutable records, enumerations, and collections alongside pure

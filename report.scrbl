@@ -270,19 +270,10 @@ Manager@~cite[b:frosthaven-manager] with GUI Easy in 2022.
 
 @section{GUI Easy Overview}
 
-The functional programmer naturally represents data via immutable
-data structures such as records, enumerations, and collections. They
-write pure functions that transform immutable data into different
-representations or representations with different values. In contrast,
-object-oriented systems rely on mutable state and side-effecting class
-methods, which usually clash with functional programming techniques.
-Programming with GUI Easy permits the functional programmer to
-retain functional programming techniques to a greater degree than
-object-oriented systems do. In this section, we give a brief overview of
-how GUI Easy achieves this.
-
-GUI easy can be broadly split up into two parts: @italic{observables}
-and @italic{views}.
+The goal of GUI Easy is to simplify user interface construction in
+Racket by wrapping its imperative API in a functional shell. GUI Easy
+can be broadly split up into two parts: @italic{observables} and
+@italic{views}.
 
 Observables contain values and notify subscribed observers of changes to
 their contents. @Figure-ref{observables.rkt} demonstrates the low-level

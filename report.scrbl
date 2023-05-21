@@ -362,7 +362,7 @@ Views are functions that return a @racket[view<%>] instance, whose
 underlying details we'll cover in @secref{view_impl}. Views might wrap
 a specific GUI widget, like a text message or button, or they might
 construct a tree of smaller views, forming a larger component. Both are
-synonymous with ``view'' in this paper. We've already seen many examples
+synonymous with ``view'' in this report. We've already seen many examples
 of views like @racket[text], @racket[hpanel], and @racket[counter].
 
 Views are typically observable-aware in ways that make sense for each

@@ -29,7 +29,7 @@
    [areweguiyet "https://www.areweguiyet.com"]
    [markdown "https://daringfireball.net/projects/markdown/"])
 
-@title{Functional Shell and Observable Architecture for Easy GUIs}
+@title{Functional Shell and Reusable Components for Easy GUIs}
 @subtitle{Experience Report}
 
 @acmConference["FUNARCH" "September 2023" "The Westin Seattle Hotel, Seattle, Washington, United States"]

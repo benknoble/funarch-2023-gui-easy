@@ -539,6 +539,7 @@ widget.
 @figure["view-impl.rkt"
         (list "An implementation of a custom " @racket[view<%>] ".")
         @racketblock[
+(require (prefix-in gui: racket/gui))
 (define text%
   (class* object% (view<%>)
     (init-field |@|label) (super-new)

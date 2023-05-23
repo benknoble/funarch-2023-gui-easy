@@ -371,7 +371,7 @@ the Racket ecosystem, into their projects.
 
 @figure["screenshot-frosthaven.png"
         "The Frosthaven Manager's main window."
-        (image "screenshot-frosthaven.png" #:scale 0.15)]
+        (image "screenshot-frosthaven.png" #:scale 0.18)]
 
 In this section, we describe various pieces of a large GUI Easy
 application, the Frosthaven Manager.

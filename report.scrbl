@@ -325,7 +325,8 @@ can react to changes in the contents of an observable. Application
 developers programming with GUI Easy use a few core operators to
 construct and manipulate observables.
 
-We create observables with @racket[|@|].
+We create observables with @racket[|@|]. By convention, we prefix
+observable variables with the same sigil.
 
 We can change the contents of an observable using @racket[<~]. This
 procedure takes as arguments an observable and a procedure of one

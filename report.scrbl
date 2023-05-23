@@ -55,8 +55,9 @@ rendering. Functional shells and observable toolkits like GUI Easy
 simplify and promote the creation of reusable views by analogy to
 functional programming. We have successfully used GUI Easy on small and
 large GUI projects. We report on our experience constructing and using
-GUI Easy and derive from that experience architectural patterns and
-principles for building functional programs out of imperative systems.}
+GUI Easy and derive from that experience several architectural patterns
+and principles for building functional programs out of imperative
+systems.}
 
 @CCSXML|{
 

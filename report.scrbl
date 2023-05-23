@@ -165,16 +165,16 @@ GUI Easy is a functional shell for Racket's GUI system based on
 observable values and function composition that aims to solve the
 problems with the imperative object-based APIs@~cite[b:gui-easy].
 
-With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves
-the previous shortcomings. As state, we define an observable
+With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the
+previous shortcomings. As state, we define an observable
 @racket[|@|count] whose initial value is the number @racket[0]. Then we
 @racket[render] an interface composed of widgets like @racket[window],
 @racket[hpanel], @racket[button], and @racket[text]. Widget properties,
 such as size or label, may be constant values or observables. The
 rendered widgets automatically update when their observable inputs
-change, similar to systems like React@|react| and SwiftUI@|swift-ui|.
-In this example, pressing the buttons causes the counter to be updated,
-which transparently updates the text label.
+change, similar to systems like React@|react| and SwiftUI@|swift-ui|. In
+this example, pressing the buttons causes the counter to be updated,
+which updates the text label.
 
 In this report, we examine the difficulties of programming with
 object-oriented GUI systems and motivate the search for a different
@@ -295,8 +295,8 @@ operators.
 
 Views are representations of Racket GUI widget trees that, when
 rendered, produce concrete instances of those trees and handle the
-details of transparently wiring state and widgets together. We discuss
-the view abstraction in more detail in @Secref{view_detail}.
+details of wiring state and widgets together. We discuss the view
+abstraction in more detail in @Secref{view_detail}.
 
 @figure["easy-counter-reuse.rkt"
         "Component re-use in GUI Easy."

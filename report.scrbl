@@ -219,7 +219,7 @@ state, Bogdan had to bring his own state management to the
 table, leading to ad hoc solutions for every new project. See
 @racket[update-count] in @figure-ref{oop-counter.rkt} for an example
 of ad hoc state management. This motivated the observable abstraction
-in GUI Easy. In the next section, we'll see how observables and
+in GUI Easy. In the next section, we will see how observables and
 observable-aware views combine to automatically connect GUI widgets and
 state changes.
 
@@ -240,9 +240,9 @@ case, since we need a @racket[parent] for the message object. This
 constrains how we can organize code. To work around the issue, we
 can abstract over message object construction, but that needlessly
 complicates wiring up interfaces. This motivated Bogdan to come up with
-the view abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we'll
+the view abstraction in GUI Easy. In @secref{GUI_Easy_Overview}, we will
 see how views permit functional abstraction, enabling new organizational
-approaches that we'll explore in @secref{arch-frost}.
+approaches that we will explore in @secref{arch-frost}.
 
 @subsection[#:tag "embarking"]{Embarking for the Town of Frosthaven}
 
@@ -256,12 +256,12 @@ original Gloomhaven game had a helper application for mobile devices to
 reduce physical manipulation; at one point, it appeared Frosthaven would
 not receive the same treatment.
 
-Ben, a programmer, decided to solve the problem for his personal
-gaming group by creating his own helper application. But how? Having
-never created a complex GUI program, Ben was intimidated by classic
-object-oriented systems like Racket's. To a programmer with intimate
-knowledge of the class, method, and event relationships, such a system
-may feel natural. To the novice, GUI Easy represents a simpler,
+Ben, a programmer, decided to solve the problem for his personal gaming
+group by creating his own helper application. But how? Having never
+created a complex GUI program, Ben was intimidated by classic
+object-oriented systems like Racket's GUI toolkit. To a programmer with
+intimate knowledge of the class, method, and event relationships, such a
+system may feel natural. To the novice, GUI Easy represents a simpler,
 functional, path to interface programming.
 
 GUI Easy makes it possible to build a complex system out of simple
@@ -336,7 +336,7 @@ update.
 
 We can derive new observables from existing ones using @racket[~>].
 This procedure takes an observable and a procedure of one argument, the
-current value. A derived observable changes with the observable it's
+current value. A derived observable changes with the observable it is
 derived from by applying its mapping procedure to the values of its
 input observable. In @figure-ref["easy-counter-reuse.rkt"], the derived
 observable @racket[(~> |@|count number->string)] changes every time
@@ -352,10 +352,10 @@ other views that require a snapshot of the state.
 @subsection[#:tag "view_detail"]{Views as Functions}
 
 Views are functions that return a @racket[view<%>] instance, whose
-underlying details we'll cover in @secref{view_impl}. Views might wrap
+underlying details we will cover in @secref{view_impl}. Views might wrap
 a specific GUI widget, like a text message or button, or they might
 construct a tree of smaller views, forming a larger component. Both are
-synonymous with ``view'' in this report. We've already seen many examples
+synonymous with ``view'' in this report. We have already seen many examples
 of views like @racket[text], @racket[hpanel], and @racket[counter].
 
 Views are typically observable-aware in ways that make sense for each
@@ -430,7 +430,7 @@ updates form the Frosthaven Manager's imperative shell.
 The Frosthaven Manager's main GUI comprises many smaller reusable views.
 By analogy with functional programming's building
 blocks---functions---small reusable views permit us to construct large
-systems via composition. We'll discuss the design principles behind
+systems via composition. We will discuss the design principles behind
 reusable views in @secref{Reusable_Views}.
 
 @section{Architectural Lessons}
@@ -562,9 +562,9 @@ part that most library consumers interact with---is functional.
 @racket[view<%>] and its function wrapper.
 
 How does such a shell permit the use of functional programming
-techniques? We've already seen in the previous sections and in code
+techniques? We have already seen in the previous sections and in code
 examples that this shell abstracts away all the imperative details from
-most library consumers: until now, we haven't needed to understand
+most library consumers: until now, we have not needed to understand
 the imperative object-based API being wrapped in order to write GUI
 programs. Further, those GUI programs have used functional programming
 techniques, such as composition of reusable views. Even the Frosthaven

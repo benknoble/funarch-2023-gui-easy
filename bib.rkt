@@ -150,3 +150,61 @@
             #:location (proceedings-location "ACM SIGPLAN Workshop on Haskell"
                                              #:pages (list 51 64))
             #:url "https://www.antonycourtney.com/pubs/frpcont.pdf"))
+
+(define b:swift-ui
+  (make-bib #:title "SwiftUI"
+            #:date "2023"
+            #:author "Apple"
+            #:url "https://developer.apple.com/xcode/swiftui/"
+            #:note "Retrieved June 2023."))
+
+(define b:reagent
+  (make-bib #:title "Reagent"
+            #:date "2023"
+            #:author "reagent-project"
+            #:url "https://github.com/reagent-project/reagent"
+            #:note "Retrieved June 2023."))
+
+(define b:react
+  (make-bib #:title "React"
+            #:date "2023"
+            #:author "Meta Open Source"
+            #:url "https://react.dev"
+            #:note "Retrieved June 2023."))
+
+;; unused?
+(define b:vue
+  (make-bib #:title "Vue.js - The Progressive JavaScript Framework | Vue.js"
+            #:date "2023"
+            #:author "Evan You"
+            #:url "https://vuejs.org"
+            #:note "Retrieved June 2023."))
+
+(define b:elm
+  (make-bib #:title "Elm - delightful language for reliable web applications"
+            #:date "2021"
+            #:author "Evan Czaplicki"
+            #:url "https://elm-lang.org"
+            #:note "Retrieved June 2023."))
+
+(define b:re-frame
+  (make-bib #:title "re-frame"
+            #:date "2023"
+            #:author "Day 8 Technology"
+            #:url "https://github.com/day8/re-frame"
+            #:note "Retrieved June 2023."))
+
+;; unused?
+(define b:areweguiyet
+  (make-bib #:title "Are we GUI yet?"
+            #:date "2022"
+            #:author "areweguiyet"
+            #:url "https://www.areweguiyet.com"
+            #:note "Retrieved June 2023."))
+
+(define b:markdown
+  (make-bib #:title "Daring Fireball: Markdown"
+            #:date "2023"
+            #:author "John Gruber"
+            #:url "https://daringfireball.net/projects/markdown/"
+            #:note "Retrieved June 2023."))

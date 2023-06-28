@@ -17,17 +17,6 @@
 
 @(define (url-note dest)
    @note[@url[dest]])
-@(define-syntax-rule (define-notes [id url] ...)
-   (begin (define id (url-note url)) ...))
-@(define-notes
-   [swift-ui "https://developer.apple.com/xcode/swiftui/"]
-   [reagent "https://github.com/reagent-project/reagent"]
-   [react "https://react.dev"]
-   [vue "https://vuejs.org"]
-   [elm "https://elm-lang.org"]
-   [re-frame "https://github.com/day8/re-frame"]
-   [areweguiyet "https://www.areweguiyet.com"]
-   [markdown "https://daringfireball.net/projects/markdown/"])
 
 @title{Functional Shell and Reusable Components for Easy GUIs}
 @subtitle{Experience Report}
@@ -173,9 +162,9 @@ previous shortcomings. As state, we define an observable
 @racket[hpanel], @racket[button], and @racket[text]. Widget properties,
 such as size or label, may be constant values or observables. The
 rendered widgets automatically update when their observable inputs
-change, similar to systems like React@|react| and SwiftUI@|swift-ui|. In
-this example, pressing the buttons causes the counter to be updated,
-which updates the text label.
+change, similar to systems like React@~cite[b:react] and
+SwiftUI@~cite[b:swift-ui]. In this example, pressing the buttons causes
+the counter to be updated, which updates the text label.
 
 In this report, we examine the difficulties of programming with
 object-oriented GUI systems and motivate the search for a different
@@ -591,16 +580,16 @@ Fortunately, both of these problems have solutions.
    (~cite b:flavors b:denote-inheritance b:jigsaw b:mixins b:super+inner))
 
 The problem of access to imperative behaviors is solved by GUI Easy
-conventions. In an object-oriented toolkit, we would subclass widgets
-as needed to create new behaviors. We cannot subclass a class we cannot
+conventions. In an object-oriented toolkit, we would subclass widgets as
+needed to create new behaviors. We cannot subclass a class we cannot
 access, for it is ostensibly hidden by the wrapper. In response, some
 GUI Easy views support a mixin@|mixins| argument, a function from class
 to class. This allows us to dynamically subclass widgets at runtime to
-override or augment their methods. When mixins are insufficient, we
-can choose to write our own @racket[view<%>] implementation to wrap
-any widget we desire. The Frosthaven Manager uses mixins to augment
-window close behavior and a custom @racket[view<%>] to display rendered
-Markdown@|markdown| files.
+override or augment their methods. When mixins are insufficient, we can
+choose to write our own @racket[view<%>] implementation to wrap any
+widget we desire. The Frosthaven Manager uses mixins to augment window
+close behavior and a custom @racket[view<%>] to display rendered
+Markdown@~cite[b:markdown] files.
 
 The problem of global state is handled by functional programming
 techniques. Essentially, we have two choices: threading state or
@@ -629,16 +618,17 @@ it in all applications.
 @(define frtime
    @~cite[b:frtime-in-plt-scheme b:frtime-dataflow b:frtime-thesis])
 
-GUI Easy draws a lot of inspiration from Swift UI@|swift-ui|, another
-system that wraps an imperative GUI framework in a functional shell.
-Other sources of inspiration include Clojure's Reagent@reagent and
-JavaScript's React@|react|. In Racket, FrTime@frtime implements a
-functional reactive programming language for GUIs and other tasks.
-FrTime extends the spirit of the original functional reactive
-paradigm@~cite[b:fran b:frp-cont] based on time flow and signals. The
-Elm@|elm| programming language strictly constrains component composition
-to the data down, actions up style. Clojure's re-frame@re-frame library
-builds on Reagent@reagent to add more sophisticated state management.
+GUI Easy draws a lot of inspiration from Swift UI@~cite[b:swift-ui],
+another system that wraps an imperative GUI framework in a functional
+shell. Other sources of inspiration include Clojure's
+Reagent@~cite[b:reagent] and JavaScript's React@~cite[b:react]. In
+Racket, FrTime@frtime implements a functional reactive programming
+language for GUIs and other tasks. FrTime extends the spirit of the
+original functional reactive paradigm@~cite[b:fran b:frp-cont] based on
+time flow and signals. The Elm@~cite[b:elm] programming language
+strictly constrains component composition to the data down, actions up
+style. Clojure's re-frame@~cite[b:re-frame] library builds on
+Reagent@~cite[b:reagent] to add more sophisticated state management.
 This includes a global store and effect handler, akin to GUI Easy's
 observables and update procedures, and queries, akin to GUI Easy's
 derived observables.

@@ -265,23 +265,9 @@ Racket by wrapping its imperative API in a functional shell. GUI Easy
 can be broadly split up into two parts: @italic{observables} and
 @italic{views}.
 
-Observables contain values and notify subscribed observers of changes to
-their contents. @Figure-ref{observables.rkt} demonstrates the low-level
-observable API and @secref{Observable_Values} explains the observable
+Observables contain values and notify subscribed observers of changes
+to their contents. @Secref{Observable_Values} explains the observable
 operators.
-
-@figure["observables.rkt"
-        "Using the low-level observable API in GUI Easy."
-        @racketmod0[
-        racket/gui/easy
-        (define o (|@| 1))
-        (obs-observe! o (λ (x) (printf "a got ~a\n" x)))
-        (obs-observe! o (λ (x) (printf "b got ~a\n" x)))
-        (code:comment "change the observable by adding 1")
-        (<~ o add1)
-        (code:comment "outputs:")
-        (code:comment "a got 2")
-        (code:comment "b got 2")]]
 
 Views are representations of Racket GUI widget trees that, when
 rendered, produce concrete instances of those trees and handle the

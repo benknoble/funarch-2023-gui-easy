@@ -1,7 +1,5 @@
-#lang racket/base
+#lang racket/gui/easy
 
-(require racket/gui/easy
-         racket/gui/easy/operator)
 (define @count (@ 0))
 (render
  (window

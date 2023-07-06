@@ -134,6 +134,7 @@
             #:location (dissertation-location #:institution "Brown University")))
 
 ;; FRP
+
 (define b:fran
   (make-bib #:title "Functional reactive animation."
             #:author (authors "Conal Elliot" "Paul Hudak")
@@ -142,6 +143,13 @@
                         "ACM SIGPLAN International Conference on Functional Programming"
                         #:pages (list 263 277))
             #:url "http://conal.net/papers/icfp97/"))
+
+(define b:frappe
+  (make-bib #:title "Frappé: Functional Reactive Programming in Java"
+            #:author (authors "Antony Courtney")
+            #:date "2001"
+            #:location (proceedings-location "Practical Aspects of Declarative Languages")
+            #:url "https://doi.org/10.1007/3-540-45241-9_3"))
 
 (define b:frp-cont
   (make-bib #:title "Functional Reactive Programming, Continued"

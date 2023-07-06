@@ -216,3 +216,23 @@
             #:author "John Gruber"
             #:url "https://daringfireball.net/projects/markdown/"
             #:note "Retrieved June 2023."))
+
+(define b:drscheme
+  (make-bib #:title "DrScheme: A programming environment for Scheme."
+            #:date "2002"
+            #:author (authors "Robert Bruce Findler"
+                              "John Clements"
+                              "Cormac Flanagan"
+                              "Matthew Flatt"
+                              "Shriram Krishnamurthi"
+                              "Paul Steckler"
+                              "Matthias Felleisen")
+            #:location (journal-location "Journal of Functional Programming"
+                                         #:pages (list 159 182)
+                                         #:volume 12
+                                         #:number 2)))
+
+(define b:raco
+  (make-bib #:title "raco: Racket Command-Line Tools"
+            #:date "2010"
+            #:url "https://docs.racket-lang.org/raco/index.html"))

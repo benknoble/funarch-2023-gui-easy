@@ -153,7 +153,11 @@ UI state, like the message label, by mutation.
 
 GUI Easy is a functional shell for Racket's GUI system based on
 observable values and function composition that aims to solve the
-problems with the imperative object-based APIs@~cite[b:gui-easy].
+problems with the imperative object-based APIs@~cite[b:gui-easy]. You
+can install the package @tt{gui-easy} through the menu of
+DrRacket@~cite[b:drscheme] or using the Racket command-line tool
+@tt{raco}@~cite[b:raco], after which you can run the examples in
+DrRacket or from your favorite programming environment.
 
 With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the
 previous shortcomings. As state, we define an observable

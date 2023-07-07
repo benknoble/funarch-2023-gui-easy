@@ -7,6 +7,8 @@
                    racket
                    racketblock
                    racketmod0)
+          (only-in scribble/racket
+                   symbol-color)
           scriblib/figure
           scriblib/footnote
           "bib.rkt")
@@ -14,6 +16,10 @@
 @(define ($ . xs)
    (make-element (make-style "relax" '(exact-chars))
                  (list "$" xs "$")))
+
+@(define ~ (make-element "textasciitilde" ""))
+@(define <~ (make-element symbol-color (list "<" ~)))
+@(define ~> (make-element symbol-color (list ~ ">")))
 
 @(define (url-note dest)
    @note[@url[dest]])
@@ -143,9 +149,9 @@ UI state, like the message label, by mutation.
          (window
           #:title "Counter"
           (hpanel
-           (button "-" (λ () (<~ |@|count sub1)))
-           (text (~> |@|count number->string))
-           (button "+" (λ () (<~ |@|count add1))))))]]
+           (button "-" (λ () (#,<~ |@|count sub1)))
+           (text (#,~> |@|count number->string))
+           (button "+" (λ () (#,<~ |@|count add1))))))]]
 
 @figure["screenshot-counter.png"
         "The rendered counter GUI."
@@ -285,7 +291,7 @@ abstraction in more detail in @Secref{view_detail}.
         (define (counter |@|count action)
           (hpanel
            (button "-" (λ () (action sub1)))
-           (text (~> |@|count number->string))
+           (text (#,~> |@|count number->string))
            (button "+" (λ () (action add1)))))
 
         (define |@|c1 (|@| 0))
@@ -294,8 +300,8 @@ abstraction in more detail in @Secref{view_detail}.
         (render
          (window
           #:title "Counters"
-          (counter |@|c1 (λ (proc) (<~ |@|c1 proc)))
-          (counter |@|c2 (λ (proc) (<~ |@|c2 proc)))))]]
+          (counter |@|c1 (λ (proc) (#,<~ |@|c1 proc)))
+          (counter |@|c2 (λ (proc) (#,<~ |@|c2 proc)))))]]
 
 @subsection{Observable Values}
 
@@ -307,19 +313,19 @@ construct and manipulate observables.
 We create observables with @racket[|@|]. By convention, we prefix
 observable variables with the same sigil.
 
-We can change the contents of an observable using @racket[<~]. This
+We can change the contents of an observable using @racket[#,<~]. This
 procedure takes as arguments an observable and a procedure of one
 argument, representing the current value, to generate a new value. Every
 change is propagated to any observers registered at the time of the
 update.
 
-We can derive new observables from existing ones using @racket[~>].
+We can derive new observables from existing ones using @racket[#,~>].
 This procedure takes an observable and a procedure of one argument, the
 current value. A derived observable changes with the observable it is
 derived from by applying its mapping procedure to the values of its
 input observable. In @figure-ref["easy-counter-reuse.rkt"], the derived
-observable @racket[(~> |@|count number->string)] changes every time
-@racket[|@|count] is updated by @racket[<~]; its value is the result of
+observable @racket[(#,~> |@|count number->string)] changes every time
+@racket[|@|count] is updated by @racket[#,<~]; its value is the result of
 applying @racket[number->string] to the value of @racket[|@|count]. We
 cannot directly update derived observables.
 

@@ -609,18 +609,14 @@ another system that wraps an imperative GUI framework in a functional
 shell. Other sources of inspiration include Clojure's
 Reagent@~cite[b:reagent] and JavaScript's React@~cite[b:react].
 
-Frappé@~cite[b:frappe] is an implementation of FRP in Java that wraps
-an imperative API (Java Beans) in a declarative shell. Both GUI Easy
-and Frappé implement a ``push'' model for propagation of values through
-the dependency graph: behaviors in Frappé hold values and support the
-registration of listeners to be notified when their held values change,
-like observables in GUI Easy. Unlike Frappé, GUI Easy does not have an
-explicit notion of event values. Instead, observables may be directly
-updated in response to callbacks.
-
-@; TODO: Say more about event propagation differences? GUI Easy, unlike
-@; typical FRP libs, does not require an explicit (and often unchanging)
-@; event graph.
+Frappé@~cite[b:frappe] is an implementation of FRP in Java that wraps an
+imperative API (Java Beans) in a declarative shell. Both GUI Easy and
+Frappé implement a ``push'' model for propagation of values through the
+dependency graph: @italic{behaviors} in Frappé hold values and support
+the registration of listeners to be notified when their held values
+change, like observables in GUI Easy. Unlike Frappé, GUI Easy does not
+have an explicit notion of @italic{events}. Instead, observables may be
+directly updated in response to callbacks.
 
 In Racket, FrTime@frtime implements a functional reactive programming
 language for GUIs and other tasks. FrTime extends the spirit of the

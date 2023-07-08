@@ -154,7 +154,7 @@ UI state, like the message label, by mutation.
            (button "+" (λ () (#,<~ |@|count add1))))))]]
 
 @figure["screenshot-counter.png"
-        "The rendered counter GUI."
+        "The rendered counter GUI on macOS."
         (image "screenshot-counter.png" #:scale 0.50)]
 
 GUI Easy is a functional shell for Racket's GUI system based on
@@ -285,7 +285,7 @@ details of wiring state and widgets together. We discuss the view
 abstraction in more detail in @Secref{view_detail}.
 
 @figure["easy-counter-reuse.rkt"
-        "Component re-use in GUI Easy."
+        "Component re-use in GUI Easy. Multiple counter widgets can be created from a single definition."
         @racketmod0[
         racket/gui/easy
         (define (counter |@|count action)
@@ -357,7 +357,7 @@ the Racket ecosystem, into their projects.
 @section[#:tag "arch-frost"]{The Architecture of Frosthaven}
 
 @figure["screenshot-frosthaven.png"
-        "The Frosthaven Manager's main window."
+        "The Frosthaven Manager's main window on macOS."
         (image "screenshot-frosthaven.png" #:scale 0.18)]
 
 In this section, we describe various pieces of a large GUI Easy
@@ -522,7 +522,7 @@ widget.
     [destroy (->m widget/c void?)]))]]
 
 @figure["view-impl.rkt"
-        (list "An implementation of a custom " @racket[view<%>] ".")
+        (list "An implementation of a custom " @racket[view<%>] " for displaying label text.")
         @racketblock[
 (require (prefix-in gui: racket/gui))
 (define text%

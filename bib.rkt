@@ -236,3 +236,65 @@
   (make-bib #:title "raco: Racket Command-Line Tools"
             #:date "2010"
             #:url "https://docs.racket-lang.org/raco/index.html"))
+
+(define b:garnet
+  (make-bib #:title "A New Model for Handling Input"
+            #:date "1990"
+            #:author "Brad A. Myers"
+            #:location (journal-location "ACM Transactions on Information Systems"
+                                         #:pages (list 289 320)
+                                         #:volume 8
+                                         #:number 3)
+            #:doi "https://doi.org/10.1145/98188.98204"
+            #:url "https://www.cs.cmu.edu/~amulet/papers/p289-myers-TOIS-new-model.pdf"))
+
+(define b:mvc
+  (make-bib #:title "A description of the model-view-controller user interface paradigm in the Smalltalk-80 system"
+            #:date "1988"
+            #:author (authors "Glenn E. Krasner" "Stephen T. Pope")
+            #:location (journal-location "Journal of Object-Oriented Programming"
+                                         #:pages (list 26 49)
+                                         #:volume 1
+                                         #:number 3)
+            #:url "https://www.ics.uci.edu/~redmiles/ics227-SQ04/papers/KrasnerPope88.pdf"))
+
+(define b:smalltalk80
+  (make-bib #:title "Smalltalk-80: The Interactive Programming Environment"
+            #:author "Adele Goldberg"
+            #:date "1983"
+            #:is-book? #t
+            #:location (book-location #:publisher "Addison-Wesley Publishers.")))
+
+(define b:andrew
+  (make-bib #:title "The Andrew Toolkit—An Overview"
+            #:author (authors "Andrew J. Palay" "Wilfred J. Hansen" "Michael L. Kazar" "Mark Sherman" "Maria G. Wadlow" "Thomas P. Neuendorffer" "Zalman Stern" "Miles Bader" "Thom Peters")
+            #:date "1988"
+            #:location (proceedings-location "USENIX Winter Conference"
+                                             #:pages (list 9 22))))
+
+(define b:drc
+  (make-bib #:title "Designing Reusable Classes"
+            #:date "1988"
+            #:author (authors "Ralph E. Johnson" "Brian Foote")
+            #:location (journal-location "Journal of Object-Oriented Programming"
+                                         #:pages (list 22 35)
+                                         #:volume 1
+                                         #:number 2)
+            #:url "http://www.laputan.org/drc/drc.html"))
+
+(define b:mesa
+  (make-bib #:title "The Mesa Programming Environment"
+            #:date "1985"
+            #:author "Richard E. Sweet"
+            #:location (journal-location "ACM SIGPLAN Notices"
+                                         #:pages (list 216 229)
+                                         #:volume 20
+                                         #:number 7)
+            #:doi "https://doi.org/10.1145/17919.806843"
+            #:url "https://www.digibarn.com/friends/curbow/star/XDEPaper.pdf"))
+
+(define b:tajo
+  (make-bib #:title "Tajo Functional Specification Version 6.0,"
+            #:date "1980"
+            #:author "Donald C. Wallace"
+            #:location "Xerox Internal Document"))

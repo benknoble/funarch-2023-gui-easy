@@ -476,18 +476,18 @@ naturally to the principle ``data down, actions up,'' or @emph{DDAU}. It
 also guides us to make decisions about which state to centralize at the
 highest levels of the GUI and which state to localize in reusable views.
 
-DDAU prescribes how a reusable view should manipulate state.
-The ``data down'' prescription means that all necessary data
-must be inputs to a view. Recall the @racket[counter] view from
+DDAU prescribes how a reusable view should manipulate state. The ``data
+down'' prescription means that all necessary data must be inputs to a
+view. Recall the @racket[counter] view from
 @figure-ref{easy-counter-reuse.rkt}: the data needed to display the
 value of the counter was an observable input to the view called
 @racket[|@|count]. The ``actions up'' prescription means that views
 should not directly manipulate state; instead, they should pass
 actionable data back to their caller, which is better positioned to
 decide how to manipulate state. Actions are represented by callbacks.
-For the @racket[counter] view, the @racket[action] callback is passed
-a procedure indicating whether the minus or plus button was clicked;
-the caller of the @racket[counter] view decides how to react to user
+For the @racket[counter] view, the @racket[action] callback is passed a
+procedure indicating whether the minus or plus button was clicked; the
+caller of the @racket[counter] view decides how to react to user
 manipulations of the GUI.
 
 It would be generally unsafe to mutate observable inputs, as they

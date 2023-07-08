@@ -284,6 +284,11 @@ rendered, produce concrete instances of those trees and handle the
 details of wiring state and widgets together. We discuss the view
 abstraction in more detail in @secref{view_detail}.
 
+The core abstractions of observables and views correspond to a
+model-view-controller (MVC) architecture for graphical applications, as
+popularized by Smalltalk-80@~cite[b:mvc b:smalltalk80]. We describe the
+correspondence in @secref{mvc}.
+
 @figure["easy-counter-reuse.rkt"
         "Component re-use in GUI Easy. Multiple counter widgets can be created from a single definition."
         @racketmod0[
@@ -353,6 +358,34 @@ Many Racket GUI widgets are already wrapped by GUI Easy, but programmers
 can implement the @racket[view<%>] interface themselves in order to
 integrate arbitrary widgets, such as those from 3rd-party packages in
 the Racket ecosystem, into their projects.
+
+@subsection[#:tag "mvc"]{Models, Views, and Controllers}
+
+The popular MVC architecture for graphical applications divides program
+modules into models of the application domain, views of the models, and
+controllers coupled with the views to translate user interactions into
+commands that affect the model@~cite[b:mvc].
+
+Racket GUI applications can be organized according to the MVC
+architecture. In @figure-ref{oop-counter.rkt}, the model is an integer
+@racket[count]; the view is the combination of @racket[button%] and
+@racket[mesage%] objects, and the controller is the
+@racket[update-count] procedure. Notice, however, that
+explictly grouping the view objects into a single reusable component
+requires contorting the code responsible for object creation. Similarly,
+the model and controller are undistinguished values.
+
+GUI Easy encourages an MVC-like architecture through the observable and
+view abstractions. Consider as an example
+@figure-ref{easy-counter-reuse.rkt}: the observables @racket[|@|c1] and
+@racket[|@|c2] form the model, and each is distinguished from ordinary
+values. Similarly, the @racket[counter] procedure is both a GUI Easy
+view and an MVC view. Finally, the controller's role is fulfilled by the
+@racket[action] callback, which gives the @racket[counter] consumer
+control over how user interactions are translated to model updates.
+
+In summary, the MVC architecture encouraged by GUI Easy uses observables
+for models, GUI Easy views for views, and callbacks for controllers.
 
 @section[#:tag "arch-frost"]{The Architecture of Frosthaven}
 
@@ -465,6 +498,13 @@ violates the principles of reusable views. Reusable views could take
 separate input and output observable formal arguments to work around
 this restriction, but that approach is generally less flexible and less
 convenient for the user than callbacks.
+
+Callbacks are also easier to compose to than separate input and output
+observables. For example, when a parent view uses a child view, it might
+specify the child's callback by wrapping the parent's own callback. The
+result is that events in the child are passed up through the parent,
+with the parent able to intercept, modify, and filter events from the
+child.
 
 DDAU naturally bubbles application state up the layers of application
 architecture, so that the top-level of an application contains all of
@@ -638,6 +678,22 @@ Reagent@~cite[b:reagent] to add more sophisticated state management.
 This includes a global store and effect handler, akin to GUI Easy's
 observables and update procedures, and queries, akin to GUI Easy's
 derived observables.
+
+The Andrew toolkit and Garnet system, among others of that time, knew
+that the MVC architecture tightly couples views and
+controllers@~cite[b:andrew b:garnet]. Typical solutions involve not
+separating views and controllers or dropping the controller
+altogether@~cite[b:garnet]. DDAU from @secref{Reusable_Views} encourages
+decoupling the view and controller by the use of callbacks: they provide
+the same interposition points a typical controller would use to respond
+to user interaction, and they provide different view instances the
+ability to respond with different model updates. This is especially
+important when the view can display many different models. Decoupling
+views and controllers also allow combining controllers when combining
+views. In the Garnet system, however, ``spaghetti'' callbacks are
+avoided by providing a small set of flexible Interactors and by using
+formulated constraints to tie together interactions and
+updates@~cite[b:garnet].
 
 @section{Conclusion}
 

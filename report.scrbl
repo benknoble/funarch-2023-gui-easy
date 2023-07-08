@@ -654,10 +654,17 @@ it in all applications.
 @(define frtime
    @~cite[b:frtime-in-plt-scheme b:frtime-dataflow b:frtime-thesis])
 
-GUI Easy draws a lot of inspiration from Swift UI@~cite[b:swift-ui],
-another system that wraps an imperative GUI framework in a functional
-shell. Other sources of inspiration include Clojure's
-Reagent@~cite[b:reagent] and JavaScript's React@~cite[b:react].
+GUI Easy draws inspiration from Swift UI@~cite[b:swift-ui], another
+system that wraps an imperative GUI framework in a functional shell.
+Other sources of inspiration include Clojure's Reagent@~cite[b:reagent]
+and JavaScript's React@~cite[b:react].
+
+The Elm@~cite[b:elm] programming language strictly constrains
+component composition to the data down, actions up style. Clojure's
+re-frame@~cite[b:re-frame] library builds on Reagent@~cite[b:reagent]
+to add more sophisticated state management. This includes a global
+store and effect handler, akin to GUI Easy's observables and update
+procedures, and queries, akin to GUI Easy's derived observables.
 
 Frappé@~cite[b:frappe] is an implementation of FRP in Java that wraps an
 imperative API (Java Beans) in a declarative shell. Both GUI Easy and
@@ -668,16 +675,15 @@ change, like observables in GUI Easy. Unlike Frappé, GUI Easy does not
 have an explicit notion of @italic{events}. Instead, observables may be
 directly updated in response to callbacks.
 
-In Racket, FrTime@frtime implements a functional reactive programming
-language for GUIs and other tasks. FrTime extends the spirit of the
-original functional reactive paradigm@~cite[b:fran b:frp-cont] based on
-time flow and signals. The Elm@~cite[b:elm] programming language
-strictly constrains component composition to the data down, actions up
-style. Clojure's re-frame@~cite[b:re-frame] library builds on
-Reagent@~cite[b:reagent] to add more sophisticated state management.
-This includes a global store and effect handler, akin to GUI Easy's
-observables and update procedures, and queries, akin to GUI Easy's
-derived observables.
+In Racket, FrTime@~cite[b:frtime-in-plt-scheme] implements a push-based
+FRP language for GUIs and other tasks. The FrTime language extends
+a subset of the Racket language to make signal values first-class.
+By contrast, GUI easy is a regular library built on top of the
+Racket language.
+
+Fred@~cite[b:frtime-gui] is FrTime's wrapper around Racket GUI.  It
+wraps the object-oriented API of Racket GUI by subclassing Racket GUI
+widgets to work with FrTime signal values.
 
 The Andrew toolkit and Garnet system, among others of that time, knew
 that the MVC architecture tightly couples views and

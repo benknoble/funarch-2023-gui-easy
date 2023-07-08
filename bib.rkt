@@ -126,6 +126,15 @@
                          #:pages (list 294 308)
                          #:series "ESOP'06")))
 
+(define b:frtime-gui
+  (make-bib #:title "Crossing State Lines: Adapting Object-Oriented Frameworks to Functional Reactive Languages"
+            #:author (authors "Daniel Ignatoff" "Gregory H. Cooper" "Shriram Krishnamurthi")
+            #:date "2006"
+            #:url "https://link.springer.com/chapter/10.1007/11737414_18"
+            #:location (proceedings-location
+                        "Functional and Logic Programming"
+                        #:series "FLOPS 2006")))
+
 (define b:frtime-thesis
   (make-bib #:title "Integrating Dataflow Evaluation into a Practical Higher-Order Call-by-Value Language"
             #:author "Gregory Harold Cooper"

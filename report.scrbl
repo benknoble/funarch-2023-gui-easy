@@ -282,7 +282,7 @@ operators.
 Views are representations of Racket GUI widget trees that, when
 rendered, produce concrete instances of those trees and handle the
 details of wiring state and widgets together. We discuss the view
-abstraction in more detail in @Secref{view_detail}.
+abstraction in more detail in @secref{view_detail}.
 
 @figure["easy-counter-reuse.rkt"
         "Component re-use in GUI Easy. Multiple counter widgets can be created from a single definition."

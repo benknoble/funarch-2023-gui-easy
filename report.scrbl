@@ -639,17 +639,44 @@ Fortunately, both of these problems have solutions.
 @(define mixins
    (~cite b:flavors b:denote-inheritance b:jigsaw b:mixins b:super+inner))
 
+@figure["goodbye-world.rkt"
+        "Using mixins to write a GUI Easy app whose window is closed when a button is clicked."
+        @racketmod0[
+        racket/gui/easy
+        (require racket/class)
+        (define close! #f)
+        (render
+         (window
+          #:title "Goodbye World"
+          #:mixin (λ (window%)
+                    (class window% (super-new)
+                      (set! close!
+                        (λ ()
+                          (when (send this can-close?)
+                            (send this on-close)
+                            (send this show #f))))))
+          (button "Click Me!" (λ () (close!)))))]]
+
 The problem of access to imperative behaviors is solved by GUI Easy
 conventions. In an object-oriented toolkit, we would subclass widgets as
 needed to create new behaviors. We cannot subclass a class we cannot
 access, for it is ostensibly hidden by the wrapper. In response, some
 GUI Easy views support a mixin@|mixins| argument, a function from class
-to class. This allows us to dynamically subclass widgets at runtime to
-override or augment their methods. When mixins are insufficient, we can
-choose to write our own @racket[view<%>] implementation to wrap any
-widget we desire. The Frosthaven Manager uses mixins to augment window
-close behavior and a custom @racket[view<%>] to display rendered
-Markdown@~cite[b:markdown] files.
+to class. Mixins allows us to dynamically subclass widgets at runtime to
+override or augment their methods. @cite-author[b:garnet]'s ``Goodbye
+World'' program provides a good example: how can we include a button in
+the view that closes the window when such functionality is only present
+in the object-oriented toolkit? @Figure-ref{goodbye-world.rkt} shows
+how: by using a mixin, we can get a reference to the window's
+@racket[on-close] and @racket[show] methods. When mixins are
+insufficient, we can choose to write our own @racket[view<%>]
+implementation to wrap any widget we desire. The Frosthaven Manager uses
+mixins to implement window close behavior like in the ``Goodbye World''
+program combined with a macro that implements the
+mixin-over-@racket[(set! close! ...)] pattern; it also augments window
+close behavior so that closing the window can behave like accepting a
+choice. The Frosthaven Manager uses custom @racket[view<%>]s to display
+rendered Markdown@~cite[b:markdown] files, for example.
 
 The problem of global state is handled by functional programming
 techniques. Essentially, we have two choices: threading state or

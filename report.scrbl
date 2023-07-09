@@ -680,10 +680,13 @@ FRP language for GUIs and other tasks. The FrTime language extends a
 subset of the Racket language to make signal values first-class. By
 contrast, GUI Easy is a regular library built on top of the Racket
 language---a conscious choice in order to make it straightforward to
-bring GUI Easy into existing Racket programs. FrTime and GUI Easy both
-track state by using mutation internally and both FrTime
-@italic{behaviors} and GUI Easy observables get updated asynchronously
-in response to changes.
+bring GUI Easy into existing Racket programs. One symptom of this choice
+is that, while FrTime signals can be displayed in a continuously
+variable manner with support from editors like DrRacket, GUI Easy
+observables are regular Racket values and are displayed as such. FrTime
+and GUI Easy both track state by using mutation internally and both
+FrTime @italic{behaviors} and GUI Easy observables get updated
+asynchronously in response to changes.
 
 Fred@~cite[b:frtime-gui] is FrTime's wrapper around Racket GUI. It wraps
 the object-oriented API of Racket GUI by subclassing Racket GUI widgets

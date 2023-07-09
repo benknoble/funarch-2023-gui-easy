@@ -676,10 +676,14 @@ have an explicit notion of @italic{events}. Instead, observables may be
 directly updated in response to callbacks.
 
 In Racket, FrTime@~cite[b:frtime-in-plt-scheme] implements a push-based
-FRP language for GUIs and other tasks. The FrTime language extends
-a subset of the Racket language to make signal values first-class.
-By contrast, GUI easy is a regular library built on top of the
-Racket language.
+FRP language for GUIs and other tasks. The FrTime language extends a
+subset of the Racket language to make signal values first-class. By
+contrast, GUI easy is a regular library built on top of the Racket
+language -- a conscious choice in order to make it straightforward to
+bring GUI Easy into existing Racket programs. FrTime and GUI Easy both
+track state by using mutation internally and both @italic{behaviors}
+-- in FrTime -- and observables -- in GUI Easy -- get updated
+asynchronously in response to changes.
 
 Fred@~cite[b:frtime-gui] is FrTime's wrapper around Racket GUI.  It
 wraps the object-oriented API of Racket GUI by subclassing Racket GUI

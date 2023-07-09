@@ -678,12 +678,32 @@ close behavior so that closing the window can behave like accepting a
 choice. The Frosthaven Manager uses custom @racket[view<%>]s to display
 rendered Markdown@~cite[b:markdown] files, for example.
 
+@figure["threading.rkt"
+        (list "Threading the " @racket[|@|env] " argument from a view for monster groups to a view for a monster to a view for a monster's hit points.")
+        @racketblock[
+(define (monster-group-view |@|monsters |@|env)
+  (define |@|monster ...)
+  (tabs |@|monsters
+        (monster-view |@|monster |@|env)))
+
+(define (monster-view |@|monster |@|env)
+  (counter (monster->hp-text |@|monster |@|env)
+           (λ (action) ...)))
+]]
+
 The problem of global state is handled by functional programming
 techniques. Essentially, we have two choices: threading state or
 dynamic binding. If we are confident that the state will be required
 in all reusable views, we can thread the state as input from one view
 to the next, like threading a needle through all parts of the program.
 Threaded state is the solution preferred by DDAU and reusuable views.
+For example, the Frosthaven Manager threads an observable
+@racket[|@|env] throughout the application so that simple arithmetic
+formulas with variables can be evaluated for monster information or
+scenario-specific attributes. As a result, many views take a
+@racket[|@|env] argument, and many views pass a @racket[|@|env] to child
+views. @Figure-ref{threading.rkt} shows a simplified example.
+
 Threading rarely-used state quickly becomes tedious and, when not needed
 everywhere, tangles unnecessary concerns. In response, we can use
 dynamic binding, which breaks some functional purity for convenience

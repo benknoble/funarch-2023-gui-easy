@@ -198,7 +198,7 @@ Easy. Second, Ben describes his desire to construct a large GUI program
 using a functional approach. The happy union of these two desires taught
 us the architectural lessons we present in @secref{arch-frost}.
 
-@subsection{Quest for Easier GUIs}
+@subsection[#:tag "quest-for-gui-easy"]{Quest for Easier GUIs}
 
 Bogdan's day job involved writing many small GUI tools for internal use.
 The Racket GUI framework proved an excellent way to build those types of
@@ -685,9 +685,18 @@ track state by using mutation internally and both @italic{behaviors}
 -- in FrTime -- and observables -- in GUI Easy -- get updated
 asynchronously in response to changes.
 
-Fred@~cite[b:frtime-gui] is FrTime's wrapper around Racket GUI.  It
+Fred@~cite[b:frtime-gui] is FrTime's wrapper around Racket GUI. It
 wraps the object-oriented API of Racket GUI by subclassing Racket GUI
-widgets to work with FrTime signal values.
+widgets to work with FrTime signal values. By contrast, GUI Easy views
+are implemented as separate classes that implement the @racket[view<%>]
+interface. Despite this difference, both frameworks perform similar
+operations in order to connect their reactive abstractions to the
+underlying widgets. FrTime makes use of macros to generate most of its
+wrapper code, whereas GUI Easy views are implemented manually. Unlike
+GUI Easy, Fred does not try to hide away the details of the Racket class
+system from the end user and, because its widgets simply sublass Racket
+GUI widgets, it has the same order-of-definition problems as Racket GUI
+(described in @secref{quest-for-gui-easy}).
 
 The Andrew toolkit and Garnet system, among others of that time, knew
 that the MVC architecture tightly couples views and

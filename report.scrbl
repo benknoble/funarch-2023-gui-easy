@@ -678,25 +678,25 @@ directly updated in response to callbacks.
 In Racket, FrTime@~cite[b:frtime-in-plt-scheme] implements a push-based
 FRP language for GUIs and other tasks. The FrTime language extends a
 subset of the Racket language to make signal values first-class. By
-contrast, GUI easy is a regular library built on top of the Racket
-language -- a conscious choice in order to make it straightforward to
+contrast, GUI Easy is a regular library built on top of the Racket
+language---a conscious choice in order to make it straightforward to
 bring GUI Easy into existing Racket programs. FrTime and GUI Easy both
-track state by using mutation internally and both @italic{behaviors}
--- in FrTime -- and observables -- in GUI Easy -- get updated
-asynchronously in response to changes.
+track state by using mutation internally and both FrTime
+@italic{behaviors} and GUI Easy observables get updated asynchronously
+in response to changes.
 
-Fred@~cite[b:frtime-gui] is FrTime's wrapper around Racket GUI. It
-wraps the object-oriented API of Racket GUI by subclassing Racket GUI
-widgets to work with FrTime signal values. By contrast, GUI Easy views
-are implemented as separate classes that implement the @racket[view<%>]
+Fred@~cite[b:frtime-gui] is FrTime's wrapper around Racket GUI. It wraps
+the object-oriented API of Racket GUI by subclassing Racket GUI widgets
+to work with FrTime signal values. By contrast, GUI Easy views are
+implemented as separate classes that implement the @racket[view<%>]
 interface. Despite this difference, both frameworks perform similar
 operations in order to connect their reactive abstractions to the
 underlying widgets. FrTime makes use of macros to generate most of its
 wrapper code, whereas GUI Easy views are implemented manually. Unlike
-GUI Easy, Fred does not try to hide away the details of the Racket class
-system from the end user and, because its widgets simply sublass Racket
-GUI widgets, it has the same order-of-definition problems as Racket GUI
-(described in @secref{quest-for-gui-easy}).
+GUI Easy, Fred does not hide the details of the Racket class system from
+the end user. Because its widgets sublass Racket GUI widgets, it has the
+same order-of-definition constraints as Racket GUI that we described in
+@secref{quest-for-gui-easy}.
 
 The Andrew toolkit and Garnet system, among others of that time, knew
 that the MVC architecture tightly couples views and

@@ -180,7 +180,7 @@ In this report, we examine the difficulties of programming with
 object-oriented GUI systems and motivate the search for a different
 system in @secref{A_Tale_of_Two_Programmers}, describe the key GUI Easy
 abstractions in @secref{GUI_Easy_Overview}, report on our experience
-constructing large GUI programs in @secref{arch-frost}, explore two key
+constructing large GUI programs in @secref{arch-frost}, explore key
 architectural lessons in @secref{Architectural_Lessons}, and explore
 related trends in GUI programming in @secref{related_work}.
 
@@ -453,13 +453,14 @@ reusable views in @secref{Reusable_Views}.
 
 @section{Architectural Lessons}
 
-In this section, we cover the two major lessons learned while developing
+In this section, we cover the major lessons learned while developing
 these systems. First, reusable views (@secref{Reusable_Views}) permit
-interface composition akin to functional composition by constraining
-how state is manipulated. Second, wrapping an imperative API with
-a functional shell (@secref{view_impl}) allows programmers to use
+interface composition akin to functional composition by constraining how
+state is manipulated. Second, wrapping an imperative API with a
+functional shell (@secref{view_impl}) allows programmers to use
 functional techniques and architectures when constructing imperative
-systems.
+systems. Third, inversion of control (@secref{ioc}) creates an
+extensible application skeleton.
 
 @subsection{Reusable Views}
 
@@ -603,6 +604,29 @@ GUIs, to rewrite the entire system in a functional style may be
 impractical. Instead, it is more practical to reuse existing imperative
 or object-based work by wrapping it in a functional shell.
 
+@subsection[#:tag "ioc"]{Inversion of Control}
+
+Inversion of control refers to an architecture wherein the main
+application provides procedures called by some framework, rather than by
+other application code. The framework is responsible for most of the
+coordinating activity, such as managing an event loop@~cite[b:drc].
+
+GUI Easy is one such framework. It manages the object lifecyle of
+@racket[view<%>] instances, which is also the lifecyle of GUI Easy
+graphical applications. Calling @racket[render] on a view kicks off that
+lifecycle, which is managed by the GUI Easy library and which calls into
+application code so that it may respond to user interaction.
+
+Inversion of control leads to an extensible application skeleton: the
+backbone of the application is under the framework's control.
+Applications hang the meat of their tasks on the extension points
+provided by the framework. In the case of GUI Easy, those extension
+points are (a) the event handlers provided by standard components, also
+called the controllers in @secref{mvc}, and (b) the @racket[view<%>]
+interface for creating new framework-aware components. Being able to
+compose individual framework components into larger components also
+contributes to extensibility and reuse.
+
 @subsection{Challenges}
 
 Naturally, maintaining reusable components and programming against a
@@ -716,6 +740,34 @@ views. In the Garnet system, however, ``spaghetti'' callbacks are
 avoided by providing a small set of flexible Interactors and by using
 formulated constraints to tie together interactions and
 updates@~cite[b:garnet].
+
+Inversion of control has a long history: the development of the
+Tajo@~cite[b:tajo] and Mesa@~cite[b:mesa] systems called it the
+``Hollywood Principle.'' @cite-author[b:garnet], developing the Garnet
+system, similarly separated monitoring processes from the users
+application code, providing hooks for the application to respond to
+events from the framework@~cite[b:garnet].
+
+In the language of @citet[b:drc], we ask whether GUI Easy is a
+``white-box'' or ``black-box'' inversion-of-control framework. White-box
+frameworks, so-called because they are transparent, typically require
+programs to subclass and add methods to framework components, which
+requires understanding implementation details. In contrast, black-box
+frameworks are an ``evolutionary goal,'' in which opaque components
+communicate only via a shared protocol. Black-box frameworks are thus
+easier to learn and use. White-box frameworks typically maintain global
+state, while black-box frameworks see state shared explicitly when
+needed. Given these criteria, we can confidently state that the
+object-oriented Racket GUI toolkit is a white-box framework. GUI Easy is
+principally black-box, relying on a protocol of observables for state
+and procedures for communication. Yet GUI Easy provides escape hatches
+of varying complexity that bring back the expert flavor of white-box
+frameworks; namely, mixins and the @racket[view<%>] interface. To give
+credit where it is due, we recognize that abstracting is much easier
+given a plethora of worked examples---we would not have the experience
+to develop GUI Easy without Racket's GUI toolkit. On the flipside, using
+GUI Easy has proven to be a good way to learn how to use Racket's GUI
+toolkit!
 
 @section{Conclusion}
 

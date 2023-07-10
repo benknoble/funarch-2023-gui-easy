@@ -837,6 +837,10 @@ with one another.
 @acks{Ben is grateful to Savannah Knoble, Derrick Franklin, John Hines,
 and Jake Hicks for playtesting the Frosthaven Manager throughout
 development, and to Isaac Childres for bringing us the wonderful world
-of Frosthaven.}
+of Frosthaven.
+
+We thank the anonymous reviewers, our shepherd Shriram Krishnamurthi,
+and our early readers Jeff Terrell, Matthew Flatt, and Robby Findler for
+their insightful comments.}
 
 @(generate-bibliography #:sec-title "References")

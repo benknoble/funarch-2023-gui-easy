@@ -840,7 +840,7 @@ development, and to Isaac Childres for bringing us the wonderful world
 of Frosthaven.
 
 We thank the anonymous reviewers, our shepherd Shriram Krishnamurthi,
-and our early readers Jeff Terrell, Matthew Flatt, and Robby Findler for
-their insightful comments.}
+and our early readers Jeff Terrell, Marc Kaufmann, Matthew Flatt, and
+Robby Findler for their insightful comments.}
 
 @(generate-bibliography #:sec-title "References")

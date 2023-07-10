@@ -372,8 +372,9 @@ architecture. In @figure-ref{oop-counter.rkt}, the model is an integer
 @racket[mesage%] objects, and the controller is the
 @racket[update-count] procedure. Notice, however, that
 explictly grouping the view objects into a single reusable component
-requires contorting the code responsible for object creation. Similarly,
-the model and controller are undistinguished values.
+requires contorting the code responsible for object creation. There is
+no explicit support for the MVC pattern, though it can be used
+implicitly.
 
 GUI Easy encourages an MVC-like architecture through the observable and
 view abstractions. Consider as an example

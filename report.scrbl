@@ -167,7 +167,7 @@ DrRacket or from your favorite programming environment.
 
 With GUI Easy, the code in @figure-ref{easy-counter.rkt} resolves the
 previous shortcomings. As state, we define an observable
-@racket[|@|count] whose initial value is the number @racket[0]. Then we
+@racket[|@|count] whose initial value is the number @racket[0]. Then, we
 @racket[render] an interface composed of widgets like @racket[window],
 @racket[hpanel], @racket[button], and @racket[text]. Widget properties,
 such as size or label, may be constant values or observables. The

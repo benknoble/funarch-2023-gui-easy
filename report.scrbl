@@ -669,15 +669,15 @@ World'' program provides a good example: how can we include a button in
 the view that closes the window when such functionality is only present
 in the object-oriented toolkit? @Figure-ref{goodbye-world.rkt} shows
 how: by using a mixin, we can get a reference to the window's
-@racket[on-close] and @racket[show] methods. When mixins are
-insufficient, we can choose to write our own @racket[view<%>]
-implementation to wrap any widget we desire. The Frosthaven Manager uses
+@racket[on-close] and @racket[show] methods. The Frosthaven Manager uses
 mixins to implement window close behavior like in the ``Goodbye World''
 program combined with a macro that implements the
 mixin-over-@racket[(set! close! ...)] pattern; it also augments window
 close behavior so that closing the window can behave like accepting a
-choice. The Frosthaven Manager uses custom @racket[view<%>]s to display
-rendered Markdown@~cite[b:markdown] files, for example.
+choice. When mixins are insufficient, we can choose to write our own
+@racket[view<%>] implementation to wrap any widget we desire. The
+Frosthaven Manager uses custom @racket[view<%>]s to display rendered
+Markdown@~cite[b:markdown] files, for example.
 
 @figure["threading.rkt"
         (list "Threading the " @racket[|@|env] " argument from a view for monster groups to a view for a monster to a view for a monster's hit points.")

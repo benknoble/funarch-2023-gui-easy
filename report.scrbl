@@ -500,7 +500,7 @@ separate input and output observable formal arguments to work around
 this restriction, but that approach is generally less flexible and less
 convenient for the user than callbacks.
 
-Callbacks are also easier to compose to than separate input and output
+Callbacks are also easier to compose than separate input and output
 observables. For example, when a parent view uses a child view, it might
 specify the child's callback by wrapping the parent's own callback. The
 result is that events in the child are passed up through the parent,

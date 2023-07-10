@@ -644,7 +644,7 @@ Fortunately, both of these problems have solutions.
         @racketmod0[
         racket/gui/easy
         (require racket/class)
-        (define close! #f)
+        (define close! void)
         (render
          (window
           #:title "Goodbye World"

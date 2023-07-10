@@ -663,7 +663,7 @@ needed to create new behaviors. We cannot subclass a class we cannot
 access, for it is ostensibly hidden by the wrapper. In response, some
 GUI Easy views support a mixin@|mixins| argument, a function from class
 to class. Mixins allows us to dynamically subclass widgets at runtime to
-override or augment their methods. @cite-author[b:garnet]'s ``Goodbye
+override or augment their methods. @cite-author[b:garnet]' ``Goodbye
 World'' program provides a good example: how can we include a button in
 the view that closes the window when such functionality is only present
 in the object-oriented toolkit? @Figure-ref{goodbye-world.rkt} shows

@@ -178,7 +178,7 @@ the counter to be updated, which updates the text label.
 
 In this report, we examine the difficulties of programming with
 object-oriented GUI systems and motivate the search for a different
-system in @secref{A_Tale_of_Two_Programmers}, describe the key GUI Easy
+system in @secref{A_Tale_of_Two_Programmers}, describe the main GUI Easy
 abstractions in @secref{GUI_Easy_Overview}, report on our experience
 constructing large GUI programs in @secref{arch-frost}, explore key
 architectural lessons in @secref{Architectural_Lessons}, and explore

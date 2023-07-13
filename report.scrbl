@@ -1,4 +1,4 @@
-#lang scribble/acmart @sigplan @screen @review @;@anonymous
+#lang scribble/acmart @sigplan @screen @;@review @;@anonymous
 
 @; vim: textwidth=72
 

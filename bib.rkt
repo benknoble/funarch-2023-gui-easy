@@ -144,6 +144,22 @@
 
 ;; FRP
 
+(define b:flapjax
+  (make-bib #:title "Flapjax: a programming language for Ajax applications"
+            #:author (authors
+                      "Leo A. Meyerovich"
+                      "Arjun Guha"
+                      "Jacob Baskin"
+                      "Gregory H. Cooper"
+                      "Michael Greenberg"
+                      "Aleks Bromfield"
+                      "Shriram Krishnamurthi")
+            #:date "2009"
+            #:url "https://dl.acm.org/doi/10.1145/1640089.1640091"
+            #:location (proceedings-location
+                        "ACM SIGPLAN conference on Object oriented programming systems languages and applications"
+                        #:series "OOPSLA 2009")))
+
 (define b:fran
   (make-bib #:title "Functional reactive animation."
             #:author (authors "Conal Elliot" "Paul Hudak")

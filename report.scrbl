@@ -773,6 +773,18 @@ user. Because its widgets sublass Racket GUI widgets, it has the same
 order-of-definition constraints as Racket GUI that we described in
 @secref{quest-for-gui-easy}.
 
+Flapjax@~cite[b:flapjax] is a push-based FRP implementation. It provides
+both a compiler from the Flapjax language to JavaScript and a standalone
+library. Similar to FrTime for Racket, the Flapjax language extends
+JavaScript to make behaviors first-class, implicitly lifting expressions
+to work over behaviors where necessary. The Flapjax compiler is optional
+and the standalone library can be used directly from JavaScript without
+compiler support, like GUI Easy can be from Racket. While GUI Easy
+observables get updated asynchronously and independently, updates in
+Flapjax are propagated through the dependency graph in topological
+order, avoiding potential inconsistencies between behaviors that share
+part of the dependency graph.
+
 The Andrew toolkit and Garnet system, among others of that time, knew
 that the MVC architecture tightly couples views and
 controllers@~cite[b:andrew b:garnet]. Typical solutions involve not

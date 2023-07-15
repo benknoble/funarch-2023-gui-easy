@@ -9,6 +9,7 @@
                    racketmod0)
           (only-in scribble/racket
                    symbol-color)
+          scribble/latex-properties
           scriblib/figure
           scriblib/footnote
           "bib.rkt")
@@ -23,6 +24,12 @@
 
 @(define (url-note dest)
    @note[@url[dest]])
+
+@(define acm-meta
+   (make-element (make-style #f (list (make-tex-addition "acm-metadata.tex")))
+                 ""))
+
+@acm-meta
 
 @title{Functional Shell and Reusable Components for Easy GUIs}
 @subtitle{Experience Report}

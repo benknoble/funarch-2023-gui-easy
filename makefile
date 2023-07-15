@@ -6,7 +6,8 @@ SCRIBBLE = raco scribble
 MAIN = report.scrbl
 
 FILES = $(MAIN) \
-        bib.rkt
+        bib.rkt \
+        acm-metadata.tex
 
 LATEX_FILES = tex/report.tex \
               tex/acmart.cls \

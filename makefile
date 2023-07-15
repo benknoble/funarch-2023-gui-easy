@@ -8,10 +8,18 @@ MAIN = report.scrbl
 FILES = $(MAIN) \
         bib.rkt
 
+LATEX_FILES = tex/report.tex \
+              tex/acmart.cls \
+              tex/screenshot-counter.png \
+              tex/screenshot-frosthaven.png
+
 pdf/report.pdf: $(FILES)
 	@mkdir -p pdf
 	$(SCRIBBLE) $(SCRIBBLE_OPTS) --dest pdf --pdf $(MAIN)
 
-tex/report.tex: $(FILES)
+$(LATEX_FILES): $(FILES)
 	@mkdir -p tex
 	$(SCRIBBLE) $(SCRIBBLE_OPTS) --dest tex --latex $(MAIN)
+
+source.zip: $(LATEX_FILES)
+	zip $@ $(LATEX_FILES)

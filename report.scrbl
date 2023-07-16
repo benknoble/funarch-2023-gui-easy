@@ -34,8 +34,6 @@
 @title{Functional Shell and Reusable Components for Easy GUIs}
 @subtitle{Experience Report}
 
-@acmConference["FUNARCH" "September 2023" "The Westin Seattle Hotel, Seattle, Washington, United States"]
-
 @author["D. Ben Knoble"
         #:email @email|{ben.knoble+funarch2023@gmail.com}|
         #:affiliation (affiliation

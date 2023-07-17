@@ -32,7 +32,6 @@
 @acm-meta
 
 @title{Functional Shell and Reusable Components for Easy GUIs}
-@subtitle{Experience Report}
 
 @author["D. Ben Knoble"
         #:email @email|{ben.knoble+funarch2023@gmail.com}|

@@ -2,8 +2,15 @@
 
 (require slideshow/code
          slideshow/step
+         slideshow/play
+         racket/runtime-path
+         file/glob
+         racket/draw
+         racket/class
          pict/face
          qi)
+
+(define-runtime-path here ".")
 
 (define (color-code col p)
   (define q (inset p 2))
@@ -91,8 +98,6 @@
         (scale-to-fit (rectangle (/ client-w 5) (/ client-h 5)))))
   (slide
    #:title "Example: Area of Effect Diagram Editor"
-   ;; TODO: some "lightcoral"; macros to make this easier
-   ;; One color at a time?
    (~> ((code
          (#,(color-boilerplate (code define f)) (icky-new #,(color-boilerplate (code gui:frame%)) #,(color-main (code [label "AoE Editor"]))))
          #,(color-boilerplate (code (define h (icky-new gui:horizontal-panel% [parent f]))))
@@ -125,8 +130,32 @@
        (cc-superimpose titleless-page)
        (rb-superimpose legend)))))
 
-;; image of running code, just in case
-;; discuss issues
+;; image of running code
+(define editor-frames
+  (sort (glob (build-path here "aoe-editor-frame-*.png"))
+        path<?))
+(define n-editor-frames (length editor-frames))
+(define (run-oop)
+  (dynamic-require (build-path here "aoe-editor-oop.rkt") #f))
+(play-n
+ (λ (timestamp)
+   (define frame-file
+     (on (timestamp)
+       (if (>= 1.0)
+         (gen (last editor-frames))
+         (~>> (* n-editor-frames) exact-floor (list-ref editor-frames)))))
+   (define bitmap
+     (make-object bitmap% frame-file 'png))
+   (define-values (w h)
+     (values (send bitmap get-width) (send bitmap get-height)))
+   (~> ((dc (λ (dc dx dy)
+              (send dc draw-bitmap bitmap dx dy))
+            w h))
+       (scale-to-fit titleless-page)
+       (cc-superimpose titleless-page)
+       (rb-superimpose (clickback (frame (t "Run OOP Code")) run-oop))))
+ #:title "AoE Editor In Action"
+ #:delay 0.3)
 
 ;; on to GUI Easy version…
 ;; use `ghost` to to introduce each nested piece alongside the resulting GUI

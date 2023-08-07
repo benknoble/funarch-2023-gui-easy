@@ -17,8 +17,8 @@
 
 @; reset some figure parameters based on ACM feedback
 @(default-figure-caption-style #f)
-@(default-figure-counter-style #f)
-@(default-figure-label-text "Figure")
+@(default-figure-counter-style 'bold)
+@(default-figure-label-text (make-element 'bold "Figure"))
 
 @(define ($ . xs)
    (make-element (make-style "relax" '(exact-chars))

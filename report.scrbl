@@ -12,7 +12,12 @@
           scribble/latex-properties
           scriblib/figure
           scriblib/footnote
+          scribble/private/lang-parameters
           "bib.rkt")
+
+@; reset some figure parameters based on ACM feedback
+@(default-figure-caption-style #f)
+@(default-figure-counter-style #f)
 
 @(define ($ . xs)
    (make-element (make-style "relax" '(exact-chars))

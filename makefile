@@ -3,10 +3,13 @@ SHELL = /bin/sh
 
 SCRIBBLE = raco scribble
 
+STYLE_OPTS = ++style overrides.tex
+
 MAIN = report.scrbl
 
 FILES = $(MAIN) \
         bib.rkt \
+        overrides.tex \
         acm-metadata.tex
 
 LATEX_FILES = tex/report.tex \
@@ -16,11 +19,11 @@ LATEX_FILES = tex/report.tex \
 
 pdf/report.pdf: $(FILES)
 	@mkdir -p pdf
-	$(SCRIBBLE) $(SCRIBBLE_OPTS) --dest pdf --pdf $(MAIN)
+	$(SCRIBBLE) $(SCRIBBLE_OPTS) $(STYLE_OPTS) --dest pdf --pdf $(MAIN)
 
 $(LATEX_FILES): $(FILES)
 	@mkdir -p tex
-	$(SCRIBBLE) $(SCRIBBLE_OPTS) --dest tex --latex $(MAIN)
+	$(SCRIBBLE) $(SCRIBBLE_OPTS) $(STYLE_OPTS) --dest tex --latex $(MAIN)
 
 source.zip: $(LATEX_FILES)
 	zip $@ $(LATEX_FILES)

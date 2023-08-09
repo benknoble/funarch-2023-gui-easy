@@ -54,19 +54,20 @@
                           (frame (inset (let ([label (inset @text{Picture} 20)])
                                           (color-code "lightcoral" label))
                                         20)))])
-   (frame
-    (vc-append
-     (let* ([height (pict-height @text{AoE Editor})]
-            [buttons (hc-append 3
-                                (disk (- height 5) #:color "red" #:draw-border? #f)
-                                (disk (- height 5) #:color "yellow" #:draw-border? #f)
-                                (disk (- height 5) #:color "green" #:draw-border? #f))])
-       (lc-superimpose (cc-superimpose (filled-rectangle (pict-width editor)
-                                                         height
-                                                         #:color "light gray")
-                                       @text{AoE Editor})
-                       (inset buttons 2)))
-     editor))))
+   (scale (frame
+           (vc-append
+            (let* ([height (pict-height @text{AoE Editor})]
+                   [buttons (hc-append 3
+                                       (disk (- height 5) #:color "red" #:draw-border? #f)
+                                       (disk (- height 5) #:color "yellow" #:draw-border? #f)
+                                       (disk (- height 5) #:color "green" #:draw-border? #f))])
+              (lc-superimpose (cc-superimpose (filled-rectangle (pict-width editor)
+                                                                height
+                                                                #:color "light gray")
+                                              @text{AoE Editor})
+                              (inset buttons 2)))
+            editor))
+          2)))
 
 ;; runnable example code here
 
@@ -157,10 +158,69 @@
  #:title "AoE Editor In Action"
  #:delay 0.3)
 
+(slide #:name "On to the GUI Easy Version"
+       @titlet{On to the GUI Easy Version})
+
 ;; on to GUI Easy version…
-;; use `ghost` to to introduce each nested piece alongside the resulting GUI
+(void
+ (with-steps
+  {render window hpanel input pict-canvas run}
+  (define-syntax-rule (reveal id then)
+    (let ([then* (code then)])
+      (before id (ghost then*) (only id (color-code "aquamarine" then*) then*))))
+  (define (run-easy)
+    (dynamic-require (build-path here "aoe-editor-gui-easy.rkt") #f))
+  (slide
+   #:title "Easy Example: Area of Effect Diagram Editor"
+   (~> ((code
+         #,(reveal input (define |@|input (obs "")))
+         #,(reveal
+            render
+            (render
+             #,(reveal
+                window
+                (window
+                 #:title "AoE Editor"
+                 #,(reveal
+                    hpanel
+                    (hpanel
+                     #,(reveal
+                        input
+                        (input |@|input
+                               (λ (action input)
+                                 (:= |@|input input))
+                               #:style '(multiple)
+                               #:stretch '(#t #t)
+                               #:min-size '(300 150)))
+                     #,(reveal
+                        pict-canvas
+                        (pict-canvas |@|input
+                                     (λ (input)
+                                       (with-handlers ([exn:fail? (λ (exn) (pict:text "Invalid Input"))])
+                                         (spec->shape (string->spec input))))
+                                     #:min-size '(300 150)))))))))))
+       (scale-to-fit titleless-page)
+       (cc-superimpose titleless-page)
+       (rb-superimpose ((vonly run) (clickback (frame (t "Run Code")) run-easy)))))))
 
 ;; ---
+
+(slide #:name "GUI Easy Details"
+       @titlet{GUI Easy Details})
+
+;; Can I macro-ize this, or otherwise librarify it so that it is easy to embed
+;; GUI Easy examples?
+(slide
+ (interactive
+  @t{"Wee"}
+  (λ (f)
+    (local-require racket/gui/easy)
+    (define count (obs 0))
+    (embed f
+           (hpanel (button "-" (λ () (obs-update! count sub1)))
+                   (text (obs-map count ~a))
+                   (button "+" (λ () (obs-update! count add1)))))
+    void)))
 
 ;; GUI Easy: the library
 ;; GUI Easy: the architecture (via Frosthaven Manager)

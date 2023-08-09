@@ -24,6 +24,7 @@ pdf/report.pdf: $(FILES)
 $(LATEX_FILES): $(FILES)
 	@mkdir -p tex
 	$(SCRIBBLE) $(SCRIBBLE_OPTS) $(STYLE_OPTS) --dest tex --latex $(MAIN)
+	printf '%s\n' '/copyrightyear.#1/d' wq | ed -s tex/report.tex
 
 source.zip: $(LATEX_FILES)
 	zip $@ $(LATEX_FILES)

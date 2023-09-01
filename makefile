@@ -28,3 +28,6 @@ $(LATEX_FILES): $(FILES)
 
 source.zip: $(LATEX_FILES)
 	zip $@ $(LATEX_FILES)
+
+slides.pdf: slides.rkt aoe-editor-frame-1.png aoe-editor-frame-2.png aoe-editor-frame-3.png aoe-editor-frame-4.png aoe-editor-gui-easy.rkt aoe-editor-oop.rkt screenshot-counter.png screenshot-2counter.png screenshot-frosthaven-with-server.png screenshot-frosthaven.png
+	racket slides.rkt -D -o $@

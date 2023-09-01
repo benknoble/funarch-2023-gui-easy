@@ -12,6 +12,15 @@
          syntax/parse/define
          qi)
 
+(define-syntax-parse-rule (screen-only e:expr)
+  (let ([v e])
+    (cond
+      [printing? (ghost v)]
+      [else v])))
+
+(define (screen-clickback p t)
+  (screen-only (clickback p t)))
+
 (define-runtime-path here ".")
 
 (define arrow-size 10)
@@ -213,22 +222,30 @@
 (define editor-frames
   (sort (glob (build-path here "aoe-editor-frame-*.png"))
         path<?))
+(define (make-editor-frame-slide f)
+  (~> (f) bitmap
+      (scale-to-fit titleless-page)
+      (cc-superimpose titleless-page)
+      (rb-superimpose (screen-clickback (frame (t "Run OOP Code")) run-oop))))
 (define n-editor-frames (length editor-frames))
 (define (run-oop)
   (dynamic-require (build-path here "aoe-editor-oop.rkt") #f))
-(play-n
- (λ (timestamp)
-   (define frame-file
-     (on (timestamp)
-       (if (>= 1.0)
-         (gen (last editor-frames))
-         (~>> (* n-editor-frames) exact-floor (list-ref editor-frames)))))
-   (~> (frame-file) bitmap
-       (scale-to-fit titleless-page)
-       (cc-superimpose titleless-page)
-       (rb-superimpose (clickback (frame (t "Run OOP Code")) run-oop))))
- #:title "AoE Editor In Action"
- #:delay 0.3)
+
+(cond
+  [printing? (for ([f editor-frames])
+               (slide
+                #:title "AoE Editor In Action"
+                (make-editor-frame-slide f)))]
+  [else (play-n
+         (λ (timestamp)
+           (define frame-file
+             (on (timestamp)
+               (if (>= 1.0)
+                 (gen (last editor-frames))
+                 (~>> (* n-editor-frames) exact-floor (list-ref editor-frames)))))
+           (make-editor-frame-slide frame-file))
+         #:title "AoE Editor In Action"
+         #:delay 0.3)])
 
 (slide #:name "On to the GUI Easy Version"
        @titlet{On to the GUI Easy Version})
@@ -273,7 +290,7 @@
                                      #:min-size '(300 150)))))))))))
        (scale-to-fit titleless-page)
        (cc-superimpose titleless-page)
-       (rb-superimpose ((vonly run) (clickback (frame (t "Run Code")) run-easy)))))))
+       (rb-superimpose ((vonly run) (screen-clickback (frame (t "Run Code")) run-easy)))))))
 
 (slide
  #:title "Easy Example: Area of Effect Diagram Editor"
@@ -366,6 +383,8 @@
                                 2/3column))
   (cc-superimpose 1/3column
                   (interact-gui-easy
+                   #:alt (scale-to-fit (bitmap (build-path here "screenshot-counter.png"))
+                                       1/3column)
                    (define |@|count (|@| 0))
                    (hpanel (button "-" (λ () (<~ |@|count sub1)))
                            (text (~> |@|count number->string))
@@ -396,6 +415,8 @@
                                 2/3column))
   (cc-superimpose 1/3column
                   (interact-gui-easy
+                   #:alt (scale-to-fit (bitmap (build-path here "screenshot-2counter.png"))
+                                       1/3column)
                    (define (counter |@|count action)
                      (hpanel
                       (button "-" (λ () (action sub1)))
@@ -482,6 +503,7 @@
 (slide
  #:title "Extras"
  (~> ("screenshot-frosthaven.png")
+     (build-path here _)
      bitmap
      (scale-to-fit titleless-page)
      (cc-superimpose titleless-page)))
@@ -489,6 +511,7 @@
 (slide
  #:title "Extras"
  (~> ("screenshot-frosthaven-with-server.png")
+     (build-path here _)
      bitmap
      (scale-to-fit titleless-page)
      (cc-superimpose titleless-page)))

@@ -1,5 +1,11 @@
 # FUNARCH 2023 paper
 
+[![This project is considered finished](https://img.shields.io/badge/status-finished-success.svg)](https://benknoble.github.io/status/finished/)
+
+[Paper Announcement and Links](https://racket.discourse.group/t/funarch-2023-functional-shell-and-reusable-components-for-easy-guis/2288)
+
+This repository contains code for the paper and slides.
+
 - `make pdf/report.pdf`: generate PDF
 - `make tex/report.tex`: generate LaTeX sources
 
